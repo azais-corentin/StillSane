@@ -3,7 +3,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-#include <poe/constants.hh>
+#include <poe/api/constants.hh>
 
 namespace AutoTrade::Poe {
 

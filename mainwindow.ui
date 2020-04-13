@@ -22,43 +22,101 @@
       </property>
       <widget class="QWidget" name="tabOngoingTrades">
        <attribute name="title">
-        <string>Ongoing Trades</string>
+        <string>Ongoing trades</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
+         <widget class="QTreeView" name="treeOngoingTrades"/>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="tabFinishedTrades">
        <attribute name="title">
         <string>Finished trades</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QTreeView" name="treeFinishedTrades"/>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="tabSearchResults">
        <attribute name="title">
         <string>Search results</string>
        </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="1">
+         <widget class="QTreeView" name="treeSearchResults"/>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="tabSearches">
        <attribute name="title">
         <string>Searches</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QLabel" name="lSearchUrl">
+          <property name="text">
+           <string>Search url</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
         <item row="0" column="2">
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="bAddSearch">
           <property name="text">
            <string>Add</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit"/>
-        </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Search id</string>
+        <item row="2" column="0" colspan="3">
+         <widget class="QTableView" name="tableSearches">
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::DoubleClicked</set>
+          </property>
+          <property name="tabKeyNavigation">
+           <bool>false</bool>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="3">
-         <widget class="QListView" name="listView"/>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="eSearchUrl">
+          <property name="placeholderText">
+           <string>Enter https://www.pathofexile.com/trade/search/Delirium/NK6Ec5 or NK6Ec5</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="lSearchName">
+          <property name="text">
+           <string>Name</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="eSearchName">
+          <property name="placeholderText">
+           <string>Enter the search name</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -81,7 +139,7 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="2">
+        <item row="2" column="0" colspan="2">
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -93,6 +151,13 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="1" column="0" colspan="2">
+         <widget class="QCheckBox" name="checkBox">
+          <property name="text">
+           <string>Automatically execute trades</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

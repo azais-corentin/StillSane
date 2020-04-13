@@ -15,25 +15,31 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    ui/delegates/checkbox.cpp \
+    ui/models/itemlistmodel.cpp \
+    ui/models/searchtable.cpp \
     network/accessmanager.cpp \
     network/ratelimitmanager.cpp \
     network/ratelimitrulemanager.cpp \
-    poe/ninjaapi.cpp \
-    poe/staticdata.cpp \
-    poe/tradeapi.cpp \
-    ui/models/itemlistmodel.cpp
+    poe/searchmanager.cpp \
+    poe/api/ninjaapi.cpp \
+    poe/api/staticdata.cpp \
+    poe/api/tradeapi.cpp
 
 HEADERS += \
     mainwindow.hh \
+    ui/delegates/checkbox.hh \
+    ui/models/itemlistmodel.hh \
+    ui/models/searchtable.hh \
     network/accessmanager.hh \
     network/ratelimitmanager.hh \
     network/ratelimitrulemanager.hh \
-    poe/constants.hh \
-    poe/ninjaapi.hh \
-    poe/staticdata.hh \
-    poe/tradeapi.hh \
-    poe/types.hh \
-    ui/models/itemlistmodel.hh
+    poe/searchmanager.hh \
+    poe/api/constants.hh \
+    poe/api/ninjaapi.hh \
+    poe/api/staticdata.hh \
+    poe/api/tradeapi.hh \
+    poe/api/types.hh
 
 FORMS += \
     mainwindow.ui

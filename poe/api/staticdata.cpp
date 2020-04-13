@@ -7,7 +7,7 @@
 #include <QNetworkReply>
 
 #include <network/accessmanager.hh>
-#include <poe/constants.hh>
+#include <poe/api/constants.hh>
 
 namespace AutoTrade::Poe {
 

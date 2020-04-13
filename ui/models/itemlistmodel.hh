@@ -3,7 +3,7 @@
 
 #include <QAbstractListModel>
 
-#include <poe/types.hh>
+#include <poe/api/types.hh>
 
 namespace AutoTrade::ui::models {
 

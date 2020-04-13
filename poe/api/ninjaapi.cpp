@@ -6,7 +6,7 @@
 #include <QUrlQuery>
 
 #include <network/accessmanager.hh>
-#include <poe/constants.hh>
+#include <poe/api/constants.hh>
 
 using namespace std::placeholders;
 

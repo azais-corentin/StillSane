@@ -4,7 +4,7 @@
 #include <QNetworkRequest>
 #include <QObject>
 
-#include <poe/types.hh>
+#include <poe/api/types.hh>
 
 namespace AutoTrade::Poe {
 

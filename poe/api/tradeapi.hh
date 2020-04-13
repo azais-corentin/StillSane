@@ -10,7 +10,7 @@
 
 #include <network/accessmanager.hh>
 #include <network/ratelimitmanager.hh>
-#include <poe/types.hh>
+#include <poe/api/types.hh>
 
 namespace AutoTrade::Poe {
 

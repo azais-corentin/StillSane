@@ -3,19 +3,41 @@
 
 #include <QMainWindow>
 
+#include <poe/searchmanager.hh>
+#include <ui/models/searchtable.hh>
+
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+namespace AutoTrade {
+
+namespace Ui::Delegates {
+class CheckBox;
+}
+
+class MainWindow : public QMainWindow {
   Q_OBJECT
 
  public:
-  MainWindow(QWidget *parent = nullptr);
+  MainWindow(QWidget* parent = nullptr);
   ~MainWindow();
 
+ private slots:
+  void on_bAddSearch_clicked();
+
+  void onSearchAdded();
+
  private:
-  Ui::MainWindow *ui;
+  ::Ui::MainWindow* ui;
+
+  Poe::SearchManager                       mSearchManager;
+  Ui::Models::SearchTable                  mSearchTableModel;
+  std::unique_ptr<Ui::Delegates::CheckBox> mCheckBoxDelegate;
 };
-#endif // MAINWINDOW_HH
+
+}  // namespace AutoTrade
+
+#endif  // MAINWINDOW_HH
