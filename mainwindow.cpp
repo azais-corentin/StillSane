@@ -2,8 +2,10 @@
 #include "ui_mainwindow.h"
 
 #include <QDebug>
+#include <QFile>
 
 #include <network/accessmanager.hh>
+#include <poe/api/trade.hh>
 #include <ui/delegates/checkbox.hh>
 
 namespace AutoTrade {
@@ -24,9 +26,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
   // Connect
   connect(&mSearchManager, &Poe::SearchManager::searchAdded, this,
           &MainWindow::onSearchAdded);
+
+  loadSettings();
 }
 
 MainWindow::~MainWindow() {
+  saveSettings();
+
   delete ui;
 }
 
@@ -46,6 +52,38 @@ void MainWindow::on_bAddSearch_clicked() {
 void MainWindow::onSearchAdded() {
   qDebug() << "MainWindow::onSearchAdded";
   mSearchTableModel.setSearches(mSearchManager.getSearches());
+}
+
+void MainWindow::saveSettings() {
+  QFile settingsFile("settings.json");
+  settingsFile.open(QIODevice::WriteOnly);
+  QJsonObject settings;
+
+  QJsonArray  searchesArray;
+  const auto& searches = mSearchManager.getSearches();
+  for (const auto& search : searches) {
+    searchesArray.append(QJsonObject{{"id", search->getId()},
+                                     {"league", search->getLeague()},
+                                     {"name", search->getName()},
+                                     {"enabled", search->isEnabled()}});
+  }
+
+  settings["searches"] = searchesArray;
+
+  settingsFile.write(QJsonDocument(settings).toJson());
+}
+
+void MainWindow::loadSettings() {
+  QFile settingsFile("settings.json");
+  if (!settingsFile.open(QIODevice::ReadOnly))
+    return;
+  const auto& settings = QJsonDocument::fromJson(settingsFile.readAll()).object();
+
+  const auto& searches = settings["searches"].toArray();
+  for (const auto& search : searches) {
+    mSearchManager.addSearch(search["id"].toString(), search["league"].toString(),
+                             search["name"].toString(), search["enabled"].toBool(true));
+  }
 }
 
 }  // namespace AutoTrade

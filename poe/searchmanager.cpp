@@ -19,19 +19,23 @@ void SearchManager::setCookies(const QString& POESESSID) {
 
 void SearchManager::addSearch(const QString& id,
                               const QString& league,
-                              const QString& name) {
+                              const QString& name,
+                              bool           enabled) {
   // Create a new live Trade
   Api::Trade* trade = new Api::Trade{};
   trade->setId(id);
   trade->setName(name);
   trade->setLeague(league);
+  trade->setEnabled(enabled);
 
   // Add it to the vector
   mTradeApis.push_back(trade);
 
   // Connect signals and start the live search
   connectToTradeApi(trade);
-  trade->openLiveSearch();
+
+  if (enabled)
+    trade->openLiveSearch();
 
   emit searchAdded();
 }

@@ -24,7 +24,10 @@ class SearchManager : public QObject {
 
   void setCookies(const QString& POESESSID);
 
-  void addSearch(const QString& id, const QString& league, const QString& name);
+  void addSearch(const QString& id,
+                 const QString& league,
+                 const QString& name,
+                 bool           enabled = true);
   bool editSearch(const QString& id, const QString& name);
   bool editSearch(const QString& id, const bool& enabled);
 
