@@ -1,12 +1,12 @@
-#ifndef POE_NINJAAPI_HH
-#define POE_NINJAAPI_HH
+#ifndef AUTOTRADE_POE_API_NINJA_HH
+#define AUTOTRADE_POE_API_NINJA_HH
 
 #include <QNetworkRequest>
 #include <QObject>
 
 #include <poe/api/types.hh>
 
-namespace AutoTrade::Poe {
+namespace AutoTrade::Poe::Api {
 
 struct CurrencyDetail {
   QString name, tradeId;
@@ -14,10 +14,10 @@ struct CurrencyDetail {
   double  chaosEquivalent = 1.0;
 };
 
-class NinjaAPI : public QObject {
+class Ninja : public QObject {
   Q_OBJECT
  public:
-  explicit NinjaAPI(QObject* parent = nullptr);
+  explicit Ninja(QObject* parent = nullptr);
 
   double getChaosEquivalent(const QString& tradeId);
 
@@ -44,6 +44,6 @@ class NinjaAPI : public QObject {
   bool mUpdatingCurrencyDetail = false;
 };
 
-}  // namespace AutoTrade::Poe
+}  // namespace AutoTrade::Poe::Api
 
-#endif  // POE_NINJAAPI_HH
+#endif  // AUTOTRADE_POE_API_NINJA_HH

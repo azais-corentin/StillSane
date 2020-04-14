@@ -28,7 +28,7 @@ class AccessManager : public QObject {
   AccessManager& operator=(const AccessManager&) = delete;
   AccessManager& operator=(AccessManager&&) = delete;
 
-  void setPOESSID(const QString& id);
+  static void setPOESSID(const QString& poesessid);
 
  public:
   static void get(QNetworkRequest request,
@@ -48,6 +48,7 @@ class AccessManager : public QObject {
   QNetworkAccessManager* mNetworkAccessManager;
 
   QQueue<QNetworkRequest> mGetQueue;
+  QString                 mPOESESSID;
 };
 
 }  // namespace AutoTrade::Network

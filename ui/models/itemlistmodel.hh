@@ -1,5 +1,5 @@
-#ifndef UI_MODELS_ITEMLISTMODEL_HH
-#define UI_MODELS_ITEMLISTMODEL_HH
+#ifndef AUTOTRADE_UI_MODELS_ITEMLISTMODEL_HH
+#define AUTOTRADE_UI_MODELS_ITEMLISTMODEL_HH
 
 #include <QAbstractListModel>
 
@@ -10,7 +10,7 @@ namespace AutoTrade::ui::models {
 class ItemList : public QAbstractListModel {
   Q_OBJECT
  public:
-  ItemList(const QVector<Poe::Item>& items, QObject* parent = nullptr);
+  ItemList(const QVector<Poe::Api::Item>& items, QObject* parent = nullptr);
 
   int      rowCount(const QModelIndex& parent = QModelIndex()) const final;
   QVariant data(const QModelIndex& index, int role) const final;
@@ -19,9 +19,9 @@ class ItemList : public QAbstractListModel {
                       int             role = Qt::DisplayRole) const final;
 
  private:
-  QVector<Poe::Item> mItems;
+  QVector<Poe::Api::Item> mItems;
 };
 
 }  // namespace AutoTrade::ui::models
 
-#endif  // UI_MODELS_ITEMLISTMODEL_HH
+#endif  // AUTOTRADE_UI_MODELS_ITEMLISTMODEL_HH

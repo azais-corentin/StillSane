@@ -5,12 +5,12 @@
 
 namespace AutoTrade::ui::models {
 
-ItemList::ItemList(const QVector<Poe::Item>& items, QObject* parent)
+ItemList::ItemList(const QVector<Poe::Api::Item>& items, QObject* parent)
     : QAbstractListModel(parent), mItems(items) {
   qDebug() << "Created model with" << mItems.size() << "items!";
   qDebug() << "Sorting items!";
 
-  std::sort(mItems.begin(), mItems.end(), [](const Poe::Item& a, const Poe::Item& b) {
+  std::sort(mItems.begin(), mItems.end(), [](const auto& a, const auto& b) {
     return QString::localeAwareCompare(a.text, b.text) <= 0;
   });
   qDebug() << "Done sorting.";

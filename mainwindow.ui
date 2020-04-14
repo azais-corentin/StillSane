@@ -65,13 +65,6 @@
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="bAddSearch">
-          <property name="text">
-           <string>Add</string>
-          </property>
-         </widget>
-        </item>
         <item row="2" column="0" colspan="3">
          <widget class="QTableView" name="tableSearches">
           <property name="horizontalScrollBarPolicy">
@@ -97,7 +90,7 @@
         <item row="0" column="1">
          <widget class="QLineEdit" name="eSearchUrl">
           <property name="placeholderText">
-           <string>Enter https://www.pathofexile.com/trade/search/Delirium/NK6Ec5 or NK6Ec5</string>
+           <string>Enter trade url (ie. https://www.pathofexile.com/trade/search/Delirium/NK6Ec5 or NK6Ec5)</string>
           </property>
          </widget>
         </item>
@@ -115,6 +108,13 @@
          <widget class="QLineEdit" name="eSearchName">
           <property name="placeholderText">
            <string>Enter the search name</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" rowspan="2">
+         <widget class="QPushButton" name="bAddSearch">
+          <property name="text">
+           <string>Add</string>
           </property>
          </widget>
         </item>

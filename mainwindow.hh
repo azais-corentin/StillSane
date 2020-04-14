@@ -26,8 +26,10 @@ class MainWindow : public QMainWindow {
   ~MainWindow();
 
  private slots:
+  // Ui slots
   void on_bAddSearch_clicked();
 
+  // Slots
   void onSearchAdded();
 
  private:

@@ -9,7 +9,7 @@
 #include <network/accessmanager.hh>
 #include <poe/api/constants.hh>
 
-namespace AutoTrade::Poe {
+namespace AutoTrade::Poe::Api {
 
 using namespace Network;
 
@@ -87,4 +87,4 @@ QNetworkRequest StaticData::buildRequest(const QString& path) const {
   return request;
 }
 
-}  // namespace AutoTrade::Poe
+}  // namespace AutoTrade::Poe::Api

@@ -19,7 +19,8 @@ void AccessManager::modifyRequest(QNetworkRequest& request) {
   if (request.hasRawHeader("Cookie")) {
     cookies << request.rawHeader("Cookie");
   }
-  cookies << "POESESSID=adcd7e342bbdbf15e2716904129c98ad";
+  cookies << QStringLiteral("POESESSID=%1").arg(instance().mPOESESSID);
+
   request.setRawHeader("Cookie", cookies.join("; ").toLatin1());
   request.setRawHeader("Content-Type", "application/json");
   request.setRawHeader("TE", "Trailers");
@@ -34,7 +35,9 @@ void AccessManager::modifyRequest(QNetworkRequest& request) {
   }
 }
 
-void AccessManager::setPOESSID(const QString&) {}
+void AccessManager::setPOESSID(const QString& poesessid) {
+  instance().mPOESESSID = poesessid;
+}
 
 void AccessManager::get(QNetworkRequest request,
                         Callback&&      slot /*, RateLimitManager* rateLimiter*/) {

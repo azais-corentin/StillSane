@@ -1,12 +1,12 @@
-#ifndef STATICDATA_HH
-#define STATICDATA_HH
+#ifndef AUTOTRADE_POE_API_STATICDATA_HH
+#define AUTOTRADE_POE_API_STATICDATA_HH
 
 #include <QNetworkRequest>
 #include <QObject>
 
 #include <poe/api/types.hh>
 
-namespace AutoTrade::Poe {
+namespace AutoTrade::Poe::Api {
 
 class StaticData : public QObject {
   Q_OBJECT
@@ -33,6 +33,6 @@ class StaticData : public QObject {
   QVector<Item> mItems;
 };
 
-}  // namespace AutoTrade::Poe
+}  // namespace AutoTrade::Poe::Api
 
-#endif  // STATICDATA_HH
+#endif  // AUTOTRADE_POE_API_STATICDATA_HH

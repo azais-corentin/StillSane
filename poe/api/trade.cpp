@@ -1,35 +1,33 @@
-#include "tradeapi.hh"
+#include "trade.hh"
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
 #include <poe/api/constants.hh>
 
-namespace AutoTrade::Poe {
+namespace AutoTrade::Poe::Api {
 
 using namespace Network;
 
-TradeAPI::TradeAPI(QObject* parent) : QObject(parent) {
+Trade::Trade(QObject* parent) : QObject(parent) {
   // Connect REST API
   // connect(mNetworkManager, &QNetworkAccessManager::finished, this,
   // &TradeAPI::onFinished);
 
   // Connect Websocket
   connect(&mWebsocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
-          this, &TradeAPI::onError);
-  connect(&mWebsocket, &QWebSocket::connected, this, &TradeAPI::connected);
-  connect(&mWebsocket, &QWebSocket::disconnected, this, &TradeAPI::disconnected);
-  connect(&mWebsocket, &QWebSocket::textMessageReceived, this, &TradeAPI::onNewMessage);
+          this, &Trade::onError);
+  connect(&mWebsocket, &QWebSocket::connected, this, &Trade::connected);
+  connect(&mWebsocket, &QWebSocket::disconnected, this, &Trade::disconnected);
+  connect(&mWebsocket, &QWebSocket::textMessageReceived, this, &Trade::onNewMessage);
 }
 
-TradeAPI::~TradeAPI() {
+Trade::~Trade() {
   // delete mNetworkManager;
 }
 
-void TradeAPI::openLiveSearch(const QString& cookies,
-                              const QString& league,
-                              const Query&   parameters) {
-  search(league, parameters, [this, cookies](const QByteArray& data) {
+void Trade::openLiveSearch(const QString& league, const Query& parameters) {
+  search(league, parameters, [this](const QByteArray& data) {
     const QString liveSearchId = QJsonDocument::fromJson(data).object()["id"].toString();
 
     QNetworkRequest connection("wss://www.pathofexile.com/api/trade/live/" +
@@ -37,7 +35,6 @@ void TradeAPI::openLiveSearch(const QString& cookies,
 
     connection.setRawHeader("Host", "www.pathofexile.com");
     connection.setRawHeader("Origin", "https://www.pathofexile.com");
-    connection.setRawHeader("Cookie", cookies.toUtf8());
 
     qDebug() << connection.url();
 
@@ -45,11 +42,29 @@ void TradeAPI::openLiveSearch(const QString& cookies,
   });
 }
 
-void TradeAPI::closeLiveSearch() {
+void Trade::openLiveSearch(const QString& url) {
+  auto split  = url.splitRef("/");
+  auto id     = split.takeLast();
+  auto league = split.takeLast();
+
+  QNetworkRequest connection(
+      QStringLiteral("wss://www.pathofexile.com/api/trade/live/%1/%2")
+          .arg(league)
+          .arg(id));
+
+  connection.setRawHeader("Host", "www.pathofexile.com");
+  connection.setRawHeader("Origin", "https://www.pathofexile.com");
+
+  qDebug() << connection.url();
+
+  mWebsocket.open(connection);
+}
+
+void Trade::closeLiveSearch() {
   mWebsocket.close();
 }
 
-void TradeAPI::search(const QString& league, const Query& parameters, Callback&& slot) {
+void Trade::search(const QString& league, const Query& parameters, Callback&& slot) {
   // path: /search/  currentLeague
   const auto request = buildRequest(TradeSearchPath + league);
 
@@ -69,11 +84,11 @@ void TradeAPI::search(const QString& league, const Query& parameters, Callback&&
                       std::forward<Callback>(slot)); /*, &mRateLimiter);*/
 }
 
-void TradeAPI::fetch(const QString& id, Callback&& slot) {
+void Trade::fetch(const QString& id, Callback&& slot) {
   fetch(QStringList{id}, std::forward<Callback>(slot));
 }
 
-void TradeAPI::fetch(const QStringList& ids, Callback&& slot) {
+void Trade::fetch(const QStringList& ids, Callback&& slot) {
   // /fetch/  id1,...,idn
   QString idQuery = ids.join(',');
 
@@ -81,11 +96,11 @@ void TradeAPI::fetch(const QStringList& ids, Callback&& slot) {
                      std::forward<Callback>(slot)); /*, &mRateLimiter);*/
 }
 
-void TradeAPI::onError(QAbstractSocket::SocketError) {
+void Trade::onError(QAbstractSocket::SocketError) {
   qDebug() << "TradeAPI::onError websockets:" << mWebsocket.errorString();
 }
 
-void TradeAPI::onNewMessage(const QString& message) {
+void Trade::onNewMessage(const QString& message) {
   const auto& newItems =
       QJsonDocument::fromJson(message.toUtf8()).object().value("new").toArray();
 
@@ -104,7 +119,7 @@ void TradeAPI::onNewMessage(const QString& message) {
  * \param path The path of the request.
  * \return A network request for the path with the proper headers.
  */
-QNetworkRequest TradeAPI::buildRequest(const QString& path) const {
+QNetworkRequest Trade::buildRequest(const QString& path) const {
   QUrl url;
   url.setScheme("https");
   url.setHost(baseHostOfficial);
@@ -116,7 +131,7 @@ QNetworkRequest TradeAPI::buildRequest(const QString& path) const {
   return request;
 }
 
-void TradeAPI::parseFetchedItems(const QByteArray& data) {
+void Trade::parseFetchedItems(const QByteArray& data) {
   const QJsonArray results = QJsonDocument::fromJson(data).object()["result"].toArray();
 
   for (const auto& result : results) {
@@ -131,4 +146,4 @@ void TradeAPI::parseFetchedItems(const QByteArray& data) {
   }
 }
 
-}  // namespace AutoTrade::Poe
+}  // namespace AutoTrade::Poe::Api

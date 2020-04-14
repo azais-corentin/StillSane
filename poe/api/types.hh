@@ -1,9 +1,9 @@
-#ifndef POE_TYPES_HH
-#define POE_TYPES_HH
+#ifndef AUTOTRADE_POE_API_TYPES_HH
+#define AUTOTRADE_POE_API_TYPES_HH
 
 #include <QString>
 
-namespace AutoTrade::Poe {
+namespace AutoTrade::Poe::Api {
 
 enum class League { Delirium, HardcoreDelirium, Standard, Hardcore };
 struct League_t {
@@ -36,6 +36,6 @@ struct TradeItem {
   QString currencyTradeId;
 };
 
-}  // namespace AutoTrade::Poe
+}  // namespace AutoTrade::Poe::Api
 
-#endif  // POE_TYPES_HH
+#endif  // AUTOTRADE_POE_API_TYPES_HH

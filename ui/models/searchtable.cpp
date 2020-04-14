@@ -2,6 +2,8 @@
 
 #include <poe/searchmanager.hh>
 
+#include <QLabel>
+
 namespace AutoTrade::Ui::Models {
 
 SearchTable::SearchTable(QObject* parent) : QAbstractTableModel(parent) {}
@@ -85,7 +87,7 @@ QVariant SearchTable::data(const QModelIndex& index, int role) const {
       case 1:
         return search.id;
       case 2:
-        return search.enabled;
+        return search.enabled ? QStringLiteral("✔") : QStringLiteral("✖");
     }
   } else if (role == Qt::EditRole) {
     switch (index.column()) {
@@ -94,10 +96,18 @@ QVariant SearchTable::data(const QModelIndex& index, int role) const {
       case 2:
         return search.enabled;
     }
+  } else if (role == Qt::TextAlignmentRole) {
+    switch (index.column()) {
+      case 0:
+      case 1:
+        return Qt::AlignLeft;
+      case 2:
+        return Qt::AlignHCenter;
+    }
   }
 
   return {};
-}  // namespace AutoTrade::Ui::Models
+}
 
 Qt::ItemFlags SearchTable::flags(const QModelIndex& index) const {
   return QAbstractTableModel::flags(index) |

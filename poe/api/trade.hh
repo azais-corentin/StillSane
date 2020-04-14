@@ -1,5 +1,5 @@
-#ifndef CURRENCYTRADER_TRADEAPI_HH
-#define CURRENCYTRADER_TRADEAPI_HH
+#ifndef AUTOTRADE_POE_API_TRADE_HH
+#define AUTOTRADE_POE_API_TRADE_HH
 
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -12,27 +12,31 @@
 #include <network/ratelimitmanager.hh>
 #include <poe/api/types.hh>
 
-namespace AutoTrade::Poe {
+namespace AutoTrade::Poe::Api {
 
 /**
- * @brief The TradeAPI class interfaces with the official trade API at
+ * @brief The Trade class interfaces with the official trade API at
  * https://www.pathofexile.com/api/trade.
  */
-class TradeAPI : public QObject {
+class Trade : public QObject {
   Q_OBJECT
 
  public:
-  explicit TradeAPI(QObject* parent = nullptr);
-  ~TradeAPI();
+  explicit Trade(QObject* parent = nullptr);
+  ~Trade();
 
   /*!
-   * \brief Start a websockets search for items.
+   * \brief Starts a websockets live search for items.
    * \param league The league in which to search.
    * \param parameters The query (search) parameters.
    */
-  void openLiveSearch(const QString& cookies,
-                      const QString& league,
-                      const Query&   parameters);
+  void openLiveSearch(const QString& league, const Query& parameters);
+  /*!
+   * \brief Stats a websockets live search from the search url.
+   * \param id Url or id of the search (ie.
+   * https://www.pathofexile.com/trade/search/Delirium/NK6Ec5 or Delirium/NK6Ec5).
+   */
+  void openLiveSearch(const QString& id);
   void closeLiveSearch();
 
   /*!
@@ -81,6 +85,6 @@ class TradeAPI : public QObject {
   // RateLimitManager mRateLimiter;
 };
 
-}  // namespace AutoTrade::Poe
+}  // namespace AutoTrade::Poe::Api
 
-#endif  // CURRENCYTRADER_TRADEAPI_HH
+#endif  // AUTOTRADE_POE_API_TRADE_HH

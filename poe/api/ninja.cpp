@@ -1,4 +1,4 @@
-#include "ninjaapi.hh"
+#include "ninja.hh"
 
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -10,16 +10,16 @@
 
 using namespace std::placeholders;
 
-namespace AutoTrade::Poe {
+namespace AutoTrade::Poe::Api {
 
 using namespace Network;
 
-NinjaAPI::NinjaAPI(QObject* parent) : QObject(parent) {
+Ninja::Ninja(QObject* parent) : QObject(parent) {
   // Fetch currency equivalents by default
   fetchCurrencyOverview(currentLeague, "Currency");
 }
 
-double NinjaAPI::getChaosEquivalent(const QString& tradeId) {
+double Ninja::getChaosEquivalent(const QString& tradeId) {
   if (mUpToDateCurrencyDetail) {
     auto it = std::find_if(
         mCurrencyNames.begin(), mCurrencyNames.end(),
@@ -35,7 +35,7 @@ double NinjaAPI::getChaosEquivalent(const QString& tradeId) {
   return 0.0;
 }
 
-void NinjaAPI::fetchCurrencyOverview(const QString& league, const QString& currencyType) {
+void Ninja::fetchCurrencyOverview(const QString& league, const QString& currencyType) {
   mUpdatingCurrencyDetail = true;
 
   auto      request = buildRequest("/currencyoverview");
@@ -45,24 +45,24 @@ void NinjaAPI::fetchCurrencyOverview(const QString& league, const QString& curre
   url.setQuery(query);
   request.setUrl(url);
 
-  AccessManager::get(request, std::bind(&NinjaAPI::parseCurrencyOverview, this, _1));
+  AccessManager::get(request, std::bind(&Ninja::parseCurrencyOverview, this, _1));
 }
 
-void NinjaAPI::fetchCurrencyHistory(const QString&, const QString&, unsigned int) {
+void Ninja::fetchCurrencyHistory(const QString&, const QString&, unsigned int) {
   /*!
    * \todo Implement this
    */
 }
 
-void NinjaAPI::fetchItemOverview(const QString&, const QString&) {}
+void Ninja::fetchItemOverview(const QString&, const QString&) {}
 
-void NinjaAPI::fetchItemHistory(const QString&, const QString&, unsigned int) {
+void Ninja::fetchItemHistory(const QString&, const QString&, unsigned int) {
   /*!
    * \todo Implement this
    */
 }
 
-void NinjaAPI::parseCurrencyOverview(const QByteArray& data) {
+void Ninja::parseCurrencyOverview(const QByteArray& data) {
   const auto& results             = QJsonDocument::fromJson(data);
   const auto& currencyDetails     = results["currencyDetails"].toArray();
   const auto& currencyEquivalents = results["lines"].toArray();
@@ -95,13 +95,13 @@ void NinjaAPI::parseCurrencyOverview(const QByteArray& data) {
   mUpdatingCurrencyDetail = false;
 }
 
-void NinjaAPI::parseCurrencyHistory(const QByteArray&) {}
+void Ninja::parseCurrencyHistory(const QByteArray&) {}
 
-void NinjaAPI::parseItemOverview(const QByteArray&) {}
+void Ninja::parseItemOverview(const QByteArray&) {}
 
-void NinjaAPI::parseItemHistory(const QByteArray&) {}
+void Ninja::parseItemHistory(const QByteArray&) {}
 
-QNetworkRequest NinjaAPI::buildRequest(const QString& path) const {
+QNetworkRequest Ninja::buildRequest(const QString& path) const {
   QUrl url;
   url.setScheme("https");
   url.setHost(baseHostNinja);
@@ -115,4 +115,4 @@ QNetworkRequest NinjaAPI::buildRequest(const QString& path) const {
   return request;
 }
 
-}  // namespace AutoTrade::Poe
+}  // namespace AutoTrade::Poe::Api

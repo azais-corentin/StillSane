@@ -1,9 +1,9 @@
-#ifndef POE_CONSTANTS_HH
-#define POE_CONSTANTS_HH
+#ifndef AUTOTRADE_POE_API_CONSTANTS_HH
+#define AUTOTRADE_POE_API_CONSTANTS_HH
 
 #include <QString>
 
-namespace AutoTrade::Poe {
+namespace AutoTrade::Poe::Api {
 
 inline const QString currentLeague = QStringLiteral("Delirium");
 
@@ -22,6 +22,6 @@ inline const QString TradeFetchPath  = QStringLiteral("/fetch/");
 // poe.ninja API
 inline const QString baseHostNinja = QStringLiteral("poe.ninja");
 inline const QString basePathNinja = QStringLiteral("/api/data");
-}  // namespace AutoTrade::Poe
+}  // namespace AutoTrade::Poe::Api
 
-#endif  // POE_CONSTANTS_HH
+#endif  // AUTOTRADE_POE_API_CONSTANTS_HH

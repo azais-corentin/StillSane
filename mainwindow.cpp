@@ -30,7 +30,11 @@ void MainWindow::on_bAddSearch_clicked() {
   auto&& searchName = ui->eSearchName->text();
 
   if (!searchUrl.isEmpty() && !searchName.isEmpty()) {
-    auto&& searchId = searchUrl.splitRef("/").last().toString();
+    auto&& tokens = searchUrl.splitRef("/");
+    auto&& id     = tokens.takeLast();
+    auto&& league = tokens.takeLast();
+
+    QString searchId = league + "/" + id;
 
     mSearchManager.addSearch(searchId, searchName);
   }
