@@ -1,5 +1,6 @@
 #include "searchtable.hh"
 
+#include <poe/api/trade.hh>
 #include <poe/searchmanager.hh>
 
 #include <QLabel>
@@ -8,9 +9,9 @@ namespace AutoTrade::Ui::Models {
 
 SearchTable::SearchTable(QObject* parent) : QAbstractTableModel(parent) {}
 
-void SearchTable::setSearches(const QVector<Poe::Search>& searches) {
+void SearchTable::setSearches(const QVector<Poe::Api::Trade*>& tradeApis) {
   beginResetModel();
-  mSearches = searches;
+  mTradeApis = tradeApis;
   endResetModel();
 }
 
@@ -40,7 +41,7 @@ int SearchTable::rowCount(const QModelIndex& parent) const {
   if (parent.isValid())
     return 0;
 
-  return mSearches.size();
+  return mTradeApis.size();
 }
 
 int SearchTable::columnCount(const QModelIndex& parent) const {
@@ -54,19 +55,25 @@ bool SearchTable::setData(const QModelIndex& index, const QVariant& value, int r
   if (role != Qt::EditRole)
     return false;
 
+  QString id = mTradeApis.at(index.row())->getId();
+
   switch (index.column()) {
-    case 0:
-      mSearches[index.row()].name = value.toString();
+    case 0: {
+      QString name = value.toString();
+      if (!name.isEmpty())
+        mTradeApis.at(index.row())->setName(name);
+      nameChanged(id, name);
       break;
+    }
     case 2:
-      mSearches[index.row()].enabled = value.toBool();
+      mTradeApis.at(index.row())->setEnabled(value.toBool());
+      enableChanged(id, value.toBool());
       break;
     default:
       return false;
   }
 
   emit dataChanged(index, index, {role});
-  emit searchChanged(index.row(), mSearches.at(index.row()));
 
   return true;
 }
@@ -75,34 +82,36 @@ QVariant SearchTable::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return {};
 
-  if (index.row() >= mSearches.size())
+  if (index.row() >= mTradeApis.size())
     return {};
 
-  auto&& search = mSearches.value(index.row());
+  const auto& tradeApi = mTradeApis.at(index.row());
 
   if (role == Qt::DisplayRole) {
     switch (index.column()) {
       case 0:
-        return search.name;
+        return tradeApi->getName();
       case 1:
-        return search.id;
+        return tradeApi->getId();
       case 2:
-        return search.enabled ? QStringLiteral("✔") : QStringLiteral("✖");
+        return tradeApi->isEnabled() ? QStringLiteral("Enabled")
+                                     : QStringLiteral("Disabled");
     }
   } else if (role == Qt::EditRole) {
     switch (index.column()) {
       case 0:
-        return search.name;
+        return tradeApi->getName();
       case 2:
-        return search.enabled;
+        return tradeApi->isEnabled();
     }
   } else if (role == Qt::TextAlignmentRole) {
     switch (index.column()) {
       case 0:
+        [[fallthrough]];
       case 1:
-        return Qt::AlignLeft;
+        return Qt::AlignVCenter + Qt::AlignLeft;
       case 2:
-        return Qt::AlignHCenter;
+        return Qt::AlignVCenter + Qt::AlignHCenter;
     }
   }
 

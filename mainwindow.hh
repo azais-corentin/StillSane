@@ -32,6 +32,8 @@ class MainWindow : public QMainWindow {
   // Slots
   void onSearchAdded();
 
+  void on_ePOESESSID_editingFinished();
+
  private:
   ::Ui::MainWindow* ui;
 

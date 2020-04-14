@@ -7,6 +7,10 @@
 
 #include <poe/searchmanager.hh>
 
+namespace AutoTrade::Poe::Api {
+class Trade;
+}
+
 namespace AutoTrade::Ui::Models {
 
 class SearchTable : public QAbstractTableModel {
@@ -15,7 +19,7 @@ class SearchTable : public QAbstractTableModel {
  public:
   explicit SearchTable(QObject* parent = nullptr);
 
-  void setSearches(const QVector<Poe::Search>& searches);
+  void setSearches(const QVector<Poe::Api::Trade*>& tradeApis);
 
   // Header:
   QVariant headerData(int             section,
@@ -32,13 +36,14 @@ class SearchTable : public QAbstractTableModel {
   Qt::ItemFlags flags(const QModelIndex& index) const override;
 
  signals:
-  void searchChanged(int row, const Poe::Search& data);
+  void nameChanged(QString id, const QString& name);
+  void enableChanged(QString id, bool enabled);
 
  private:
   void onSearchAdded();
 
  private:
-  QVector<Poe::Search> mSearches;
+  QVector<Poe::Api::Trade*> mTradeApis;
 };
 
 }  // namespace AutoTrade::Ui::Models

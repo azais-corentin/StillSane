@@ -10,52 +10,111 @@ namespace AutoTrade::Poe::Api {
 using namespace Network;
 
 Trade::Trade(QObject* parent) : QObject(parent) {
-  // Connect REST API
-  // connect(mNetworkManager, &QNetworkAccessManager::finished, this,
-  // &TradeAPI::onFinished);
-
   // Connect Websocket
   connect(&mWebsocket, QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
           this, &Trade::onError);
-  connect(&mWebsocket, &QWebSocket::connected, this, &Trade::connected);
-  connect(&mWebsocket, &QWebSocket::disconnected, this, &Trade::disconnected);
+  connect(&mWebsocket, &QWebSocket::connected, [&]() { emit connectionChanged(true); });
+  connect(&mWebsocket, &QWebSocket::disconnected,
+          [&]() { emit connectionChanged(false); });
   connect(&mWebsocket, &QWebSocket::textMessageReceived, this, &Trade::onNewMessage);
 }
 
 Trade::~Trade() {
-  // delete mNetworkManager;
+  closeLiveSearch();
+}
+
+bool Trade::isEnabled() const {
+  return mEnabled;
+}
+
+bool Trade::isConnected() const {
+  return mWebsocket.state() == QAbstractSocket::ConnectedState;
+}
+
+QString Trade::getId() const {
+  return mId;
+}
+
+QString Trade::getLeague() const {
+  return mLeague;
+}
+
+QString Trade::getName() const {
+  return mName;
+}
+
+void Trade::setEnabled(bool enabled) {
+  if (mEnabled == enabled)
+    return;
+
+  mEnabled = enabled;
+  emit enabledChanged(mEnabled);
+
+  if (mEnabled)
+    openLiveSearch();
+  else
+    closeLiveSearch();
+}
+
+void Trade::setId(QString id) {
+  mId = id;
+}
+
+void Trade::setLeague(QString league) {
+  mLeague = league;
+}
+
+void Trade::setName(QString name) {
+  mName = name;
 }
 
 void Trade::openLiveSearch(const QString& league, const Query& parameters) {
-  search(league, parameters, [this](const QByteArray& data) {
+  search(league, parameters, [this, league](const QByteArray& data) {
     const QString liveSearchId = QJsonDocument::fromJson(data).object()["id"].toString();
 
-    QNetworkRequest connection("wss://www.pathofexile.com/api/trade/live/" +
-                               currentLeague + "/" + liveSearchId);
+    setId(liveSearchId);
+    setLeague(league);
 
-    connection.setRawHeader("Host", "www.pathofexile.com");
-    connection.setRawHeader("Origin", "https://www.pathofexile.com");
-
-    qDebug() << connection.url();
-
-    mWebsocket.open(connection);
+    openLiveSearch();
   });
 }
 
-void Trade::openLiveSearch(const QString& url) {
-  auto split  = url.splitRef("/");
-  auto id     = split.takeLast();
-  auto league = split.takeLast();
+void Trade::openLiveSearch(const QString& searchUrl) {
+  auto&& split  = searchUrl.splitRef("/");
+  auto&& id     = split.takeLast();
+  auto&& league = split.takeLast();
+
+  setId(id.toString());
+  setLeague(league.toString());
+
+  openLiveSearch();
+}
+
+void Trade::openLiveSearch() {
+  if (isConnected()) {
+    closeLiveSearch();
+  }
 
   QNetworkRequest connection(
       QStringLiteral("wss://www.pathofexile.com/api/trade/live/%1/%2")
-          .arg(league)
-          .arg(id));
+          .arg(mLeague)
+          .arg(mId));
 
+  Network::AccessManager::setPOESESSID(connection);
   connection.setRawHeader("Host", "www.pathofexile.com");
   connection.setRawHeader("Origin", "https://www.pathofexile.com");
+  /*connection.setRawHeader("Upgrade", "websocket");
+  connection.setRawHeader(
+      "User-Agent",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0");
+  connection.setRawHeader("Pragma", "no-cache");
+  connection.setRawHeader("Cache-Control", "no-cache");*/
 
-  qDebug() << connection.url();
+  qDebug() << connection.rawHeaderList();
+
+  qDebug() << connection.rawHeader("Cookie");
+
+  qDebug() << "Opened live search for url:" << connection.url();
 
   mWebsocket.open(connection);
 }
@@ -89,7 +148,10 @@ void Trade::fetch(const QString& id, Callback&& slot) {
 }
 
 void Trade::fetch(const QStringList& ids, Callback&& slot) {
-  // /fetch/  id1,...,idn
+  // /fetch/  id1,...,idn with up to 20 ids
+  /*!
+   * \todo Paginate the fetch requests if ids.size() > 20.
+   */
   QString idQuery = ids.join(',');
 
   AccessManager::get(buildRequest(TradeFetchPath + idQuery),
@@ -104,11 +166,16 @@ void Trade::onNewMessage(const QString& message) {
   const auto& newItems =
       QJsonDocument::fromJson(message.toUtf8()).object().value("new").toArray();
 
+  if (newItems.isEmpty())
+    return;
+
   QStringList ids;
 
   for (const auto& item : newItems) {
     ids << item.toString();
   }
+
+  qDebug() << ids;
 
   fetch(ids, [&](const QByteArray& data) { parseFetchedItems(data); });
 }
@@ -140,6 +207,8 @@ void Trade::parseFetchedItems(const QByteArray& data) {
 
     const QString name = item["name"].toString();
     const QString type = item["typeLine"].toString();
+
+    qDebug() << "new item!";
 
     emit itemReceived(
         {name + type, name, type, price["amount"].toInt(), price["currency"].toString()});

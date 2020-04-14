@@ -1,5 +1,6 @@
 #include "accessmanager.hh"
 
+#include <QElapsedTimer>
 #include <QNetworkAccessManager>
 
 #include <network/ratelimitmanager.hh>
@@ -14,14 +15,8 @@ AccessManager::~AccessManager() {
   delete mNetworkAccessManager;
 }
 
-void AccessManager::modifyRequest(QNetworkRequest& request) {
-  QStringList cookies;
-  if (request.hasRawHeader("Cookie")) {
-    cookies << request.rawHeader("Cookie");
-  }
-  cookies << QStringLiteral("POESESSID=%1").arg(instance().mPOESESSID);
-
-  request.setRawHeader("Cookie", cookies.join("; ").toLatin1());
+void AccessManager::setHeaders(QNetworkRequest& request) {
+  setPOESESSID(request);
   request.setRawHeader("Content-Type", "application/json");
   request.setRawHeader("TE", "Trailers");
   request.setRawHeader("X-Requested-With", "XMLHttpRequest");
@@ -35,7 +30,16 @@ void AccessManager::modifyRequest(QNetworkRequest& request) {
   }
 }
 
-void AccessManager::setPOESSID(const QString& poesessid) {
+void AccessManager::setPOESESSID(QNetworkRequest& request) {
+  QStringList cookies;
+  if (request.hasRawHeader("Cookie")) {
+    cookies << request.rawHeader("Cookie");
+  }
+  cookies << QStringLiteral("POESESSID=%1").arg(instance().mPOESESSID);
+  request.setRawHeader("Cookie", cookies.join("; ").toLatin1());
+}
+
+void AccessManager::setPOESESSID(const QString& poesessid) {
   instance().mPOESESSID = poesessid;
 }
 
@@ -44,11 +48,21 @@ void AccessManager::get(QNetworkRequest request,
   auto executeRequest = [&]() {
     QNetworkAccessManager* accessManager = instance().mNetworkAccessManager;
 
-    modifyRequest(request);
+    setHeaders(request);
+    QElapsedTimer timer;
+    timer.start();
     auto reply = accessManager->get(request);
     qDebug() << "NetworkAccess::get executed, waiting for reply";
 
-    connect(reply, &QNetworkReply::finished, [slot, reply]() {
+    connect(reply, &QNetworkReply::finished, [slot, reply, timer]() {
+      qDebug() << "NetworkAccess::get finished in" << timer.elapsed() << "ms";
+      qDebug() << "NetworkAccess::get account rates:"
+               << reply->rawHeader("x-rate-limit-account");
+      qDebug() << "NetworkAccess::get account rates state:"
+               << reply->rawHeader("x-rate-limit-account-state");
+      qDebug() << "NetworkAccess::get ip rates:" << reply->rawHeader("x-rate-limit-ip");
+      qDebug() << "NetworkAccess::get ip rates state:"
+               << reply->rawHeader("x-rate-limit-ip-state");
       slot(reply->readAll());
       reply->deleteLater();
     });
@@ -70,7 +84,7 @@ void AccessManager::post(QNetworkRequest   request,
   auto executeRequest = [&]() {
     QNetworkAccessManager* accessManager = instance().mNetworkAccessManager;
 
-    modifyRequest(request);
+    setHeaders(request);
     auto reply = accessManager->post(request, data);
     qDebug() << "NetworkAccess::post executed, waiting for reply";
 

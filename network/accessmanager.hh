@@ -28,7 +28,8 @@ class AccessManager : public QObject {
   AccessManager& operator=(const AccessManager&) = delete;
   AccessManager& operator=(AccessManager&&) = delete;
 
-  static void setPOESSID(const QString& poesessid);
+  static void setPOESESSID(QNetworkRequest& request);
+  static void setPOESESSID(const QString& poesessid);
 
  public:
   static void get(QNetworkRequest request,
@@ -42,7 +43,7 @@ class AccessManager : public QObject {
   explicit AccessManager();
   ~AccessManager();
 
-  static void modifyRequest(QNetworkRequest& request);
+  static void setHeaders(QNetworkRequest& request);
 
  private:
   QNetworkAccessManager* mNetworkAccessManager;

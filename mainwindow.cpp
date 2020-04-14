@@ -3,6 +3,7 @@
 
 #include <QDebug>
 
+#include <network/accessmanager.hh>
 #include <ui/delegates/checkbox.hh>
 
 namespace AutoTrade {
@@ -17,6 +18,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
   mCheckBoxDelegate = std::make_unique<Ui::Delegates::CheckBox>(ui->tableSearches);
   ui->tableSearches->setItemDelegateForColumn(2, mCheckBoxDelegate.get());
 
+  // Load settings
+  Network::AccessManager::setPOESESSID(ui->ePOESESSID->text());
+
+  // Connect
   connect(&mSearchManager, &Poe::SearchManager::searchAdded, this,
           &MainWindow::onSearchAdded);
 }
@@ -31,12 +36,10 @@ void MainWindow::on_bAddSearch_clicked() {
 
   if (!searchUrl.isEmpty() && !searchName.isEmpty()) {
     auto&& tokens = searchUrl.splitRef("/");
-    auto&& id     = tokens.takeLast();
-    auto&& league = tokens.takeLast();
+    auto&& id     = tokens.takeLast().toString();
+    auto&& league = tokens.takeLast().toString();
 
-    QString searchId = league + "/" + id;
-
-    mSearchManager.addSearch(searchId, searchName);
+    mSearchManager.addSearch(id, league, searchName);
   }
 }
 
@@ -46,3 +49,8 @@ void MainWindow::onSearchAdded() {
 }
 
 }  // namespace AutoTrade
+
+void AutoTrade::MainWindow::on_ePOESESSID_editingFinished() {
+  qDebug() << "Editing finished!";
+  Network::AccessManager::setPOESESSID(ui->ePOESESSID->text());
+}
