@@ -13,12 +13,15 @@ namespace AutoTrade {
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::MainWindow) {
   // Setup ui
   ui->setupUi(this);
+  // Setup search table
   ui->tableSearches->setModel(&mSearchTableModel);
   ui->tableSearches->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
   ui->tableSearches->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
   ui->tableSearches->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
   mCheckBoxDelegate = std::make_unique<Ui::Delegates::CheckBox>(ui->tableSearches);
   ui->tableSearches->setItemDelegateForColumn(2, mCheckBoxDelegate.get());
+  // Setup search results tree
+  ui->treeSearchResults->setModel(&mSearchResultTreeModel);
 
   // Load settings
   Network::AccessManager::setPOESESSID(ui->ePOESESSID->text());
@@ -26,6 +29,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
   // Connect
   connect(&mSearchManager, &Poe::SearchManager::searchAdded, this,
           &MainWindow::onSearchAdded);
+  connect(&mSearchManager, &Poe::SearchManager::newResult, this,
+          &MainWindow::onNewResult);
 
   loadSettings();
 }
@@ -52,6 +57,10 @@ void MainWindow::on_bAddSearch_clicked() {
 void MainWindow::onSearchAdded() {
   qDebug() << "MainWindow::onSearchAdded";
   mSearchTableModel.setSearches(mSearchManager.getSearches());
+}
+
+void MainWindow::onNewResult() {
+  qDebug() << "New result!";
 }
 
 void MainWindow::saveSettings() {

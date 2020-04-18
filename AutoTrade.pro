@@ -19,6 +19,7 @@ SOURCES += \
     poe/api/trade.cpp \
     ui/delegates/checkbox.cpp \
     ui/models/itemlistmodel.cpp \
+    ui/models/searchresulttree.cpp \
     ui/models/searchtable.cpp \
     network/accessmanager.cpp \
     network/ratelimitmanager.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
     poe/api/trade.hh \
     ui/delegates/checkbox.hh \
     ui/models/itemlistmodel.hh \
+    ui/models/searchresulttree.hh \
     ui/models/searchtable.hh \
     network/accessmanager.hh \
     network/ratelimitmanager.hh \
@@ -50,3 +52,11 @@ LIBS += -lUser32
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+# Libraries
+INCLUDEPATH += libs
+
+# Lua
+INCLUDEPATH += "C:\cpplibs\lua\include"
+LIBS += -L"C:\cpplibs\lua\lib"
+LIBS += -llua

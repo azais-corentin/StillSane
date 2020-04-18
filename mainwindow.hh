@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include <poe/searchmanager.hh>
+#include <ui/models/searchresulttree.hh>
 #include <ui/models/searchtable.hh>
 
 QT_BEGIN_NAMESPACE
@@ -32,16 +33,18 @@ class MainWindow : public QMainWindow {
 
   // Slots
   void onSearchAdded();
+  void onNewResult();
 
  private:
   void saveSettings();
   void loadSettings();
 
  private:
-  ::Ui::MainWindow* ui;
+  ::Ui::MainWindow*            ui;
+  Ui::Models::SearchTable      mSearchTableModel;
+  Ui::Models::SearchResultTree mSearchResultTreeModel;
 
   Poe::SearchManager                       mSearchManager;
-  Ui::Models::SearchTable                  mSearchTableModel;
   std::unique_ptr<Ui::Delegates::CheckBox> mCheckBoxDelegate;
 };
 

@@ -11,6 +11,8 @@
 
 namespace AutoTrade::Poe {
 
+struct Result {};
+
 namespace Api {
 class Trade;
 }
@@ -35,7 +37,7 @@ class SearchManager : public QObject {
 
  signals:
   void searchAdded();
-  void newItemsReceived();
+  void newResult();
 
  private:
   void connectToTradeApi(Api::Trade* trade);

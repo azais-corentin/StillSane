@@ -113,6 +113,11 @@ QVariant SearchTable::data(const QModelIndex& index, int role) const {
       case 2:
         return Qt::AlignVCenter + Qt::AlignHCenter;
     }
+  } else if (role == Qt::CheckStateRole) {
+    switch (index.column()) {
+      case 2:
+        return Qt::CheckState{tradeApi->isEnabled() ? Qt::Checked : Qt::Unchecked};
+    }
   }
 
   return {};
