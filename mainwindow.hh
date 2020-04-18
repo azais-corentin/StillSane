@@ -2,8 +2,15 @@
 #define MAINWINDOW_HH
 
 #include <QMainWindow>
+#include <QTimer>
 
+#include <boost/sml.hpp>
+#include <sol/sol.hpp>
+
+#include <craft/crafter.hh>
+#include <craft/statemachines.hh>
 #include <poe/searchmanager.hh>
+#include <ui/luahighlighter.hh>
 #include <ui/models/searchresulttree.hh>
 #include <ui/models/searchtable.hh>
 
@@ -20,6 +27,8 @@ class CheckBox;
 }
 
 class MainWindow : public QMainWindow {
+  enum Hotkeys { F9 = 0, F10 = 1 };
+
   Q_OBJECT
 
  public:
@@ -35,17 +44,31 @@ class MainWindow : public QMainWindow {
   void onSearchAdded();
   void onNewResult();
 
+  void on_bReload_clicked();
+
  private:
+  // Crafting
+  bool nativeEvent(const QByteArray& eventType, void* message, long* result) final;
+  void registerHotkeys();
+  void unregisterHotkeys();
+  void setupCraftingEditor();
+
+  void startCrafting();
+  void stopCrafting();
+
   void saveSettings();
   void loadSettings();
 
  private:
   ::Ui::MainWindow*            ui;
+  Ui::LuaHighlighter*          mLuaHighlighter;
   Ui::Models::SearchTable      mSearchTableModel;
   Ui::Models::SearchResultTree mSearchResultTreeModel;
 
   Poe::SearchManager                       mSearchManager;
   std::unique_ptr<Ui::Delegates::CheckBox> mCheckBoxDelegate;
+
+  Craft::Crafter mCrafter;
 };
 
 }  // namespace AutoTrade

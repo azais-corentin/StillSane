@@ -13,11 +13,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000
 
 SOURCES += \
+    craft/crafter.cpp \
     main.cpp \
     mainwindow.cpp \
     poe/api/ninja.cpp \
     poe/api/trade.cpp \
     ui/delegates/checkbox.cpp \
+    ui/luahighlighter.cpp \
     ui/models/itemlistmodel.cpp \
     ui/models/searchresulttree.cpp \
     ui/models/searchtable.cpp \
@@ -28,10 +30,13 @@ SOURCES += \
     poe/api/staticdata.cpp
 
 HEADERS += \
+    craft/crafter.hh \
+    craft/statemachines.hh \
     mainwindow.hh \
     poe/api/ninja.hh \
     poe/api/trade.hh \
     ui/delegates/checkbox.hh \
+    ui/luahighlighter.hh \
     ui/models/itemlistmodel.hh \
     ui/models/searchresulttree.hh \
     ui/models/searchtable.hh \
