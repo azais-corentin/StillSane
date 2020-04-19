@@ -22,25 +22,31 @@ Crafter::Crafter(QObject* parent) : QObject(parent) {
     using namespace sml;
 
     if (mRunning) {
-      std::any_cast<sm<StateMachines::AlterationOnly>>(mMachine).process_event(
-          "next"_e());
+      mMachine->process_event("next"_e());
     }
   });
+}
+
+Crafter::~Crafter() {
+  // The destructor needs to be in crafter.cpp for the unique_ptr to work.
 }
 
 void Crafter::start(const QString& script) {
   mMatchScript = script;
 
   parse();
-  mMachine = std::make_any<sml::sm<StateMachines::AlterationOnly>>(*this);
-  // std::any_cast<sml::sm<StateMachines::AlterationOnly>>(mMachine);
+  mMachine = std::make_unique<sml::sm<StateMachines::ScouringAlchemy>>(*this);
 
   auto result = mLua.safe_script(mMatchScript.toStdString(), sol::script_pass_on_error);
   if (!result.valid()) {
-    emit scriptError(tr("Invalid script: ") + sol::error(result).what());
+    emit error(tr("Invalid script: ") + sol::error(result).what());
+    stop();
+    return;
   } else {
-    emit scriptMessage(tr("Valid script"));
+    emit info(tr("Valid script, starting craft"));
   }
+
+  mIsMatching = mLua["is_matching"];
 
   mRunning = true;
   mTimer.start(0);
@@ -65,97 +71,77 @@ void Crafter::copy() {
 }
 
 void Crafter::parse() {
-  const QString& text = QApplication::clipboard()->text();
-
-  const auto& categories = text.splitRef("--------\n");
-  if (categories.size() < 4) {
-    qDebug() << "not enough categories:" << text;
-    return;
-  }
+  bool           needStop = false;
+  const QString& text     = QApplication::clipboard()->text();
 
   // Save all lines
   mLines.clear();
-  for (const auto& category : categories) {
-    mLines.append(category.toString().split('\n'));
-  }
+  mLines.append(text.split('\n'));
 
-  const auto& rarityCategory = categories.at(0);
-  const auto& rarityTokens   = rarityCategory.split('\n');
-  const auto& rarity         = rarityTokens.at(0);
-
-  if (!rarity.startsWith("Rarity: ")) {
-    qDebug() << "invalid rarity:" << rarity;
-    return;
-  }
-
-  if (rarity.endsWith("Normal"))
-    mState = ItemState::Normal;
-  else if (rarity.endsWith("Magic"))
-    mState = ItemState::Magic;
-  else if (rarity.endsWith("Rare"))
-    mState = ItemState::Rare;
-  else {
-    mState = ItemState::Unidentified;
-    qDebug() << "invalid rarity:" << rarity;
-    return;
-  }
-
-  if (mState >= ItemState::Magic) {
-    int count = categories.size();
-
-    const auto& explicitsCategory = categories.at(count - 2).toString();
-    mExplicits                    = explicitsCategory.split('\n');
-
-    for (auto explicitMod : mExplicits) {
-      emit foundExplicit(explicitMod);
+  // Extract rarity
+  mRarity          = ItemRarity::Unknown;
+  auto rarityMatch = QRegularExpression("^Rarity: (?'rarity'[a-zA-Z]+)$",
+                                        QRegularExpression::MultilineOption)
+                         .match(text);
+  if (rarityMatch.hasMatch()) {
+    auto rarityText = rarityMatch.captured("rarity");
+    if (rarityText == "Normal")
+      mRarity = ItemRarity::Normal;
+    else if (rarityText == "Magic")
+      mRarity = ItemRarity::Magic;
+    else if (rarityText == "Rare")
+      mRarity = ItemRarity::Rare;
+    else {
+      emit error("Invalid rarity:" + rarityText);
+      needStop = true;
     }
-
-    qDebug() << "found explicits:" << mExplicits;
+  } else {
+    emit error("Could not find rarity in text:\n" + text);
+    needStop = true;
   }
+
+  if (needStop)
+    stop();
 }
 
 void Crafter::transmutation() {
-  mouseMove(MouseRegion::Transmutation);
-  standardDelay();
-  mousePress(MouseButton::Right);
-  standardDelay();
-  mouseMove(MouseRegion::Item);
-  standardDelay();
-  mousePress(MouseButton::Left);
-  standardDelay();
+  applyOrb(MouseRegion::Transmutation);
 }
 
 void Crafter::alteration() {
-  mouseMove(MouseRegion::Alteration);
-  standardDelay();
-  mousePress(MouseButton::Right);
-  standardDelay();
-  mouseMove(MouseRegion::Item);
-  standardDelay();
-  mousePress(MouseButton::Left);
-  standardDelay();
+  applyOrb(MouseRegion::Alteration);
+}
+
+void Crafter::annulment() {
+  applyOrb(MouseRegion::Annulment);
+}
+
+void Crafter::chance() {
+  applyOrb(MouseRegion::Chance);
+}
+
+void Crafter::exalted() {
+  applyOrb(MouseRegion::Exalted);
 }
 
 void Crafter::regal() {
-  mouseMove(MouseRegion::Regal);
-  standardDelay();
-  mousePress(MouseButton::Right);
-  standardDelay();
-  mouseMove(MouseRegion::Item);
-  standardDelay();
-  mousePress(MouseButton::Left);
-  standardDelay();
+  applyOrb(MouseRegion::Regal);
+}
+
+void Crafter::alchemy() {
+  applyOrb(MouseRegion::Alchemy);
+}
+
+void Crafter::chaos() {
+  applyOrb(MouseRegion::Chaos);
+}
+
+void Crafter::blessed() {
+  applyOrb(MouseRegion::Blessed);
 }
 
 void Crafter::scouring() {
-  mouseMove(MouseRegion::Scouring);
-  standardDelay();
-  mousePress(MouseButton::Right);
-  standardDelay();
-  mouseMove(MouseRegion::Item);
-  standardDelay();
-  mousePress(MouseButton::Left);
-  standardDelay();
+  applyOrb(MouseRegion::Scouring);
 }
 
 bool Crafter::is_unidentified() {
@@ -163,29 +149,44 @@ bool Crafter::is_unidentified() {
 }
 
 bool Crafter::is_normal() {
-  return mState == ItemState::Normal;
+  return mRarity == ItemRarity::Normal;
 }
 
 bool Crafter::is_magic() {
-  return mState == ItemState::Magic;
+  return mRarity == ItemRarity::Magic;
 }
 
 bool Crafter::is_rare() {
-  return mState == ItemState::Rare;
+  return mRarity == ItemRarity::Rare;
 }
 
 bool Crafter::is_matching() {
-  QStringList matchingLists = mExplicits.filter("Fettle");
-  bool        matching      = matchingLists.size() != 0;
+  qDebug() << "Crafter::is_matching";
+  sol::protected_function_result itemMatched = mIsMatching();
 
-  if (matching) {
-    qDebug() << "Matching explicit modifier(s):" << matchingLists;
+  if (itemMatched.valid()) {
+    qDebug() << "matching:" << itemMatched.get<bool>();
+    return itemMatched;
+  } else {
+    error("Crafter::is_matching error: invalid result from function is_matching()");
   }
-  return matching;
+
+  return false;
 }
 
 bool Crafter::matches(std::string text) {
-  return mLines.filter(QString::fromStdString(text)).size() != 0;
+  return mLines.filter(QString::fromStdString(text), Qt::CaseInsensitive).size() != 0;
+}
+
+void Crafter::applyOrb(MouseRegion orb) {
+  mouseMove(orb);
+  standardDelay();
+  mousePress(MouseButton::Right);
+  standardDelay();
+  mouseMove(MouseRegion::Item);
+  standardDelay();
+  mousePress(MouseButton::Left);
+  standardDelay();
 }
 
 void Crafter::mouseMove(const MouseRegion& region) {
@@ -247,11 +248,23 @@ QPoint Crafter::getPosition(const MouseRegion& region) {
     case MouseRegion::Item:
       return {333, 480};
     case MouseRegion::Transmutation:
-      return {59, 292};
+      return {59, 291};
     case MouseRegion::Alteration:
-      return {117, 292};
+      return {117, 291};
+    case MouseRegion::Annulment:
+      return {175, 291};
+    case MouseRegion::Chance:
+      return {233, 291};
+    case MouseRegion::Exalted:
+      return {303, 291};
     case MouseRegion::Regal:
-      return {431, 290};
+      return {431, 291};
+    case MouseRegion::Alchemy:
+      return {489, 291};
+    case MouseRegion::Chaos:
+      return {547, 291};
+    case MouseRegion::Blessed:
+      return {606, 291};
     case MouseRegion::Scouring:
       return {176, 475};
   }

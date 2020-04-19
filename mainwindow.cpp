@@ -5,6 +5,7 @@
 
 #include <QDebug>
 #include <QFile>
+#include <QFileDialog>
 
 #include <network/accessmanager.hh>
 #include <poe/api/trade.hh>
@@ -13,6 +14,8 @@
 namespace AutoTrade {
 
 namespace sml = boost::sml;
+
+constexpr char const* defaultLuaScript = "";
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::MainWindow) {
   // Setup ui
@@ -28,6 +31,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
   ui->treeSearchResults->setModel(&mSearchResultTreeModel);
 
   // Setup crafting
+  registerHotkeys();
   setupCraftingEditor();
 
   // Connect
@@ -35,6 +39,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
           &MainWindow::onSearchAdded);
   connect(&mSearchManager, &Poe::SearchManager::newResult, this,
           &MainWindow::onNewResult);
+
+  connect(&mCrafter, &Craft::Crafter::info,
+          [&](const QString& message) { ui->statusbar->showMessage(message); });
+  connect(&mCrafter, &Craft::Crafter::error,
+          [&](const QString& message) { ui->statusbar->showMessage(message); });
 
   // Load settings
   loadSettings();
@@ -50,19 +59,6 @@ MainWindow::~MainWindow() {
   delete ui;
 }
 
-void MainWindow::on_bAddSearch_clicked() {
-  auto&& searchUrl  = ui->eSearchUrl->text();
-  auto&& searchName = ui->eSearchName->text();
-
-  if (!searchUrl.isEmpty() && !searchName.isEmpty()) {
-    auto&& tokens = searchUrl.splitRef("/");
-    auto&& id     = tokens.takeLast().toString();
-    auto&& league = tokens.takeLast().toString();
-
-    mSearchManager.addSearch(id, league, searchName);
-  }
-}
-
 void MainWindow::onSearchAdded() {
   qDebug() << "MainWindow::onSearchAdded";
   mSearchTableModel.setSearches(mSearchManager.getSearches());
@@ -71,8 +67,6 @@ void MainWindow::onSearchAdded() {
 void MainWindow::onNewResult() {
   qDebug() << "New result!";
 }
-
-void MainWindow::on_bReload_clicked() {}
 
 bool MainWindow::nativeEvent(const QByteArray&, void* message, long*) {
   MSG* msg = static_cast<MSG*>(message);
@@ -90,6 +84,8 @@ bool MainWindow::nativeEvent(const QByteArray&, void* message, long*) {
             stopCrafting();
             break;
         }
+      } else {
+        ui->statusbar->showMessage("Start/stop only works inside the game");
       }
     }
 
@@ -149,8 +145,11 @@ void MainWindow::saveSettings() {
 
 void MainWindow::loadSettings() {
   QFile settingsFile("settings.json");
-  if (!settingsFile.open(QIODevice::ReadOnly))
+  if (!settingsFile.open(QIODevice::ReadOnly)) {
+    // default settings
+    ui->eLua->setPlainText(defaultLuaScript);
     return;
+  }
   const auto& settings = QJsonDocument::fromJson(settingsFile.readAll()).object();
 
   const auto& searches = settings["searches"].toArray();
@@ -159,12 +158,49 @@ void MainWindow::loadSettings() {
                              search["name"].toString(), search["enabled"].toBool(true));
   }
 
-  ui->eLua->setPlainText(settings["luascript"].toString());
+  ui->eLua->setPlainText(settings["luascript"].toString(defaultLuaScript));
 }
 
-}  // namespace AutoTrade
+void MainWindow::on_bAddSearch_clicked() {
+  auto&& searchUrl  = ui->eSearchUrl->text();
+  auto&& searchName = ui->eSearchName->text();
 
-void AutoTrade::MainWindow::on_ePOESESSID_editingFinished() {
+  if (!searchUrl.isEmpty() && !searchName.isEmpty()) {
+    auto&& tokens = searchUrl.splitRef("/");
+    auto&& id     = tokens.takeLast().toString();
+    auto&& league = tokens.takeLast().toString();
+
+    mSearchManager.addSearch(id, league, searchName);
+  }
+}
+
+void MainWindow::on_ePOESESSID_editingFinished() {
   qDebug() << "Editing finished!";
   Network::AccessManager::setPOESESSID(ui->ePOESESSID->text());
 }
+
+void MainWindow::on_bLoadFrom_clicked() {
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open lua script"), "",
+                                                  tr("Lua script (*.lua)"));
+
+  QFile lua(fileName);
+  if (lua.open(QIODevice::ReadOnly)) {
+    ui->eLua->setPlainText(lua.readAll());
+  } else {
+    ui->statusbar->showMessage("Could not open file:" + fileName);
+  }
+}
+
+void MainWindow::on_bSaveTo_clicked() {
+  QString fileName = QFileDialog::getSaveFileName(this, tr("Save matches"), "",
+                                                  tr("Lua script (*.lua)"));
+
+  QFile lua(fileName);
+  if (lua.open(QIODevice::WriteOnly)) {
+    lua.write(ui->eLua->toPlainText().toUtf8());
+  } else {
+    ui->statusbar->showMessage("Could not write to file:" + fileName);
+  }
+}
+
+}  // namespace AutoTrade

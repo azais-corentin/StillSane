@@ -39,12 +39,12 @@ class MainWindow : public QMainWindow {
   // Ui slots
   void on_bAddSearch_clicked();
   void on_ePOESESSID_editingFinished();
+  void on_bLoadFrom_clicked();
+  void on_bSaveTo_clicked();
 
   // Slots
   void onSearchAdded();
   void onNewResult();
-
-  void on_bReload_clicked();
 
  private:
   // Crafting

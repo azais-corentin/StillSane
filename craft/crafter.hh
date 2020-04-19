@@ -16,27 +16,50 @@ namespace AutoTrade::Craft {
 
 namespace StateMachines {
 struct AlterationOnly;
-}
+struct ScouringAlchemy;
+}  // namespace StateMachines
 
-enum class MouseRegion { Item, Transmutation, Alteration, Regal, Scouring };
+enum class MouseRegion {
+  Item,
+  Transmutation,
+  Alteration,
+  Annulment,
+  Chance,
+  Exalted,
+  Regal,
+  Alchemy,
+  Chaos,
+  Blessed,
+  Scouring
+};
 enum class MouseButton { Left, Right };
 
-enum class ItemState { Unidentified, Normal, Magic, Rare };
+enum class ItemState { Unknown, Unidentified, Identified };
+enum class ItemRarity { Unknown, Normal, Magic, Rare };
 
 class Crafter : public QObject {
   Q_OBJECT
 
  public:
   explicit Crafter(QObject* parent = nullptr);
+  ~Crafter();
 
   void start(const QString& script);
   void stop();
 
+  //// Actions
   void copy();
   void parse();
+  // Orbs
   void transmutation();
   void alteration();
+  void annulment();
+  void chance();
+  void exalted();
   void regal();
+  void alchemy();
+  void chaos();
+  void blessed();
   void scouring();
 
   bool is_unidentified();
@@ -48,12 +71,14 @@ class Crafter : public QObject {
   bool matches(std::string text);
 
  signals:
-  void scriptError(const QString& error);
-  void scriptMessage(const QString& message);
+  void error(const QString& error);
+  void info(const QString& message);
 
   void foundExplicit(const QString& explicitModifier);
 
  private:
+  void applyOrb(MouseRegion orb);
+
   void mouseMove(const MouseRegion& region);
   void mousePress(const MouseButton& button);
   void keyPress(const unsigned short& key);
@@ -63,18 +88,20 @@ class Crafter : public QObject {
   void   standardDelay();
 
  private:
-  sol::state mLua;
+  sol::state              mLua;
+  sol::protected_function mIsMatching;
 
   QString mMatchScript;
   QTimer  mTimer;
   bool    mRunning = false;
 
-  ItemState   mState = ItemState::Unidentified;
+  ItemState   mState  = ItemState::Unknown;
+  ItemRarity  mRarity = ItemRarity::Unknown;
   QStringList mLines;
-  QStringList mExplicits;
+  // QStringList mExplicits;
 
-  std::any mMachine;
-  // std::unique_ptr<boost::sml::sm<StateMachines::AlterationOnly>> mMachine;
+  // std::any mMachine;
+  std::unique_ptr<boost::sml::sm<StateMachines::ScouringAlchemy>> mMachine;
 };
 
 }  // namespace AutoTrade::Craft
