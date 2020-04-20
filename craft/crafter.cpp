@@ -35,7 +35,7 @@ void Crafter::start(const QString& script) {
   mMatchScript = script;
 
   parse();
-  mMachine = std::make_unique<sml::sm<StateMachines::ScouringAlchemy>>(*this);
+  mMachine = std::make_unique<sml::sm<StateMachines::AlterationOnly>>(*this);
 
   auto result = mLua.safe_script(mMatchScript.toStdString(), sol::script_pass_on_error);
   if (!result.valid()) {
@@ -47,6 +47,12 @@ void Crafter::start(const QString& script) {
   }
 
   mIsMatching = mLua["is_matching"];
+  if (!mIsMatching.valid()) {
+    qDebug() << "Couldn't find function!";
+    emit error(tr("Couldn't find function is_matching() in lua script"));
+    stop();
+    return;
+  }
 
   mRunning = true;
   mTimer.start(0);
@@ -60,7 +66,7 @@ void Crafter::stop() {
 void Crafter::copy() {
   // Select item
   mouseMove(MouseRegion::Item);
-  standardDelay();
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
   // Copy item data
   keyPress(VK_CONTROL);
   keyPress('C');
@@ -142,6 +148,10 @@ void Crafter::blessed() {
 
 void Crafter::scouring() {
   applyOrb(MouseRegion::Scouring);
+}
+
+void Crafter::augmentation() {
+  applyOrb(MouseRegion::Augmentation);
 }
 
 bool Crafter::is_unidentified() {
@@ -267,13 +277,15 @@ QPoint Crafter::getPosition(const MouseRegion& region) {
       return {606, 291};
     case MouseRegion::Scouring:
       return {176, 475};
+    case MouseRegion::Augmentation:
+      return {233, 348};
   }
 
   return {};
 }
 
 void Crafter::standardDelay() {
-  std::this_thread::sleep_for(std::chrono::milliseconds(40));
+  std::this_thread::sleep_for(std::chrono::milliseconds(12));
 }
 
 }  // namespace AutoTrade::Craft

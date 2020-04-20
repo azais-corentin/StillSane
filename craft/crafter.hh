@@ -16,6 +16,7 @@ namespace AutoTrade::Craft {
 
 namespace StateMachines {
 struct AlterationOnly;
+struct AlterationAugmentation;
 struct ScouringAlchemy;
 }  // namespace StateMachines
 
@@ -30,7 +31,8 @@ enum class MouseRegion {
   Alchemy,
   Chaos,
   Blessed,
-  Scouring
+  Scouring,
+  Augmentation
 };
 enum class MouseButton { Left, Right };
 
@@ -61,6 +63,7 @@ class Crafter : public QObject {
   void chaos();
   void blessed();
   void scouring();
+  void augmentation();
 
   bool is_unidentified();
   bool is_normal();
@@ -101,7 +104,7 @@ class Crafter : public QObject {
   // QStringList mExplicits;
 
   // std::any mMachine;
-  std::unique_ptr<boost::sml::sm<StateMachines::ScouringAlchemy>> mMachine;
+  std::unique_ptr<boost::sml::sm<StateMachines::AlterationOnly>> mMachine;
 };
 
 }  // namespace AutoTrade::Craft

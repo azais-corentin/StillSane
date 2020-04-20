@@ -25,8 +25,9 @@ constexpr auto exalted       = [](Crafter& c) { c.exalted(); };
 constexpr auto regal         = [](Crafter& c) { c.regal(); };
 constexpr auto alchemy       = [](Crafter& c) { c.alchemy(); };
 constexpr auto chaos         = [](Crafter& c) { c.chaos(); };
-// constexpr auto blessed       = [](Crafter& c) { c.blessed(); };
-constexpr auto scouring = [](Crafter& c) { c.scouring(); };
+constexpr auto blessed       = [](Crafter& c) { c.blessed(); };
+constexpr auto scouring      = [](Crafter& c) { c.scouring(); };
+constexpr auto augmentation  = [](Crafter& c) { c.augmentation(); };
 
 /*!
  * \brief Represents the state machine to craft with Orbs of Alteration only.
@@ -39,14 +40,41 @@ struct AlterationOnly {
     // clang-format off
     return make_transition_table(
        *"parse"_s  + "next"_e                  / (copy, parse) = "parsed"_s,
-        "parsed"_s + "next"_e [ is_normal ]    / transmutation = "parse"_s,
+        "parsed"_s + "next"_e [ is_normal ]                    = "normal"_s,
         "parsed"_s + "next"_e [ is_magic ]                     = "magic"_s,
         "parsed"_s + "next"_e [ is_rare ]                      = "rare"_s,
 
+        "normal"_s + "next"_e                  / transmutation = "parse"_s,
         "magic"_s  + "next"_e [ !is_matching ] / alteration    = "parse"_s,
         "magic"_s  + "next"_e [ is_matching ]  / regal         = X,
         "rare"_s   + "next"_e [ !is_matching ] / scouring      = "parse"_s,
         "rare"_s   + "next"_e [ is_matching ]                  = X
+    );
+    // clang-format on
+  }
+};
+
+/*!
+ * \brief Represents the state machine to craft with Orbs of Alteration and Orbs of
+ * Augmentation.
+ *
+ * \note src_state + event [ guard ] / action = dst_state
+ */
+struct AlterationAugmentation {
+  auto operator()() const {
+    using namespace boost::sml;
+    // clang-format off
+    return make_transition_table(
+       *"parse"_s  + "next"_e                  / (copy, parse)                 = "parsed"_s,
+        "parsed"_s + "next"_e [ is_normal ]                                    = "normal"_s,
+        "parsed"_s + "next"_e [ is_magic ]                                     = "magic"_s,
+        "parsed"_s + "next"_e [ is_rare ]                                      = "rare"_s,
+
+        "normal"_s + "next"_e                  / (transmutation, augmentation) = "parse"_s,
+        "magic"_s  + "next"_e [ !is_matching ] / (alteration, augmentation)    = "parse"_s,
+        "magic"_s  + "next"_e [ is_matching ]  / regal                         = X,
+        "rare"_s   + "next"_e [ !is_matching ] / scouring                      = "parse"_s,
+        "rare"_s   + "next"_e [ is_matching ]                                  = X
     );
     // clang-format on
   }
