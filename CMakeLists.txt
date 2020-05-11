@@ -35,6 +35,12 @@ if(result)
   message("Enabled Link Time optimization")
 endif()
 
+##### Pre build actions
+# Copy resources to build folder
+add_custom_command(TARGET AutoTrade PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:AutoTrade>/resources/)
+
 ### Libraries
 # Qt
 set(CMAKE_AUTOUIC ON)

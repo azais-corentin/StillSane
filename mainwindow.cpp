@@ -30,7 +30,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
   // Setup search results tree
   ui->treeSearchResults->setModel(&mSearchResultTreeModel);
 
-  // Setup crafting
   registerHotkeys();
   setupCraftingEditor();
 
