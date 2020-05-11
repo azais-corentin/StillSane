@@ -29,6 +29,8 @@ constexpr auto blessed       = [](Crafter& c) { c.blessed(); };
 constexpr auto scouring      = [](Crafter& c) { c.scouring(); };
 constexpr auto augmentation  = [](Crafter& c) { c.augmentation(); };
 
+struct Base {};
+
 /*!
  * \brief Represents the state machine to craft with Orbs of Alteration only.
  *

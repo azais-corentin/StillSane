@@ -285,7 +285,7 @@ QPoint Crafter::getPosition(const MouseRegion& region) {
 }
 
 void Crafter::standardDelay() {
-  std::this_thread::sleep_for(std::chrono::milliseconds(12));
+  std::this_thread::sleep_for(std::chrono::milliseconds(30));
 }
 
 }  // namespace AutoTrade::Craft

@@ -8,16 +8,19 @@ QVariant SearchResultTree::headerData(int             section,
                                       Qt::Orientation orientation,
                                       int             role) const {
   // FIXME: Implement me!
+  return {};
 }
 
 QModelIndex SearchResultTree::index(int                row,
                                     int                column,
                                     const QModelIndex& parent) const {
   // FIXME: Implement me!
+  return {};
 }
 
 QModelIndex SearchResultTree::parent(const QModelIndex& index) const {
   // FIXME: Implement me!
+  return {};
 }
 
 int SearchResultTree::rowCount(const QModelIndex& parent) const {
@@ -25,6 +28,7 @@ int SearchResultTree::rowCount(const QModelIndex& parent) const {
     return 0;
 
   // FIXME: Implement me!
+  return {};
 }
 
 int SearchResultTree::columnCount(const QModelIndex& parent) const {
