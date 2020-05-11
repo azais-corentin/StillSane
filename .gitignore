@@ -1,14 +1,43 @@
-# C++ objects and libs
+
+# Created by https://www.gitignore.io/api/c++,qt
+# Edit at https://www.gitignore.io/?templates=c++,qt
+
+### C++ ###
+# Prerequisites
+*.d
+
+# Compiled Object files
 *.slo
 *.lo
 *.o
-*.a
-*.la
-*.lai
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
 *.so
-*.so.*
-*.dll
 *.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+### Qt ###
+# C++ objects and libs
 
 # Qt-es
 object_script.*.Release
@@ -29,8 +58,6 @@ ui_*.h
 *.jsc
 Makefile*
 *build-*
-*.qm
-*.prl
 
 # Qt unit tests
 target_wrapper.*
@@ -45,8 +72,10 @@ target_wrapper.*
 # QtCreator CMake
 CMakeLists.txt.user*
 
-# QtCreator 4.8< compilation database 
+# QtCreator 4.8< compilation database
 compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+
+# End of https://www.gitignore.io/api/c++,qt
