@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.16)
 
 project(AutoTrade LANGUAGES CXX)
 
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+#target_include_directories(AutoTrade PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
 add_executable(AutoTrade "")
-
-#set(CMAKE_INCLUDE_CURRENT_DIR ON)
-target_include_directories(AutoTrade PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
 target_sources(AutoTrade PRIVATE
   main.cpp
   mainwindow.hh
@@ -25,14 +27,18 @@ add_subdirectory(ui)
 target_compile_features(AutoTrade PUBLIC cxx_std_20)
 set_target_properties(AutoTrade PROPERTIES CXX_EXTENSIONS OFF)
 if (MSVC)
-    add_compile_options(/std:c++latest /Zc:__cplusplus)
+    target_compile_options(AutoTrade PUBLIC /std:c++latest /Zc:__cplusplus)
 endif()
 # Enable Link Time Optimization if available
 include(CheckIPOSupported)
 check_ipo_supported(RESULT result)
 if(result)
   set_target_properties(AutoTrade PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
-  message("Enabled Link Time optimization")
+  message(STATUS "Enabled Link Time optimization")
+endif()
+# Define NOMINMAX on MSVC for ranges-v3
+if(MSVC)
+  target_compile_definitions(AutoTrade PUBLIC NOMINMAX)
 endif()
 
 ##### Pre build actions
@@ -43,12 +49,8 @@ add_custom_command(TARGET AutoTrade PRE_BUILD
 
 ### Libraries
 # Qt
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
 find_package(Qt5 COMPONENTS Core Widgets Network WebSockets REQUIRED)
-target_link_libraries(AutoTrade PRIVATE Qt5::Core Qt5::Widgets Qt5::Network Qt5::WebSockets)
-message("Using Qt version ${Qt5_VERSION}")
+target_link_libraries(AutoTrade PRIVATE Qt5::Widgets Qt5::Network Qt5::WebSockets)
 
 # lua
 include(FindLua)
@@ -67,4 +69,8 @@ target_link_libraries(AutoTrade PRIVATE fmt::fmt fmt::fmt-header-only)
 # spdlog with external fmt
 target_compile_definitions(AutoTrade PRIVATE SPDLOG_FMT_EXTERNAL)
 find_package(spdlog CONFIG REQUIRED)
-    target_link_libraries(AutoTrade PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
+target_link_libraries(AutoTrade PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
+
+# ranges-v3
+find_package(range-v3 CONFIG REQUIRED)
+target_link_libraries(AutoTrade PRIVATE range-v3 range-v3-meta range-v3::meta range-v3-concepts)

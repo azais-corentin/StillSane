@@ -1,5 +1,6 @@
 #include "crafter.hh"
 
+#include <filesystem>
 #include <thread>
 #include "windows.h"
 
@@ -7,22 +8,38 @@
 #include <QClipboard>
 #include <QDebug>
 #include <QRegularExpression>
+#include <range/v3/view/filter.hpp>
 
-#include <craft/statemachines.hh>
+//#include <craft/statemachines.hh>
 
 namespace AutoTrade::Craft {
 
-namespace sml = boost::sml;
+namespace fs = std::filesystem;
 
 Crafter::Crafter(QObject* parent) : QObject(parent) {
   mLua.open_libraries(sol::lib::base);
   mLua.set_function("matches", &Crafter::matches, this);
 
+  // mLua.load_file()
+  auto tables_path = fs::current_path() / "resources" / "transition_tables";
+
+  auto entries_it = fs::directory_iterator(tables_path);
+
+  std::vector<fs::directory_entry> entries{fs::begin(entries_it), fs::end(entries_it)};
+
+  auto entries_lua = entries | ranges::views::filter([](fs::directory_entry& entry) {
+                       return entry.path().extension() == "lua";
+                     });
+
+  for (const auto& p : entries_lua) {
+    qDebug() << QString::fromStdString(p.path().string());
+  }
+
   connect(&mTimer, &QTimer::timeout, [&]() {
-    using namespace sml;
+    // using namespace sml;
 
     if (mRunning) {
-      mMachine->process_event("next"_e());
+      // mMachine->process_event("next"_e());
     }
   });
 }
@@ -35,11 +52,12 @@ void Crafter::start(const QString& script) {
   mMatchScript = script;
 
   parse();
-  mMachine = std::make_unique<sml::sm<StateMachines::AlterationOnly>>(*this);
+  // mMachine = std::make_unique<sml::sm<StateMachines::AlterationOnly>>(*this);
 
   auto result = mLua.safe_script(mMatchScript.toStdString(), sol::script_pass_on_error);
   if (!result.valid()) {
-    emit error(tr("Invalid script: ") + sol::error(result).what());
+    sol::error err = result;
+    emit       error(tr("Invalid script: ") + err.what());
     stop();
     return;
   } else {

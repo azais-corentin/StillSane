@@ -4,11 +4,10 @@
 #include <QMainWindow>
 #include <QTimer>
 
-#include <boost/sml.hpp>
 #include <sol/sol.hpp>
 
 #include <craft/crafter.hh>
-#include <craft/statemachines.hh>
+//#include <craft/statemachines.hh>
 #include <poe/searchmanager.hh>
 #include <ui/luahighlighter.hh>
 #include <ui/models/searchresulttree.hh>
@@ -39,8 +38,11 @@ class MainWindow : public QMainWindow {
   // Ui slots
   void on_bAddSearch_clicked();
   void on_ePOESESSID_editingFinished();
-  void on_bLoadFrom_clicked();
-  void on_bSaveTo_clicked();
+
+  void on_bLoadFunctions_clicked();
+  void on_bSaveFunctions_clicked();
+  void on_bLoadTransitionTable_clicked();
+  void on_bSaveTransitionTable_clicked();
 
   // Slots
   void onSearchAdded();
@@ -61,7 +63,8 @@ class MainWindow : public QMainWindow {
 
  private:
   ::Ui::MainWindow*            ui;
-  Ui::LuaHighlighter*          mLuaHighlighter;
+  Ui::LuaHighlighter*          mLuaHighlighterFunctions;
+  Ui::LuaHighlighter*          mLuaHighlighterTransitionTable;
   Ui::Models::SearchTable      mSearchTableModel;
   Ui::Models::SearchResultTree mSearchResultTreeModel;
 

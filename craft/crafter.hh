@@ -9,16 +9,9 @@
 #include <QTimer>
 
 #define SOL_ALL_SAFETIES_ON 1
-#include <boost/sml.hpp>
 #include <sol/sol.hpp>
 
 namespace AutoTrade::Craft {
-
-namespace StateMachines {
-struct AlterationOnly;
-struct AlterationAugmentation;
-struct ScouringAlchemy;
-}  // namespace StateMachines
 
 enum class MouseRegion {
   Item,
@@ -104,7 +97,7 @@ class Crafter : public QObject {
   // QStringList mExplicits;
 
   // std::any mMachine;
-  std::unique_ptr<boost::sml::sm<StateMachines::AlterationOnly>> mMachine;
+  // std::unique_ptr<boost::sml::sm<StateMachines::AlterationOnly>> mMachine;
 };
 
 }  // namespace AutoTrade::Craft

@@ -13,13 +13,34 @@
 
 namespace AutoTrade {
 
-namespace sml = boost::sml;
-
 constexpr char const* defaultLuaScript = "";
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::MainWindow) {
+  using namespace ads;
+  CDockManager::setConfigFlags(CDockManager::DefaultOpaqueConfig);
+  CDockManager::setConfigFlag(CDockManager::ActiveTabHasCloseButton, false);
+  CDockManager::setConfigFlag(CDockManager::DockAreaHasCloseButton, false);
+  CDockManager::setConfigFlag(CDockManager::DockAreaHasUndockButton, false);
+  CDockManager::setConfigFlag(CDockManager::DockAreaHasTabsMenuButton, false);
   // Setup ui
   ui->setupUi(this);
+
+  CDockWidget* dockWidgetEditorTransitionTable = new CDockWidget("State machine editor");
+  CDockWidget* dockWidgetEditorFunctions       = new CDockWidget("Functions editor");
+  dockWidgetEditorFunctions->setWidget(ui->widgetFunctions,
+                                       CDockWidget::ForceNoScrollArea);
+  dockWidgetEditorFunctions->setMinimumSizeHintMode(
+      CDockWidget::MinimumSizeHintFromContent);
+  dockWidgetEditorTransitionTable->setWidget(ui->widgetTransitionTable,
+                                             CDockWidget::ForceNoScrollArea);
+  dockWidgetEditorTransitionTable->setMinimumSizeHintMode(
+      CDockWidget::MinimumSizeHintFromContent);
+
+  // Add the dock widget to the top dock widget area
+  ui->dockWidget->addDockWidget(ads::LeftDockWidgetArea, dockWidgetEditorFunctions);
+  ui->dockWidget->addDockWidget(ads::RightDockWidgetArea,
+                                dockWidgetEditorTransitionTable);
+
   // Setup search table
   ui->tableSearches->setModel(&mSearchTableModel);
   ui->tableSearches->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -109,13 +130,16 @@ void MainWindow::setupCraftingEditor() {
   font.setLetterSpacing(QFont::SpacingType::PercentageSpacing, 100);
   font.setWordSpacing(1);
 
-  ui->eLua->setFont(font);
+  ui->editorFunctions->setFont(font);
+  ui->editorTransitionTable->setFont(font);
 
-  mLuaHighlighter = new Ui::LuaHighlighter(ui->eLua->document());
+  mLuaHighlighterFunctions = new Ui::LuaHighlighter(ui->editorFunctions->document());
+  mLuaHighlighterTransitionTable =
+      new Ui::LuaHighlighter(ui->editorTransitionTable->document());
 }
 
 void MainWindow::startCrafting() {
-  mCrafter.start(ui->eLua->toPlainText());
+  // mCrafter.start(ui->eLua->toPlainText());
 }
 
 void MainWindow::stopCrafting() {
@@ -136,8 +160,10 @@ void MainWindow::saveSettings() {
                                      {"enabled", search->isEnabled()}});
   }
 
-  settings["searches"]  = searchesArray;
-  settings["luascript"] = ui->eLua->toPlainText();
+  settings["searches"] = searchesArray;
+  settings["lua"] =
+      QJsonObject({{"functions", ui->editorFunctions->toPlainText()},
+                   {"transition_table", ui->editorTransitionTable->toPlainText()}});
 
   settingsFile.write(QJsonDocument(settings).toJson());
 }
@@ -146,7 +172,8 @@ void MainWindow::loadSettings() {
   QFile settingsFile("settings.json");
   if (!settingsFile.open(QIODevice::ReadOnly)) {
     // default settings
-    ui->eLua->setPlainText(defaultLuaScript);
+    ui->editorFunctions->setPlainText(defaultLuaScript);
+    ui->editorTransitionTable->setPlainText(defaultLuaScript);
     return;
   }
   const auto& settings = QJsonDocument::fromJson(settingsFile.readAll()).object();
@@ -157,7 +184,10 @@ void MainWindow::loadSettings() {
                              search["name"].toString(), search["enabled"].toBool(true));
   }
 
-  ui->eLua->setPlainText(settings["luascript"].toString(defaultLuaScript));
+  ui->editorFunctions->setPlainText(
+      settings["lua"]["functions"].toString(defaultLuaScript));
+  ui->editorTransitionTable->setPlainText(
+      settings["lua"]["transition_table"].toString(defaultLuaScript));
 }
 
 void MainWindow::on_bAddSearch_clicked() {
@@ -178,25 +208,63 @@ void MainWindow::on_ePOESESSID_editingFinished() {
   Network::AccessManager::setPOESESSID(ui->ePOESESSID->text());
 }
 
-void MainWindow::on_bLoadFrom_clicked() {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open lua script"), "",
-                                                  tr("Lua script (*.lua)"));
+void MainWindow::on_bLoadFunctions_clicked() {
+  QString fileName = QFileDialog::getOpenFileName(
+      this, tr("Open functions"), "resources/functions", tr("Lua script (*.lua)"));
+
+  if (fileName.isEmpty())
+    return;
 
   QFile lua(fileName);
   if (lua.open(QIODevice::ReadOnly)) {
-    ui->eLua->setPlainText(lua.readAll());
+    ui->editorFunctions->setPlainText(lua.readAll());
   } else {
     ui->statusbar->showMessage("Could not open file:" + fileName);
   }
 }
 
-void MainWindow::on_bSaveTo_clicked() {
-  QString fileName = QFileDialog::getSaveFileName(this, tr("Save matches"), "",
-                                                  tr("Lua script (*.lua)"));
+void MainWindow::on_bSaveFunctions_clicked() {
+  QString fileName = QFileDialog::getSaveFileName(
+      this, tr("Save functions"), "resources/functions", tr("Lua script (*.lua)"));
+
+  if (fileName.isEmpty())
+    return;
 
   QFile lua(fileName);
   if (lua.open(QIODevice::WriteOnly)) {
-    lua.write(ui->eLua->toPlainText().toUtf8());
+    lua.write(ui->editorFunctions->toPlainText().toUtf8());
+  } else {
+    ui->statusbar->showMessage("Could not write to file:" + fileName);
+  }
+}
+
+void MainWindow::on_bLoadTransitionTable_clicked() {
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open transition table"),
+                                                  "resources/transition_tables",
+                                                  tr("Lua script (*.lua)"));
+
+  if (fileName.isEmpty())
+    return;
+
+  QFile lua(fileName);
+  if (lua.open(QIODevice::ReadOnly)) {
+    ui->editorTransitionTable->setPlainText(lua.readAll());
+  } else {
+    ui->statusbar->showMessage("Could not open file:" + fileName);
+  }
+}
+
+void MainWindow::on_bSaveTransitionTable_clicked() {
+  QString fileName = QFileDialog::getSaveFileName(this, tr("Save transition table"),
+                                                  "resources/transition_tables",
+                                                  tr("Lua script (*.lua)"));
+
+  if (fileName.isEmpty())
+    return;
+
+  QFile lua(fileName);
+  if (lua.open(QIODevice::WriteOnly)) {
+    lua.write(ui->editorTransitionTable->toPlainText().toUtf8());
   } else {
     ui->statusbar->showMessage("Could not write to file:" + fileName);
   }
