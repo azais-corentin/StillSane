@@ -38,8 +38,9 @@ LuaHighlighter::LuaHighlighter(QTextDocument* parent) : QSyntaxHighlighter(paren
   mHighlightingRules.append(rule);
 
   mQuotationFormat.setForeground(Qt::darkGreen);
-  rule.pattern = QRegularExpression(QStringLiteral("\'.*\'"));
-  rule.format  = mQuotationFormat;
+  rule.pattern =
+      QRegularExpression(QStringLiteral(R"(((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1)"));
+  rule.format = mQuotationFormat;
   mHighlightingRules.append(rule);
 
   mFunctionFormat.setFontItalic(true);
