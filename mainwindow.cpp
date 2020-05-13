@@ -125,10 +125,17 @@ void MainWindow::unregisterHotkeys() {
 }
 
 void MainWindow::setupCraftingEditor() {
-  QFont font("Source Code Pro", 10);
-  font.setFixedPitch(true);
-  font.setLetterSpacing(QFont::SpacingType::PercentageSpacing, 100);
-  font.setWordSpacing(1);
+  QString family = "Source Code Pro";
+  int id = QFontDatabase::addApplicationFont("resources/fonts/SourceCodePro-Regular.otf");
+  if (id == -1) {
+    ui->statusbar->showMessage("Unable to load font 'SourceCodePro-Regular.otf'");
+    qWarning() << "Unable to load font 'SourceCodePro-Regular.otf'";
+  } else {
+    qDebug() << "Loaded font 'SourceCodePro-Regular.otf'";
+    family = QFontDatabase::applicationFontFamilies(id).at(0);
+  }
+  QFont font(family, 10);
+  font.setStyleHint(QFont::Monospace);
 
   ui->editorFunctions->setFont(font);
   ui->editorTransitionTable->setFont(font);

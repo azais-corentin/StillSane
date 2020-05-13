@@ -24,6 +24,7 @@ class LuaHighlighter : public QSyntaxHighlighter {
   QTextCharFormat mKeywordFormat;
   QTextCharFormat mOperatorFormat;
   QTextCharFormat mQuotationFormat;
+  QTextCharFormat mCommentFormat;
   QTextCharFormat mFunctionFormat;
 };
 
