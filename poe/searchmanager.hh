@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_POE_SEARCHMANAGER_HH
-#define AUTOTRADE_POE_SEARCHMANAGER_HH
+#pragma once
 
 #include <memory>
 
@@ -51,5 +50,3 @@ class SearchManager : public QObject {
 };
 
 }  // namespace AutoTrade::Poe
-
-#endif  // AUTOTRADE_POE_SEARCHMANAGER_HH

@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_CRAFT_CRAFTER_HH
-#define AUTOTRADE_CRAFT_CRAFTER_HH
+#pragma once
 
 #include <any>
 #include <memory>
@@ -9,7 +8,9 @@
 #include <QTimer>
 
 #define SOL_ALL_SAFETIES_ON 1
-#include <sol/sol.hpp>
+#include <sol/forward.hpp>
+
+#include "item.hh"
 
 namespace AutoTrade::Craft {
 
@@ -29,9 +30,6 @@ enum class MouseRegion {
 };
 enum class MouseButton { Left, Right };
 
-enum class ItemState { Unknown, Unidentified, Identified };
-enum class ItemRarity { Unknown, Normal, Magic, Rare };
-
 class Crafter : public QObject {
   Q_OBJECT
 
@@ -39,7 +37,7 @@ class Crafter : public QObject {
   explicit Crafter(QObject* parent = nullptr);
   ~Crafter();
 
-  void start(const QString& script);
+  void start(const std::string& transitionTable, const std::string& functions);
   void stop();
 
   //// Actions
@@ -58,14 +56,6 @@ class Crafter : public QObject {
   void scouring();
   void augmentation();
 
-  bool is_unidentified();
-  bool is_normal();
-  bool is_magic();
-  bool is_rare();
-  bool is_matching();
-
-  bool matches(std::string text);
-
  signals:
   void error(const QString& error);
   void info(const QString& message);
@@ -83,23 +73,18 @@ class Crafter : public QObject {
   QPoint getPosition(const MouseRegion& region);
   void   standardDelay();
 
+  void resetLuaState();
+
  private:
-  sol::state              mLua;
-  sol::protected_function mIsMatching;
+  std::unique_ptr<sol::state> mLuaState;
 
-  QString mMatchScript;
-  QTimer  mTimer;
-  bool    mRunning = false;
+  std::string mCodeFunctions, mCodeTransitionTable;
+  QTimer      mTimer;
+  bool        mRunning = false;
 
-  ItemState   mState  = ItemState::Unknown;
-  ItemRarity  mRarity = ItemRarity::Unknown;
+  Item        mItem;
   QStringList mLines;
   // QStringList mExplicits;
-
-  // std::any mMachine;
-  // std::unique_ptr<boost::sml::sm<StateMachines::AlterationOnly>> mMachine;
 };
 
 }  // namespace AutoTrade::Craft
-
-#endif  // AUTOTRADE_CRAFT_CRAFTER_HH

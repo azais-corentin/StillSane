@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_POE_API_STATICDATA_HH
-#define AUTOTRADE_POE_API_STATICDATA_HH
+#pragma once
 
 #include <QNetworkRequest>
 #include <QObject>
@@ -34,5 +33,3 @@ class StaticData : public QObject {
 };
 
 }  // namespace AutoTrade::Poe::Api
-
-#endif  // AUTOTRADE_POE_API_STATICDATA_HH

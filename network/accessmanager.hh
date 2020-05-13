@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_NETWORK_NETWORKACCESS_HH
-#define AUTOTRADE_NETWORK_NETWORKACCESS_HH
+#pragma once
 
 #include <functional>
 
@@ -53,5 +52,3 @@ class AccessManager : public QObject {
 };
 
 }  // namespace AutoTrade::Network
-
-#endif  // AUTOTRADE_NETWORK_NETWORKACCESS_HH

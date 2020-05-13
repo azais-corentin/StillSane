@@ -1,5 +1,10 @@
 target_sources(AutoTrade PRIVATE
+  item.hh
+  item.cpp
   crafter.hh
   crafter.cpp
-  #statemachines.hh
+  transition.hh
+  transition.cpp
+  fsm.hh
+  fsm.cpp
 )

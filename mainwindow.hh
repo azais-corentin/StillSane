@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_HH
-#define MAINWINDOW_HH
+#pragma once
 
 #include <QMainWindow>
 #include <QTimer>
@@ -26,7 +25,7 @@ class CheckBox;
 }
 
 class MainWindow : public QMainWindow {
-  enum Hotkeys { F9 = 0, F10 = 1 };
+  enum Hotkeys { F9 = 0x78, F10 = 0x79 };
 
   Q_OBJECT
 
@@ -75,5 +74,3 @@ class MainWindow : public QMainWindow {
 };
 
 }  // namespace AutoTrade
-
-#endif  // MAINWINDOW_HH

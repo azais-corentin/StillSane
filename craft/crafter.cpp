@@ -8,19 +8,18 @@
 #include <QClipboard>
 #include <QDebug>
 #include <QRegularExpression>
-#include <range/v3/view/filter.hpp>
 
-//#include <craft/statemachines.hh>
+#include <magic_enum.hpp>
+#include <range/v3/to_container.hpp>
+#include <range/v3/view/filter.hpp>
+#include <range/v3/view/transform.hpp>
+#include <sol/sol.hpp>
 
 namespace AutoTrade::Craft {
 
 namespace fs = std::filesystem;
 
 Crafter::Crafter(QObject* parent) : QObject(parent) {
-  mLua.open_libraries(sol::lib::base);
-  mLua.set_function("matches", &Crafter::matches, this);
-
-  // mLua.load_file()
   auto tables_path = fs::current_path() / "resources" / "transition_tables";
 
   auto entries_it = fs::directory_iterator(tables_path);
@@ -28,11 +27,13 @@ Crafter::Crafter(QObject* parent) : QObject(parent) {
   std::vector<fs::directory_entry> entries{fs::begin(entries_it), fs::end(entries_it)};
 
   auto entries_lua = entries | ranges::views::filter([](fs::directory_entry& entry) {
-                       return entry.path().extension() == "lua";
+                       return entry.path().extension() == ".lua";
                      });
 
+  qDebug() << "Matching lua files:";
   for (const auto& p : entries_lua) {
-    qDebug() << QString::fromStdString(p.path().string());
+    qDebug() << QString::fromStdString(
+        p.path().lexically_relative(fs::current_path()).string());
   }
 
   connect(&mTimer, &QTimer::timeout, [&]() {
@@ -48,29 +49,37 @@ Crafter::~Crafter() {
   // The destructor needs to be in crafter.cpp for the unique_ptr to work.
 }
 
-void Crafter::start(const QString& script) {
-  mMatchScript = script;
+void Crafter::start(const std::string& transitionTable, const std::string& functions) {
+  mCodeTransitionTable = transitionTable;
+  mCodeFunctions       = functions;
 
-  parse();
+  resetLuaState();
+
   // mMachine = std::make_unique<sml::sm<StateMachines::AlterationOnly>>(*this);
 
-  auto result = mLua.safe_script(mMatchScript.toStdString(), sol::script_pass_on_error);
-  if (!result.valid()) {
-    sol::error err = result;
-    emit       error(tr("Invalid script: ") + err.what());
-    stop();
-    return;
-  } else {
-    emit info(tr("Valid script, starting craft"));
+  // Execute functions
+  {
+    auto result = mLuaState->safe_script(mCodeFunctions, sol::script_pass_on_error);
+    if (!result.valid()) {
+      sol::error err = result;
+      emit       error(tr("Functions script error") + ": " + err.what());
+      stop();
+      return;
+    }
   }
 
-  mIsMatching = mLua["is_matching"];
-  if (!mIsMatching.valid()) {
-    qDebug() << "Couldn't find function!";
-    emit error(tr("Couldn't find function is_matching() in lua script"));
-    stop();
-    return;
+  // Execute transition table
+  {
+    auto result = mLuaState->safe_script(mCodeTransitionTable, sol::script_pass_on_error);
+    if (!result.valid()) {
+      sol::error err = result;
+      emit       error(tr("Transition table script error") + ": " + err.what());
+      stop();
+      return;
+    }
   }
+
+  emit info(tr("Valid script, starting craft"));
 
   mRunning = true;
   mTimer.start(0);
@@ -102,19 +111,24 @@ void Crafter::parse() {
   mLines.clear();
   mLines.append(text.split('\n'));
 
+  try {
+    mItem = Item{text};
+  } catch (const std::runtime_error& e) {
+    error(e.what());
+  }
+
   // Extract rarity
-  mRarity          = ItemRarity::Unknown;
-  auto rarityMatch = QRegularExpression("^Rarity: (?'rarity'[a-zA-Z]+)$",
-                                        QRegularExpression::MultilineOption)
-                         .match(text);
-  if (rarityMatch.hasMatch()) {
-    auto rarityText = rarityMatch.captured("rarity");
+  auto rarity = QRegularExpression("^Rarity: (?'rarity'[a-zA-Z]+)$",
+                                   QRegularExpression::MultilineOption)
+                    .match(text);
+  if (rarity.hasMatch()) {
+    auto rarityText = rarity.captured("rarity");
     if (rarityText == "Normal")
-      mRarity = ItemRarity::Normal;
+      mItem = Item::Normal;
     else if (rarityText == "Magic")
-      mRarity = ItemRarity::Magic;
+      mItem = Item::Magic;
     else if (rarityText == "Rare")
-      mRarity = ItemRarity::Rare;
+      mItem = Item::Rare;
     else {
       emit error("Invalid rarity:" + rarityText);
       needStop = true;
@@ -170,40 +184,6 @@ void Crafter::scouring() {
 
 void Crafter::augmentation() {
   applyOrb(MouseRegion::Augmentation);
-}
-
-bool Crafter::is_unidentified() {
-  return mState == ItemState::Unidentified;
-}
-
-bool Crafter::is_normal() {
-  return mRarity == ItemRarity::Normal;
-}
-
-bool Crafter::is_magic() {
-  return mRarity == ItemRarity::Magic;
-}
-
-bool Crafter::is_rare() {
-  return mRarity == ItemRarity::Rare;
-}
-
-bool Crafter::is_matching() {
-  qDebug() << "Crafter::is_matching";
-  sol::protected_function_result itemMatched = mIsMatching();
-
-  if (itemMatched.valid()) {
-    qDebug() << "matching:" << itemMatched.get<bool>();
-    return itemMatched;
-  } else {
-    error("Crafter::is_matching error: invalid result from function is_matching()");
-  }
-
-  return false;
-}
-
-bool Crafter::matches(std::string text) {
-  return mLines.filter(QString::fromStdString(text), Qt::CaseInsensitive).size() != 0;
 }
 
 void Crafter::applyOrb(MouseRegion orb) {
@@ -305,5 +285,27 @@ QPoint Crafter::getPosition(const MouseRegion& region) {
 void Crafter::standardDelay() {
   std::this_thread::sleep_for(std::chrono::milliseconds(30));
 }
+
+void Crafter::resetLuaState() {
+  // Reset lua state
+  mLuaState = std::make_unique<sol::state>();
+  mLuaState->open_libraries(sol::lib::base);
+
+  // Load context
+  mLuaState->set("Unknown", Item::Unknown);
+  mLuaState->new_enum("Identification",                    //
+                      "Unidentified", Item::Unidentified,  //
+                      "Identified", Item::Identified       //
+  );
+  mLuaState->new_enum("Rarity",                //
+                      "Normal", Item::Normal,  //
+                      "Magic", Item::Magic,    //
+                      "Rare", Item::Rare,      //
+                      "Unique", Item::Unique   //
+  );
+
+  sol::usertype<Item> item_type = mLuaState->new_usertype<Item>("Item");
+  item_type["rarity"]           = sol::property(&Item::rarity);
+}  // namespace AutoTrade::Craft
 
 }  // namespace AutoTrade::Craft

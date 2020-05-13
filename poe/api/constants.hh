@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_POE_API_CONSTANTS_HH
-#define AUTOTRADE_POE_API_CONSTANTS_HH
+#pragma once
 
 #include <QString>
 
@@ -23,5 +22,3 @@ inline const QString TradeFetchPath  = QStringLiteral("/fetch/");
 inline const QString baseHostNinja = QStringLiteral("poe.ninja");
 inline const QString basePathNinja = QStringLiteral("/api/data");
 }  // namespace AutoTrade::Poe::Api
-
-#endif  // AUTOTRADE_POE_API_CONSTANTS_HH

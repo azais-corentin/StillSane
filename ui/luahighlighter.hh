@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_UI_LUAHIGHLIGHTER_HH
-#define AUTOTRADE_UI_LUAHIGHLIGHTER_HH
+#pragma once
 
 #include <QRegularExpression>
 #include <QSyntaxHighlighter>
@@ -29,5 +28,3 @@ class LuaHighlighter : public QSyntaxHighlighter {
 };
 
 }  // namespace AutoTrade::Ui
-
-#endif  // AUTOTRADE_UI_LUAHIGHLIGHTER_HH

@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_UI_DELEGATES_CHECKBOX_HH
-#define AUTOTRADE_UI_DELEGATES_CHECKBOX_HH
+#pragma once
 
 #include <QStyledItemDelegate>
 
@@ -27,5 +26,3 @@ class CheckBox : public QStyledItemDelegate {
 };
 
 }  // namespace AutoTrade::Ui::Delegates
-
-#endif  // AUTOTRADE_UI_DELEGATES_CHECKBOX_HH

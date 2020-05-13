@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_POE_API_NINJA_HH
-#define AUTOTRADE_POE_API_NINJA_HH
+#pragma once
 
 #include <QNetworkRequest>
 #include <QObject>
@@ -45,5 +44,3 @@ class Ninja : public QObject {
 };
 
 }  // namespace AutoTrade::Poe::Api
-
-#endif  // AUTOTRADE_POE_API_NINJA_HH

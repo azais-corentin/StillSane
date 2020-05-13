@@ -115,8 +115,8 @@ bool MainWindow::nativeEvent(const QByteArray&, void* message, long*) {
 }
 
 void MainWindow::registerHotkeys() {
-  RegisterHotKey(HWND(winId()), F9, 0, 0x78);
-  RegisterHotKey(HWND(winId()), F10, 0, 0x79);
+  RegisterHotKey(HWND(winId()), F9, 0, F9);
+  RegisterHotKey(HWND(winId()), F10, 0, F10);
 }
 
 void MainWindow::unregisterHotkeys() {
@@ -146,7 +146,10 @@ void MainWindow::setupCraftingEditor() {
 }
 
 void MainWindow::startCrafting() {
-  // mCrafter.start(ui->eLua->toPlainText());
+  auto codeTransitionTable = ui->editorTransitionTable->toPlainText();
+  auto codeFunctions       = ui->editorFunctions->toPlainText();
+
+  mCrafter.start(codeTransitionTable.toStdString(), codeFunctions.toStdString());
 }
 
 void MainWindow::stopCrafting() {

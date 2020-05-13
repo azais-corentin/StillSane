@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_UI_MODELS_SEARCHTABLE_HH
-#define AUTOTRADE_UI_MODELS_SEARCHTABLE_HH
+#pragma once
 
 #include <memory>
 
@@ -47,5 +46,3 @@ class SearchTable : public QAbstractTableModel {
 };
 
 }  // namespace AutoTrade::Ui::Models
-
-#endif  // AUTOTRADE_UI_MODELS_SEARCHTABLE_HH

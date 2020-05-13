@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_POE_API_TRADE_HH
-#define AUTOTRADE_POE_API_TRADE_HH
+#pragma once
 
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -106,5 +105,3 @@ class Trade : public QObject {
 };
 
 }  // namespace AutoTrade::Poe::Api
-
-#endif  // AUTOTRADE_POE_API_TRADE_HH

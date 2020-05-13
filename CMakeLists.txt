@@ -74,3 +74,7 @@ target_link_libraries(AutoTrade PRIVATE spdlog::spdlog spdlog::spdlog_header_onl
 # ranges-v3
 find_package(range-v3 CONFIG REQUIRED)
 target_link_libraries(AutoTrade PRIVATE range-v3 range-v3-meta range-v3::meta range-v3-concepts)
+
+# magic_enum
+find_package(magic_enum CONFIG REQUIRED)
+target_link_libraries(AutoTrade PRIVATE magic_enum::magic_enum)

@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_NETWORK_RATELIMITMANAGER_HH
-#define AUTOTRADE_NETWORK_RATELIMITMANAGER_HH
+#pragma once
 
 #include <functional>
 #include <memory>
@@ -80,5 +79,3 @@ class RateLimitManager : public QObject {
 */
 
 }  // namespace AutoTrade::Network
-
-#endif  // AUTOTRADE_NETWORK_RATELIMITMANAGER_HH

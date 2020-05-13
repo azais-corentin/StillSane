@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_UI_MODELS_ITEMLISTMODEL_HH
-#define AUTOTRADE_UI_MODELS_ITEMLISTMODEL_HH
+#pragma once
 
 #include <QAbstractListModel>
 
@@ -23,5 +22,3 @@ class ItemList : public QAbstractListModel {
 };
 
 }  // namespace AutoTrade::ui::models
-
-#endif  // AUTOTRADE_UI_MODELS_ITEMLISTMODEL_HH

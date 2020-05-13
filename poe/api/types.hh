@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_POE_API_TYPES_HH
-#define AUTOTRADE_POE_API_TYPES_HH
+#pragma once
 
 #include <QMap>
 #include <QString>
@@ -28,5 +27,3 @@ struct TradeItem {
 };
 
 }  // namespace AutoTrade::Poe::Api
-
-#endif  // AUTOTRADE_POE_API_TYPES_HH

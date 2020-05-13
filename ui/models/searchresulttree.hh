@@ -1,5 +1,4 @@
-#ifndef AUTOTRADE_UI_MODELS_SEARCHRESULTTREE_HH
-#define AUTOTRADE_UI_MODELS_SEARCHRESULTTREE_HH
+#pragma once
 
 #include <QAbstractItemModel>
 
@@ -31,5 +30,3 @@ class SearchResultTree : public QAbstractItemModel {
 };
 
 }  // namespace AutoTrade::Ui::Models
-
-#endif  // AUTOTRADE_UI_MODELS_SEARCHRESULTTREE_HH
