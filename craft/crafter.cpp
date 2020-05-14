@@ -6,13 +6,12 @@
 
 #include <QApplication>
 #include <QClipboard>
-#include <QDebug>
 #include <QRegularExpression>
 
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 #include <magic_enum.hpp>
-#include <range/v3/to_container.hpp>
 #include <range/v3/view/filter.hpp>
-#include <range/v3/view/transform.hpp>
 #include <sol/sol.hpp>
 
 namespace AutoTrade::Craft {
@@ -30,17 +29,12 @@ Crafter::Crafter(QObject* parent) : QObject(parent) {
                        return entry.path().extension() == ".lua";
                      });
 
-  qDebug() << "Matching lua files:";
-  for (const auto& p : entries_lua) {
-    qDebug() << QString::fromStdString(
-        p.path().lexically_relative(fs::current_path()).string());
-  }
-
   connect(&mTimer, &QTimer::timeout, [&]() {
-    // using namespace sml;
-
     if (mRunning) {
-      // mMachine->process_event("next"_e());
+      mFSM->process_event("next");
+      if (mFSM->finished()) {
+        stop();
+      }
     }
   });
 }
@@ -54,6 +48,7 @@ void Crafter::start(const std::string& transitionTable, const std::string& funct
   mCodeFunctions       = functions;
 
   resetLuaState();
+  mFSM = std::make_unique<FSM>(mLuaState);
 
   // mMachine = std::make_unique<sml::sm<StateMachines::AlterationOnly>>(*this);
 
@@ -76,6 +71,9 @@ void Crafter::start(const std::string& transitionTable, const std::string& funct
       emit       error(tr("Transition table script error") + ": " + err.what());
       stop();
       return;
+    } else {
+      sol::optional<std::vector<std::string>> value = result;
+      mFSM->parse(*value);
     }
   }
 
@@ -107,14 +105,11 @@ void Crafter::parse() {
   bool           needStop = false;
   const QString& text     = QApplication::clipboard()->text();
 
-  // Save all lines
-  mLines.clear();
-  mLines.append(text.split('\n'));
-
   try {
     mItem = Item{text};
   } catch (const std::runtime_error& e) {
-    error(e.what());
+    error(QStringLiteral("Error parsing item text: ") + e.what());
+    return;
   }
 
   // Extract rarity
@@ -288,24 +283,71 @@ void Crafter::standardDelay() {
 
 void Crafter::resetLuaState() {
   // Reset lua state
-  mLuaState = std::make_unique<sol::state>();
+  mLuaState = std::make_shared<sol::state>();
   mLuaState->open_libraries(sol::lib::base);
 
-  // Load context
+  //  mLuaState->set_function(
+  //      "debug", sol::overload([](const std::string& msg) { spdlog::debug(msg); },
+  //                             [](const double& number) { spdlog::debug(number); }));
+  mLuaState->set_function("debug", [](sol::variadic_args args) {
+    std::vector<std::string> args_string;
+    for (const auto& arg : args)
+      args_string.emplace_back(arg.get<std::string>());
+
+    spdlog::debug("{}", fmt::join(args_string.begin(), args_string.end(), " "));
+  });
+
+  // Set item
+  mLuaState->set("item", &mItem);
+
+  // Set crafter context
+  mLuaState->set_function("copy", &Crafter::copy, this);
+  mLuaState->set_function("parse", &Crafter::parse, this);
+  mLuaState->set_function("transmutation", &Crafter::transmutation, this);
+  mLuaState->set_function("alteration", &Crafter::alteration, this);
+  mLuaState->set_function("annulment", &Crafter::annulment, this);
+  mLuaState->set_function("chance", &Crafter::chance, this);
+  mLuaState->set_function("exalted", &Crafter::exalted, this);
+  mLuaState->set_function("regal", &Crafter::regal, this);
+  mLuaState->set_function("alchemy", &Crafter::alchemy, this);
+  mLuaState->set_function("chaos", &Crafter::chaos, this);
+  mLuaState->set_function("blessed", &Crafter::blessed, this);
+  mLuaState->set_function("scouring", &Crafter::scouring, this);
+  mLuaState->set_function("augmentation", &Crafter::augmentation, this);
+
+  // Set item context
   mLuaState->set("Unknown", Item::Unknown);
+  auto item_type = mLuaState->new_usertype<Item>(
+      "Item",
+      // Find
+      "find", &Item::find,  //
+      // Identification
+      "id", sol::property(&Item::id),                      //
+      "unidentified", sol::property(&Item::unidentified),  //
+      "identified", sol::property(&Item::identified),      //
+      // Rarity
+      "rarity", sol::property(&Item::rarity),  //
+      "normal", sol::property(&Item::normal),  //
+      "magic", sol::property(&Item::magic),    //
+      "rare", sol::property(&Item::rare)       //
+  );
+
+  mLuaState->set("Unidentified", Item::Unidentified);
+  mLuaState->set("Identified", Item::Identified);
   mLuaState->new_enum("Identification",                    //
                       "Unidentified", Item::Unidentified,  //
                       "Identified", Item::Identified       //
   );
+  mLuaState->set("Normal", Item::Normal);
+  mLuaState->set("Magic", Item::Magic);
+  mLuaState->set("Rare", Item::Rare);
+  mLuaState->set("Unique", Item::Unique);
   mLuaState->new_enum("Rarity",                //
                       "Normal", Item::Normal,  //
                       "Magic", Item::Magic,    //
                       "Rare", Item::Rare,      //
                       "Unique", Item::Unique   //
   );
-
-  sol::usertype<Item> item_type = mLuaState->new_usertype<Item>("Item");
-  item_type["rarity"]           = sol::property(&Item::rarity);
-}  // namespace AutoTrade::Craft
+}
 
 }  // namespace AutoTrade::Craft

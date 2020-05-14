@@ -36,6 +36,7 @@ int SearchResultTree::columnCount(const QModelIndex& parent) const {
     return 0;
 
   // FIXME: Implement me!
+  return 0;
 }
 
 QVariant SearchResultTree::data(const QModelIndex& index, int role) const {

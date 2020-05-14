@@ -1,8 +1,9 @@
 #pragma once
 
-#include <iostream>
 #include <string>
 #include <tuple>
+
+#include <spdlog/spdlog.h>
 
 class FSM;
 
@@ -25,21 +26,19 @@ class Transition {
   void convertScripts();
 
   template <typename... Args>
-  void error(const Args&... args) const {
-    std::cerr << "Error: ";
-    (std::cerr << ... << args) << "\n";
+  void error(Args&&... args) const {
+    spdlog::error(std::forward<Args>(args)...);
   }
 
   template <typename... Args>
-  void debug(const Args&... args) const {
-    (std::cout << ... << args) << "\n";
+  void debug(Args&&... args) const {
+    spdlog::debug(std::forward<Args>(args)...);
   }
 
  private:
   bool mValid   = false;
   bool mInitial = false;
 
+  bool        mHasEvent, mHasGuard, mHasAction;
   std::string mSrcState, mEvent, mGuard, mAction, mDstState;
-
-  bool mHasEvent, mHasGuard, mHasAction;
 };

@@ -10,6 +10,7 @@
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/forward.hpp>
 
+#include "fsm.hh"
 #include "item.hh"
 
 namespace AutoTrade::Craft {
@@ -76,14 +77,14 @@ class Crafter : public QObject {
   void resetLuaState();
 
  private:
-  std::unique_ptr<sol::state> mLuaState;
+  std::shared_ptr<sol::state> mLuaState;
+  std::unique_ptr<FSM>        mFSM;
 
   std::string mCodeFunctions, mCodeTransitionTable;
   QTimer      mTimer;
   bool        mRunning = false;
 
-  Item        mItem;
-  QStringList mLines;
+  Item mItem;
   // QStringList mExplicits;
 };
 

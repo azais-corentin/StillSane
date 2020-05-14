@@ -45,7 +45,7 @@ bool for_each_token(std::string&                           string,
 
 Transition::Transition(std::string transition) {
   mValid = false;
-  debug("Parsing transition: ", transition);
+  debug("Parsing transition: {}", transition);
   replace_all_inplace(transition, " ", "");
 
   bool has_src_state = false, has_event = false, has_guard = false, has_action = false,
@@ -65,70 +65,70 @@ Transition::Transition(std::string transition) {
                 std::string initial_state = element.substr(1);
                 mInitial                  = true;
                 mSrcState                 = initial_state;
-                debug("initial state: ", mSrcState);
+                // debug("initial state: ", mSrcState);
               } else {
                 mSrcState = element;
-                debug("source state: ", mSrcState);
+                // debug("source state: ", mSrcState);
               }
             }
             break;
           case '+':
             if (has_event) {
               // Multiple events
-              error("invalid event ('+') provided before '", element, "'");
+              error("invalid event ('+') provided before '{}'", element);
               success = false;
             } else {
               if (has_dst_state || has_action || has_guard) {
                 // Wrong order
-                error("wrong order for event '", element, "'");
+                error("wrong order for event '{}'", element);
                 success = false;
               } else {
                 has_event = true;
                 mEvent    = element;
-                debug("event: ", mEvent);
+                // debug("event: ", mEvent);
               }
             }
             break;
           case '[':
             if (has_guard) {
-              error("invalid guard ('[]') provided before '", element, "'");
+              error("invalid guard ('[]') provided before '{}'", element);
               success = false;
             } else {
               mGuard = element;
               mGuard.pop_back();
               if (!element.ends_with(']')) {
-                error("expected ']' after guard '", element, "'");
+                error("expected ']' after guard '{}'", element);
                 success = false;
               } else if (has_dst_state || has_action) {
-                error("wrong order for guard '", mGuard, "'");
+                error("wrong order for guard '{}'", mGuard);
                 success = false;
               } else {
                 has_guard = true;
-                debug("guard: ", mGuard);
+                // debug("guard: ", mGuard);
               }
             }
             break;
           case '/':
             if (has_action) {
-              error("unexpected action ('/') provided before '", element, "'");
+              error("unexpected action ('/') provided before '{}'", element);
               success = false;
             } else if (has_dst_state) {
-              error("unexpected action '", element, "' provided after destination state");
+              error("unexpected action '{}' provided after destination state", element);
               success = false;
             } else {
               has_action = true;
               mAction    = element;
-              debug("action: ", mAction);
+              // debug("action: ", mAction);
             }
             break;
           case '=':
             if (has_dst_state) {
-              error("unexpected destination state ('=') provided before '", element, "'");
+              error("unexpected destination state ('=') provided before '{}'", element);
               success = false;
             } else {
               has_dst_state = true;
               mDstState     = element;
-              debug("destination state: ", mDstState);
+              // debug("destination state: ", mDstState);
             }
             break;
         }
@@ -176,21 +176,23 @@ const std::string& Transition::actions_code() const {
 bool Transition::process_event(FSM&               fsm,
                                const std::string& event,
                                const std::string& state) const {
+  if (!valid())
+    return false;
   if (state != mSrcState)
     return false;
-  if (mEvent != event)
+  if (mHasEvent && mEvent != event)
     return false;
   if (!mHasGuard || fsm.execute_guard(mGuard)) {
-    debug("parsed guard: ", mGuard);
     // If has no guard or guard passed
     if (mHasAction && !fsm.execute_action(mAction)) {
       // If has an action and it failed
-      error("failed to execute action: '", mAction, "'");
+      error("failed to execute action: '{}'", mAction);
       return false;
     }
+    return true;
   }
 
-  return true;
+  return false;
 }
 
 std::string Transition::src_state() const {
@@ -203,17 +205,21 @@ std::string Transition::dst_state() const {
 
 void Transition::convertScripts() {
   if (mHasGuard) {
+    // syntax before: guard1&&!guard2
     replace_all_inplace(mGuard, "!", "not ");
     replace_all_inplace(mGuard, "&&", "() and ");
     replace_all_inplace(mGuard, "||", " or ");
-    mGuard.append("()");
+    mGuard.append("() )");
+    mGuard.insert(0, "return ( ");
+    // syntax after: return ( guard1() and not guard2() )
   }
 
   if (mHasAction) {
-    // syntax now: (action1,action2)
+    // syntax before: (action1,action2)
     replace_all_inplace(mAction, "(", "");
-    replace_all_inplace(mAction, ")", "()");
+    replace_all_inplace(mAction, ")", "");
     replace_all_inplace(mAction, ",", "() ");
-    // syntax now: action1() action2()
+    mAction.append("()");
+    // syntax after: action1() action2()
   }
 }

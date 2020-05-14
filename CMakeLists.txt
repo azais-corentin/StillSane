@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.17)
 
 project(AutoTrade LANGUAGES CXX)
+
+message(STATUS "CMake ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" )
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -54,7 +56,7 @@ target_link_libraries(AutoTrade PRIVATE Qt5::Widgets Qt5::Network Qt5::WebSocket
 
 # lua
 include(FindLua)
-find_package(lua REQUIRED)
+find_package(Lua REQUIRED)
 target_link_libraries(AutoTrade PRIVATE ${LUA_LIBRARIES})
 target_include_directories(AutoTrade PRIVATE ${LUA_INCLUDE_DIR})
 
@@ -63,11 +65,11 @@ find_package(sol2 CONFIG REQUIRED)
 target_link_libraries(AutoTrade PRIVATE sol2::sol2)
 
 # fmt
-find_package(fmt CONFIG REQUIRED)
-target_link_libraries(AutoTrade PRIVATE fmt::fmt fmt::fmt-header-only)
+#find_package(fmt CONFIG REQUIRED)
+#target_link_libraries(AutoTrade PRIVATE fmt::fmt fmt::fmt-header-only)
 
 # spdlog with external fmt
-target_compile_definitions(AutoTrade PRIVATE SPDLOG_FMT_EXTERNAL)
+#target_compile_definitions(AutoTrade PUBLIC SPDLOG_FMT_EXTERNAL)
 find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(AutoTrade PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
 

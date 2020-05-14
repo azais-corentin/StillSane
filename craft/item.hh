@@ -27,34 +27,36 @@ class Item {
 
   bool find(const std::string& text);
 
-  bool unidentified();
-  bool identified();
+  // Identification
+  Identification id() const;
+  bool           unidentified() const;
+  bool           identified() const;
 
   // Rarity
-  Rarity rarity();
-  bool   normal();
-  bool   magic();
-  bool   rare();
+  Rarity rarity() const;
+  bool   normal() const;
+  bool   magic() const;
+  bool   rare() const;
 
   // Requirements
-  int levelRequirement() { return mReqLevel; }
-  int strRequirement() { return mReqStr; }
-  int dexRequirement() { return mReqDex; }
-  int intRequirement() { return mReqInt; }
+  int levelRequirement() const;
+  int strRequirement() const;
+  int dexRequirement() const;
+  int intRequirement() const;
 
   // Sockets
-  const std::vector<char>& sockets() { return mSockets; }
+  const std::vector<char>& sockets() const;
 
   // Item level
-  int ilvl() { return mILvl; }
+  int ilvl() const;
 
   // Assignments
   void operator=(const Identification& id);
   void operator=(const Rarity& rarity);
 
   // Comparisons
-  bool operator==(const Rarity& rarity);
-  bool operator==(const Identification& id);
+  bool operator==(const Rarity& rarity) const;
+  bool operator==(const Identification& id) const;
 
  private:
   void parse();

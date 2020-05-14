@@ -3,7 +3,7 @@
 
 #include <windows.h>
 
-#include <QDebug>
+#include <spdlog/spdlog.h>
 #include <QFile>
 #include <QFileDialog>
 
@@ -17,6 +17,9 @@ constexpr char const* defaultLuaScript = "";
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::MainWindow) {
   using namespace ads;
+  // Logging properties
+  spdlog::set_level(spdlog::level::trace);
+
   CDockManager::setConfigFlags(CDockManager::DefaultOpaqueConfig);
   CDockManager::setConfigFlag(CDockManager::ActiveTabHasCloseButton, false);
   CDockManager::setConfigFlag(CDockManager::DockAreaHasCloseButton, false);
@@ -80,12 +83,12 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::onSearchAdded() {
-  qDebug() << "MainWindow::onSearchAdded";
+  spdlog::debug("MainWindow::onSearchAdded");
   mSearchTableModel.setSearches(mSearchManager.getSearches());
 }
 
 void MainWindow::onNewResult() {
-  qDebug() << "New result!";
+  spdlog::debug("MainWindow::onNewResult");
 }
 
 bool MainWindow::nativeEvent(const QByteArray&, void* message, long*) {
@@ -129,9 +132,9 @@ void MainWindow::setupCraftingEditor() {
   int id = QFontDatabase::addApplicationFont("resources/fonts/SourceCodePro-Regular.otf");
   if (id == -1) {
     ui->statusbar->showMessage("Unable to load font 'SourceCodePro-Regular.otf'");
-    qWarning() << "Unable to load font 'SourceCodePro-Regular.otf'";
+    spdlog::warn("Unable to load font 'SourceCodePro-Regular.otf'");
   } else {
-    qDebug() << "Loaded font 'SourceCodePro-Regular.otf'";
+    spdlog::debug("Loaded font 'SourceCodePro-Regular.otf'");
     family = QFontDatabase::applicationFontFamilies(id).at(0);
   }
   QFont font(family, 10);
@@ -214,7 +217,6 @@ void MainWindow::on_bAddSearch_clicked() {
 }
 
 void MainWindow::on_ePOESESSID_editingFinished() {
-  qDebug() << "Editing finished!";
   Network::AccessManager::setPOESESSID(ui->ePOESESSID->text());
 }
 
