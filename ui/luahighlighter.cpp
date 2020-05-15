@@ -43,15 +43,15 @@ LuaHighlighter::LuaHighlighter(QTextDocument* parent) : QSyntaxHighlighter(paren
   rule.format  = mFunctionFormat;
   mHighlightingRules.append(rule);
 
-  mCommentFormat.setForeground(Qt::gray);
-  rule.pattern = QRegularExpression(QStringLiteral(R"(--(?>\[{2}\X*?\]{2}|.*))"));
-  rule.format  = mCommentFormat;
-  mHighlightingRules.append(rule);
-
   mQuotationFormat.setForeground(Qt::darkGreen);
   rule.pattern =
       QRegularExpression(QStringLiteral(R"(((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1)"));
   rule.format = mQuotationFormat;
+  mHighlightingRules.append(rule);
+
+  mCommentFormat.setForeground(Qt::gray);
+  rule.pattern = QRegularExpression(QStringLiteral(R"(--(?>\[{2}\X*?\]{2}|.*))"));
+  rule.format  = mCommentFormat;
   mHighlightingRules.append(rule);
 }
 
