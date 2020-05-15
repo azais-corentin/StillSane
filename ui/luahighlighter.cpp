@@ -37,6 +37,12 @@ LuaHighlighter::LuaHighlighter(QTextDocument* parent) : QSyntaxHighlighter(paren
   rule.format  = mOperatorFormat;
   mHighlightingRules.append(rule);
 
+  mFunctionFormat.setFontItalic(true);
+  mFunctionFormat.setForeground(Qt::blue);
+  rule.pattern = QRegularExpression(QStringLiteral("\\b[A-Za-z0-9_]+(?=\\()"));
+  rule.format  = mFunctionFormat;
+  mHighlightingRules.append(rule);
+
   mCommentFormat.setForeground(Qt::gray);
   rule.pattern = QRegularExpression(QStringLiteral(R"(--(?>\[{2}\X*?\]{2}|.*))"));
   rule.format  = mCommentFormat;
@@ -46,12 +52,6 @@ LuaHighlighter::LuaHighlighter(QTextDocument* parent) : QSyntaxHighlighter(paren
   rule.pattern =
       QRegularExpression(QStringLiteral(R"(((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1)"));
   rule.format = mQuotationFormat;
-  mHighlightingRules.append(rule);
-
-  mFunctionFormat.setFontItalic(true);
-  mFunctionFormat.setForeground(Qt::blue);
-  rule.pattern = QRegularExpression(QStringLiteral("\\b[A-Za-z0-9_]+(?=\\()"));
-  rule.format  = mFunctionFormat;
   mHighlightingRules.append(rule);
 }
 
