@@ -27,8 +27,11 @@ class LuaEditor : public QWidget {
   void    setFont(const QFont& font);
   void    setText(const QString& text);
   void    setDefaultPath(const QString& defaultPath);
+  void    setName(const QString& name);
 
   QString text();
+  QString name();
+  QString syntaxStyle();
 
  signals:
   void error(QString msg);
@@ -37,6 +40,8 @@ class LuaEditor : public QWidget {
   void on_bLoad_clicked();
   void on_bSave_clicked();
 
+  void paintEvent(QPaintEvent* event) override;
+
  private:
   ::Ui::LuaEditor* ui;
 
@@ -44,6 +49,8 @@ class LuaEditor : public QWidget {
   QLuaHighlighter*                       mHighlighter;
   QVector<QPair<QString, QSyntaxStyle*>> mStyles;
   QString                                mDefaultPath;
+
+  QString mName, mSyntaxStyle;
 };
 
 }  // namespace AutoTrade::Ui

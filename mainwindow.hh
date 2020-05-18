@@ -1,7 +1,8 @@
 #pragma once
 
+#include <QCloseEvent>
 #include <QMainWindow>
-#include <QTimer>
+#include <QMultiMap>
 #include <sol/sol.hpp>
 
 #include <craft/crafter.hh>
@@ -17,12 +18,21 @@ QT_END_NAMESPACE
 
 namespace AutoTrade {
 
-namespace Ui::Delegates {
+namespace Ui {
+class LuaEditor;
+namespace Delegates {
 class CheckBox;
 }
+}  // namespace Ui
 
 class MainWindow : public QMainWindow {
   enum Hotkeys { F9 = 0x78, F10 = 0x79 };
+  enum class EditorType : int {
+    Functions,
+    F = Functions,
+    TransitionTable,
+    TT = TransitionTable
+  };
 
   Q_OBJECT
 
@@ -57,8 +67,10 @@ class MainWindow : public QMainWindow {
   void loadSettings();
 
  private:
-  ::Ui::MainWindow* ui;
-  QStringList       mSyntaxStyles;
+  ::Ui::MainWindow*                     ui;
+  QStringList                           mSyntaxStyles;
+  QMultiMap<EditorType, Ui::LuaEditor*> mLuaEditors;
+  // QVector<Ui::LuaEditor*> mLuaEditors;
 
   Ui::Models::SearchTable      mSearchTableModel;
   Ui::Models::SearchResultTree mSearchResultTreeModel;

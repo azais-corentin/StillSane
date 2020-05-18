@@ -80,54 +80,71 @@ void MainWindow::setupUi() {
 
   ui->setupUi(this);
 
-  // Setup main dock widgets
-  CDockWidget* dockWidgetTabOngoingTrades = new CDockWidget("Ongoing trades");
-  dockWidgetTabOngoingTrades->setWidget(ui->tabOngoingTrades);
-  CDockWidget* dockWidgetTabFinishedTrades = new CDockWidget("Finished trades");
-  dockWidgetTabFinishedTrades->setWidget(ui->tabFinishedTrades);
-  CDockWidget* dockWidgetTabSearchResults = new CDockWidget("Search results");
-  dockWidgetTabSearchResults->setWidget(ui->tabSearchResults);
-  CDockWidget* dockWidgetTabSearches = new CDockWidget("Searches");
-  dockWidgetTabSearches->setWidget(ui->tabSearches);
-  CDockWidget* dockWidgetTabSettings = new CDockWidget("Settings");
-  dockWidgetTabSettings->setWidget(ui->tabSettings);
-  CDockWidget* dockWidgetTabAutoCraft = new CDockWidget("Auto craft");
-  dockWidgetTabAutoCraft->setWidget(ui->tabAutoCraft);
-  // Add them to dockManagerMain
-  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, dockWidgetTabOngoingTrades);
-  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, dockWidgetTabFinishedTrades);
-  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, dockWidgetTabSearchResults);
-  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, dockWidgetTabSearches);
-  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, dockWidgetTabSettings);
-  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, dockWidgetTabAutoCraft);
+  /// Setup main dock widgets
+  CDockWidget* wdTabOngoingTrades  = new CDockWidget("Ongoing trades");
+  CDockWidget* wdTabFinishedTrades = new CDockWidget("Finished trades");
+  CDockWidget* wdTabSearchResults  = new CDockWidget("Search results");
+  CDockWidget* wdTabSearches       = new CDockWidget("Searches");
+  CDockWidget* wdTabSettings       = new CDockWidget("Settings");
+  CDockWidget* wdTabAutoCraft      = new CDockWidget("Auto craft");
+  CDockWidget* wdTabAutoTrade      = new CDockWidget("Auto trade");
+  wdTabOngoingTrades->setWidget(ui->tabOngoingTrades);
+  wdTabFinishedTrades->setWidget(ui->tabFinishedTrades);
+  wdTabSearchResults->setWidget(ui->tabSearchResults);
+  wdTabSearches->setWidget(ui->tabSearches);
+  wdTabSettings->setWidget(ui->tabSettings);
+  wdTabAutoCraft->setWidget(ui->tabAutoCraft);
+  wdTabAutoTrade->setWidget(ui->tabAutoTrade);
+  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, wdTabOngoingTrades);
+  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, wdTabFinishedTrades);
+  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, wdTabSearchResults);
+  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, wdTabSearches);
+  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, wdTabSettings);
+  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, wdTabAutoCraft);
+  ui->dockManagerMain->addDockWidgetTab(TopDockWidgetArea, wdTabAutoTrade);
   ui->mainTabWidget->deleteLater();  // Remove because it was only used in the designer
 
-  // Setup AutoCraft dock widgets
-  CDockWidget* dockWidgetEditorTransitionTable = new CDockWidget("State machine editor");
-  CDockWidget* dockWidgetEditorFunctions       = new CDockWidget("Functions editor");
-  dockWidgetEditorFunctions->setWidget(ui->widgetFunctions,
-                                       CDockWidget::ForceNoScrollArea);
-  dockWidgetEditorFunctions->setMinimumSizeHintMode(
-      CDockWidget::MinimumSizeHintFromContent);
-  dockWidgetEditorTransitionTable->setWidget(ui->widgetTransitionTable,
-                                             CDockWidget::ForceNoScrollArea);
-  dockWidgetEditorTransitionTable->setMinimumSizeHintMode(
-      CDockWidget::MinimumSizeHintFromContent);
-  // Add them to dockManagerAutoCraft
-  // Add the dock widget to the top dock widget area
-  ui->dockManagerAutoCraft->addDockWidget(ads::LeftDockWidgetArea,
-                                          dockWidgetEditorFunctions);
-  ui->dockManagerAutoCraft->addDockWidget(ads::RightDockWidgetArea,
-                                          dockWidgetEditorTransitionTable);
+  /// Setup AutoCraft dock widgets
+  CDockWidget* wdACFEditor  = new CDockWidget("Functions editor");
+  CDockWidget* wdACTTEditor = new CDockWidget("Transition table editor");
+  wdACFEditor->setWidget(ui->eACFEditor, CDockWidget::ForceNoScrollArea);
+  wdACFEditor->setMinimumSizeHintMode(CDockWidget::MinimumSizeHintFromContent);
+  wdACTTEditor->setWidget(ui->eACTTEditor, CDockWidget::ForceNoScrollArea);
+  wdACTTEditor->setMinimumSizeHintMode(CDockWidget::MinimumSizeHintFromContent);
+  ui->dockManagerAC->addDockWidget(ads::LeftDockWidgetArea, wdACFEditor);
+  ui->dockManagerAC->addDockWidget(ads::RightDockWidgetArea, wdACTTEditor);
 
-  // Searches table
+  /// Setup AutoTrade dock widgets
+  CDockWidget* wdATFEditor  = new CDockWidget("Functions editor");
+  CDockWidget* wdATTTEditor = new CDockWidget("Transition table editor");
+  wdATFEditor->setWidget(ui->eATFEditor, CDockWidget::ForceNoScrollArea);
+  wdATFEditor->setMinimumSizeHintMode(CDockWidget::MinimumSizeHintFromContent);
+  wdATTTEditor->setWidget(ui->eATTTEditor, CDockWidget::ForceNoScrollArea);
+  wdATTTEditor->setMinimumSizeHintMode(CDockWidget::MinimumSizeHintFromContent);
+  ui->dockManagerAT->addDockWidget(ads::LeftDockWidgetArea, wdATFEditor);
+  ui->dockManagerAT->addDockWidget(ads::RightDockWidgetArea, wdATTTEditor);
+
+  /// Lua editors names
+  ui->eACFEditor->setName("AutoCraftFunctions");
+  ui->eACTTEditor->setName("AutoCraftTransitionTable");
+  ui->eATFEditor->setName("AutoTradeFunctions");
+  ui->eATTTEditor->setName("AutoTradeTransitionTable");
+
+  /// List of lua editors and their types
+  mLuaEditors.insert(EditorType::F, ui->eACFEditor);
+  mLuaEditors.insert(EditorType::TT, ui->eACTTEditor);
+  mLuaEditors.insert(EditorType::F, ui->eATFEditor);
+  mLuaEditors.insert(EditorType::TT, ui->eATTTEditor);
+
+  /// Searches table
   ui->tableSearches->setModel(&mSearchTableModel);
   ui->tableSearches->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
   ui->tableSearches->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
   ui->tableSearches->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
   mCheckBoxDelegate = std::make_unique<Ui::Delegates::CheckBox>(ui->tableSearches);
   ui->tableSearches->setItemDelegateForColumn(2, mCheckBoxDelegate.get());
-  // Setup search results tree
+
+  /// Search results tree
   ui->treeSearchResults->setModel(&mSearchResultTreeModel);
 }
 
@@ -139,18 +156,22 @@ void MainWindow::loadSyntaxStyles() {
       QFile file(current.absoluteFilePath(filepath));
       if (!file.open(QIODevice::ReadOnly)) {
         spdlog::error("Failed to open file {}", filepath.toStdString());
-        return;
+      } else {
+        QString contents = file.readAll();
+
+        for (auto luaEditor : mLuaEditors) {
+          /// \todo Each editor is parsing the syntax style separately. Have it parsed
+          /// only once.
+          QString name = luaEditor->addSyntaxStyle(contents);
+          mSyntaxStyles.append(name);
+          // luaEditor->setSyntaxStyle(name);
+        }
       }
-
-      QString contents = file.readAll();
-
-      ui->eEditorFunctions->addSyntaxStyle(contents);
-      QString name = ui->eEditorTransitionTable->addSyntaxStyle(contents);
-
-      if (!name.isEmpty())
-        mSyntaxStyles.append(name);
     }
   }
+
+  mSyntaxStyles.sort();
+  mSyntaxStyles.removeDuplicates();
 }
 
 bool MainWindow::nativeEvent(const QByteArray&, void* message, long*) {
@@ -203,23 +224,25 @@ void MainWindow::setupCraftingEditor() {
   QFont font(family, 10);
   font.setStyleHint(QFont::Monospace);
 
-  ui->eEditorFunctions->setFont(font);
-  ui->eEditorTransitionTable->setFont(font);
+  for (auto luaEditor : mLuaEditors)
+    luaEditor->setFont(font);
 
   loadSyntaxStyles();
   // Set last loaded style
   if (!mSyntaxStyles.empty()) {
-    ui->eEditorFunctions->setSyntaxStyle(mSyntaxStyles.last());
-    ui->eEditorTransitionTable->setSyntaxStyle(mSyntaxStyles.last());
+    for (auto luaEditor : mLuaEditors)
+      luaEditor->setSyntaxStyle(mSyntaxStyles.last());
   }
 
-  ui->eEditorFunctions->setDefaultPath("resources/functions");
-  ui->eEditorTransitionTable->setDefaultPath("resources/transition_tables");
+  for (auto functionsEditor : mLuaEditors.values(EditorType::F))
+    functionsEditor->setDefaultPath("resources/functions");
+  for (auto transitionTableEditor : mLuaEditors.values(EditorType::TT))
+    transitionTableEditor->setDefaultPath("resources/transition_tables");
 }
 
 void MainWindow::startCrafting() {
-  auto codeTransitionTable = ui->eEditorTransitionTable->text();
-  auto codeFunctions       = ui->eEditorFunctions->text();
+  auto codeFunctions       = ui->eACFEditor->text();
+  auto codeTransitionTable = ui->eACTTEditor->text();
 
   mCrafter.start(codeTransitionTable.toStdString(), codeFunctions.toStdString());
 }
@@ -230,7 +253,8 @@ void MainWindow::stopCrafting() {
 
 void MainWindow::saveSettings() {
   QFile settingsFile("settings.json");
-  settingsFile.open(QIODevice::WriteOnly);
+  if (!settingsFile.open(QIODevice::WriteOnly)) {
+  }
   QJsonObject settings;
 
   QJsonArray  searchesArray;
@@ -245,10 +269,16 @@ void MainWindow::saveSettings() {
   settings["searches"] = searchesArray;
   QJsonObject editors;
   QJsonObject plaintext;
-  plaintext["functions"]        = ui->eEditorFunctions->text();
-  plaintext["transition_table"] = ui->eEditorTransitionTable->text();
-  editors["plaintext"]          = plaintext;
-  settings["editors"]           = editors;
+  QJsonObject syntaxStyle;
+
+  for (auto luaEditor : mLuaEditors) {
+    plaintext.insert(luaEditor->name(), luaEditor->text());
+    syntaxStyle.insert(luaEditor->name(), luaEditor->syntaxStyle());
+  }
+
+  editors["plaintext"]   = plaintext;
+  editors["syntaxStyle"] = syntaxStyle;
+  settings["editors"]    = editors;
 
   settingsFile.write(QJsonDocument(settings).toJson());
 }
@@ -257,19 +287,22 @@ void MainWindow::loadSettings() {
   QFile settingsFile("settings.json");
   if (!settingsFile.open(QIODevice::ReadOnly)) {
     // default settings
-    ui->eEditorFunctions->clear();
-    ui->eEditorTransitionTable->clear();
+    for (auto editor : mLuaEditors)
+      editor->setText("");
     return;
   }
 
   const auto& settings = QJsonDocument::fromJson(settingsFile.readAll()).object();
 
-  const auto& editors   = settings["editors"].toObject();
-  const auto& plaintext = editors["plaintext"].toObject();
-  const auto& searches  = settings["searches"].toArray();
+  const auto& editors     = settings["editors"].toObject();
+  const auto& plaintext   = editors["plaintext"].toObject();
+  const auto& syntaxStyle = editors["syntaxStyle"].toObject();
+  const auto& searches    = settings["searches"].toArray();
 
-  ui->eEditorFunctions->setText(plaintext["functions"].toString());
-  ui->eEditorTransitionTable->setText(plaintext["transition_table"].toString());
+  for (auto luaEditor : mLuaEditors) {
+    luaEditor->setText(plaintext[luaEditor->name()].toString());
+    luaEditor->setSyntaxStyle(syntaxStyle[luaEditor->name()].toString());
+  }
 
   for (const auto& search : searches) {
     mSearchManager.addSearch(search["id"].toString(), search["league"].toString(),

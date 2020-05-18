@@ -21,13 +21,13 @@ LuaEditor::LuaEditor(QWidget* parent) : QWidget(parent), ui(new ::Ui::LuaEditor)
 }
 
 LuaEditor::~LuaEditor() {
-  delete ui;
-
   delete mHighlighter;
 
   for (auto& style : mStyles) {
     delete style.second;
   }
+
+  delete ui;
 }
 
 void LuaEditor::clear() {
@@ -52,6 +52,7 @@ bool LuaEditor::setSyntaxStyle(QString name) {
 
   if (it != mStyles.end()) {
     ui->eEditor->setSyntaxStyle(it->second);
+    mSyntaxStyle = name;
     return true;
   }
   return false;
@@ -69,13 +70,23 @@ void LuaEditor::setDefaultPath(const QString& defaultPath) {
   mDefaultPath = defaultPath;
 }
 
+void LuaEditor::setName(const QString& name) {
+  mName = name;
+}
+
 QString LuaEditor::text() {
   return ui->eEditor->toPlainText();
 }
 
-}  // namespace AutoTrade::Ui
+QString LuaEditor::name() {
+  return mName;
+}
 
-void AutoTrade::Ui::LuaEditor::on_bLoad_clicked() {
+QString LuaEditor::syntaxStyle() {
+  return mSyntaxStyle;
+}
+
+void LuaEditor::on_bLoad_clicked() {
   QString fileName = QFileDialog::getOpenFileName(this, tr("Open lua code"), mDefaultPath,
                                                   tr("Lua files (*.lua)"));
 
@@ -90,7 +101,7 @@ void AutoTrade::Ui::LuaEditor::on_bLoad_clicked() {
   }
 }
 
-void AutoTrade::Ui::LuaEditor::on_bSave_clicked() {
+void LuaEditor::on_bSave_clicked() {
   QString fileName = QFileDialog::getSaveFileName(this, tr("Save lua code"), mDefaultPath,
                                                   tr("Lua files (*.lua)"));
 
@@ -104,3 +115,10 @@ void AutoTrade::Ui::LuaEditor::on_bSave_clicked() {
     error("Could not write to file: " + fileName);
   }
 }
+
+void LuaEditor::paintEvent(QPaintEvent* event) {
+  ui->eEditor->updateStyle();
+  QWidget::paintEvent(event);
+}
+
+}  // namespace AutoTrade::Ui

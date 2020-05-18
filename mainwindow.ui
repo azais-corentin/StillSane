@@ -187,40 +187,14 @@
         <string>Auto craft</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="0" column="0">
-         <widget class="ads::CDockManager" name="dockManagerAutoCraft"/>
+        <item row="2" column="0">
+         <widget class="AutoTrade::Ui::LuaEditor" name="eACFEditor" native="true"/>
         </item>
         <item row="3" column="0">
-         <widget class="QWidget" name="widgetTransitionTable" native="true">
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Return the transition table that the crafter will use.</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="AutoTrade::Ui::LuaEditor" name="eEditorTransitionTable" native="true"/>
-           </item>
-          </layout>
-         </widget>
+         <widget class="AutoTrade::Ui::LuaEditor" name="eACTTEditor" native="true"/>
         </item>
-        <item row="2" column="0">
-         <widget class="QWidget" name="widgetFunctions" native="true">
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QLabel" name="lFunctionsHelp">
-             <property name="text">
-              <string>Functions in this lua script will be available to the crafter.</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="AutoTrade::Ui::LuaEditor" name="eEditorFunctions" native="true"/>
-           </item>
-          </layout>
-         </widget>
+        <item row="0" column="0">
+         <widget class="ads::CDockManager" name="dockManagerAC"/>
         </item>
        </layout>
       </widget>
@@ -229,21 +203,14 @@
         <string>Auto trade</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_10">
-        <item row="0" column="0">
-         <widget class="QFrame" name="dockManagerAutoTrade">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="0">
-         <widget class="QWidget" name="widget" native="true"/>
+         <widget class="ads::CDockManager" name="dockManagerAT"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="AutoTrade::Ui::LuaEditor" name="eATTTEditor" native="true"/>
         </item>
         <item row="2" column="0">
-         <widget class="QWidget" name="widget_2" native="true"/>
+         <widget class="AutoTrade::Ui::LuaEditor" name="eATFEditor" native="true"/>
         </item>
        </layout>
       </widget>
