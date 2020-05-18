@@ -5,6 +5,7 @@
 #include <optional>
 
 #include <spdlog/spdlog.h>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QFileDialog>
 #include <range/v3/view/reverse.hpp>
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
     CDockManager::setConfigFlag(CDockManager::DockAreaHasCloseButton, false);
     CDockManager::setConfigFlag(CDockManager::DockAreaHasUndockButton, false);
     CDockManager::setConfigFlag(CDockManager::DockAreaHasTabsMenuButton, false);
+    CDockManager::setConfigFlag(CDockManager::XmlCompressionEnabled, false);
   }
 
   // auto settingsFormat = QSettings::registerFormat("json", readJsonFile, writeJsonFile);
@@ -252,9 +254,9 @@ void MainWindow::stopCrafting() {
 }
 
 void MainWindow::saveSettings() {
-  QFile settingsFile("settings.json");
-  if (!settingsFile.open(QIODevice::WriteOnly)) {
-  }
+  QElapsedTimer timer;
+  timer.start();
+
   QJsonObject settings;
 
   QJsonArray  searchesArray;
@@ -265,32 +267,57 @@ void MainWindow::saveSettings() {
                                      {"name", search->getName()},
                                      {"enabled", search->isEnabled()}});
   }
-
   settings["searches"] = searchesArray;
+
   QJsonObject editors;
   QJsonObject plaintext;
   QJsonObject syntaxStyle;
-
   for (auto luaEditor : mLuaEditors) {
     plaintext.insert(luaEditor->name(), luaEditor->text());
     syntaxStyle.insert(luaEditor->name(), luaEditor->syntaxStyle());
   }
-
   editors["plaintext"]   = plaintext;
   editors["syntaxStyle"] = syntaxStyle;
   settings["editors"]    = editors;
 
+  QJsonObject docks;
+  docks["main"] =
+      QJsonValue::fromVariant(ui->dockManagerMain->saveState(ads::CurrentVersion));
+  docks["AutoCraft"] =
+      QJsonValue::fromVariant(ui->dockManagerAC->saveState(ads::CurrentVersion));
+  docks["AutoTrade"] =
+      QJsonValue::fromVariant(ui->dockManagerAT->saveState(ads::CurrentVersion));
+  settings["docks"] = docks;
+
+  auto conversionTime = timer.nsecsElapsed() / 1000000.;
+  timer.restart();
+
+  QFile settingsFile("settings.json");
+  if (!settingsFile.open(QIODevice::WriteOnly)) {
+  }
   settingsFile.write(QJsonDocument(settings).toJson());
+
+  auto saveTime  = timer.nsecsElapsed() / 1000000.;
+  auto totalTime = conversionTime + saveTime;
+
+  spdlog::debug("Saved settings in {:.1} ms ({:.1} ms converting + {:.1} ms saving)",
+                totalTime, conversionTime, saveTime);
 }
 
 void MainWindow::loadSettings() {
+  QElapsedTimer timer;
+  timer.start();
+
   QFile settingsFile("settings.json");
-  if (!settingsFile.open(QIODevice::ReadOnly)) {
+  if (!settingsFile.open(QIODevice::ReadOnly | QIODevice::Unbuffered)) {
     // default settings
     for (auto editor : mLuaEditors)
       editor->setText("");
     return;
   }
+
+  auto loadTime = timer.nsecsElapsed() / 1000000.;
+  timer.restart();
 
   const auto& settings = QJsonDocument::fromJson(settingsFile.readAll()).object();
 
@@ -298,6 +325,7 @@ void MainWindow::loadSettings() {
   const auto& plaintext   = editors["plaintext"].toObject();
   const auto& syntaxStyle = editors["syntaxStyle"].toObject();
   const auto& searches    = settings["searches"].toArray();
+  const auto& docks       = settings["docks"].toObject();
 
   for (auto luaEditor : mLuaEditors) {
     luaEditor->setText(plaintext[luaEditor->name()].toString());
@@ -308,6 +336,16 @@ void MainWindow::loadSettings() {
     mSearchManager.addSearch(search["id"].toString(), search["league"].toString(),
                              search["name"].toString(), search["enabled"].toBool());
   }
+
+  ui->dockManagerMain->restoreState(docks["main"].toVariant().toByteArray());
+  ui->dockManagerAC->restoreState(docks["AutoCraft"].toVariant().toByteArray());
+  ui->dockManagerAT->restoreState(docks["AutoTrade"].toVariant().toByteArray());
+
+  auto conversionTime = timer.nsecsElapsed() / 1000000.;
+  auto totalTime      = conversionTime + loadTime;
+
+  spdlog::debug("Loaded settings in {:.1} ms ({:.1} ms loading + {:.1} ms converting)",
+                totalTime, loadTime, conversionTime);
 }
 
 void MainWindow::on_bAddSearch_clicked() {
