@@ -1,4 +1,4 @@
-target_sources(AutoTrade PRIVATE
+target_sources(StillSane PRIVATE
   constants.hh
   types.hh
   ninja.hh

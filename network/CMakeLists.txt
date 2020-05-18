@@ -1,4 +1,4 @@
-target_sources(AutoTrade PRIVATE
+target_sources(StillSane PRIVATE
   accessmanager.hh
   accessmanager.cpp
   ratelimitrulemanager.hh

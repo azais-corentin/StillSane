@@ -1,4 +1,4 @@
-target_sources(AutoTrade PRIVATE
+target_sources(StillSane PRIVATE
   itemlistmodel.hh
   itemlistmodel.cpp
   searchresulttree.hh

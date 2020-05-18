@@ -1,4 +1,4 @@
-target_sources(AutoTrade PRIVATE
+target_sources(StillSane PRIVATE
   luaeditor.ui
   luaeditor.hh
   luaeditor.cpp

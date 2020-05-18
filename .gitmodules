@@ -1,6 +1,0 @@
-[submodule "libs/QCodeEditor"]
-	path = libs/QCodeEditor
-	url = https://github.com/Megaxela/QCodeEditor.git
-[submodule "libs/QtAds"]
-	path = libs/QtAds
-	url = https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System.git

@@ -1,4 +1,4 @@
-target_sources(AutoTrade PRIVATE
+target_sources(StillSane PRIVATE
   item.hh
   item.cpp
   crafter.hh
