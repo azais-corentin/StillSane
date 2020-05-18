@@ -45,7 +45,7 @@ class MainWindow : public QMainWindow {
   void on_bAddSearch_clicked();
   void on_ePOESESSID_editingFinished();
 
-  // Slots
+  // App slots
   void onSearchAdded();
   void onNewResult();
 
