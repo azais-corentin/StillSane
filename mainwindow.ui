@@ -192,98 +192,58 @@
         </item>
         <item row="3" column="0">
          <widget class="QWidget" name="widgetTransitionTable" native="true">
-          <layout class="QGridLayout" name="gridLayout_9">
-           <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
             <widget class="QLabel" name="label">
              <property name="text">
               <string>Return the transition table that the crafter will use.</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" colspan="2">
-            <widget class="QCodeEditor" name="editorTransitionTable">
-             <property name="locale">
-              <locale language="English" country="World"/>
-             </property>
-             <property name="lineWrapMode">
-              <enum>QTextEdit::NoWrap</enum>
-             </property>
-             <property name="tabStopDistance">
-              <double>40.000000000000000</double>
-             </property>
-             <property name="acceptRichText">
-              <bool>false</bool>
-             </property>
-             <property name="placeholderText">
-              <string>Enter your lua script here</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QPushButton" name="bLoadTransitionTable">
-             <property name="text">
-              <string>Load</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QPushButton" name="bSaveTransitionTable">
-             <property name="text">
-              <string>Save</string>
-             </property>
-            </widget>
+           <item>
+            <widget class="AutoTrade::Ui::LuaEditor" name="eEditorTransitionTable" native="true"/>
            </item>
           </layout>
          </widget>
         </item>
         <item row="2" column="0">
          <widget class="QWidget" name="widgetFunctions" native="true">
-          <layout class="QGridLayout" name="gridLayout_8">
-           <item row="2" column="0">
-            <widget class="QPushButton" name="bLoadFunctions">
-             <property name="text">
-              <string>Load</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QPushButton" name="bSaveFunctions">
-             <property name="text">
-              <string>Save</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="2">
-            <widget class="QCodeEditor" name="editorFunctions">
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(40, 42, 54);</string>
-             </property>
-             <property name="locale">
-              <locale language="English" country="World"/>
-             </property>
-             <property name="lineWrapMode">
-              <enum>QTextEdit::NoWrap</enum>
-             </property>
-             <property name="tabStopDistance">
-              <double>40.000000000000000</double>
-             </property>
-             <property name="acceptRichText">
-              <bool>false</bool>
-             </property>
-             <property name="placeholderText">
-              <string>Enter your lua script here</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0" colspan="2">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
             <widget class="QLabel" name="lFunctionsHelp">
              <property name="text">
               <string>Functions in this lua script will be available to the crafter.</string>
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="AutoTrade::Ui::LuaEditor" name="eEditorFunctions" native="true"/>
+           </item>
           </layout>
          </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tabAutoTrade">
+       <attribute name="title">
+        <string>Auto trade</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_10">
+        <item row="0" column="0">
+         <widget class="QFrame" name="dockManagerAutoTrade">
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QWidget" name="widget" native="true"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QWidget" name="widget_2" native="true"/>
         </item>
        </layout>
       </widget>
@@ -314,9 +274,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QCodeEditor</class>
-   <extends>QTextEdit</extends>
-   <header location="global">QCodeEditor</header>
+   <class>AutoTrade::Ui::LuaEditor</class>
+   <extends>QWidget</extends>
+   <header>ui/luaeditor.hh</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -1,6 +1,7 @@
 target_sources(AutoTrade PRIVATE
-  luahighlighter.hh
-  luahighlighter.cpp
+  luaeditor.ui
+  luaeditor.hh
+  luaeditor.cpp
 )
 
 add_subdirectory(delegates)

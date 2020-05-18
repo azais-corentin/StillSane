@@ -5,9 +5,7 @@
 #include <sol/sol.hpp>
 
 #include <craft/crafter.hh>
-//#include <craft/statemachines.hh>
 #include <poe/searchmanager.hh>
-#include <ui/luahighlighter.hh>
 #include <ui/models/searchresulttree.hh>
 #include <ui/models/searchtable.hh>
 
@@ -16,10 +14,6 @@ namespace Ui {
 class MainWindow;
 }
 QT_END_NAMESPACE
-
-class QLuaCompleter;
-class QLuaHighlighter;
-class QSyntaxStyle;
 
 namespace AutoTrade {
 
@@ -40,11 +34,6 @@ class MainWindow : public QMainWindow {
   // Ui slots
   void on_bAddSearch_clicked();
   void on_ePOESESSID_editingFinished();
-
-  void on_bLoadFunctions_clicked();
-  void on_bSaveFunctions_clicked();
-  void on_bLoadTransitionTable_clicked();
-  void on_bSaveTransitionTable_clicked();
 
   // Slots
   void onSearchAdded();
@@ -69,11 +58,7 @@ class MainWindow : public QMainWindow {
 
  private:
   ::Ui::MainWindow* ui;
-
-  QLuaCompleter*                         mLuaCompleter;
-  QLuaHighlighter*                       mLuaHighlighterFunctions;
-  QLuaHighlighter*                       mLuaHighlighterTransitionTable;
-  QVector<QPair<QString, QSyntaxStyle*>> mStyles;
+  QStringList       mSyntaxStyles;
 
   Ui::Models::SearchTable      mSearchTableModel;
   Ui::Models::SearchResultTree mSearchResultTreeModel;

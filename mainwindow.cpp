@@ -18,171 +18,6 @@
 
 namespace AutoTrade {
 
-/*
-//////////////////////
-
-template <class NonMap>
-struct Print {
-  static void print(const QString& tabs, const NonMap& value) {
-    qDebug() << tabs << value;
-  }
-};
-
-template <class Key, class ValueType>
-struct Print<class QMap<Key, ValueType>> {
-  static void print(const QString& tabs, const QMap<Key, ValueType>& map) {
-    const QString                extraTab = tabs + "    ";
-    QMapIterator<Key, ValueType> iterator(map);
-    while (iterator.hasNext()) {
-      iterator.next();
-      qDebug() << tabs << iterator.key();
-      Print<ValueType>::print(extraTab, iterator.value());
-    }
-  }
-};
-
-//////////////////////
-
-struct Node {
-  enum Type { Root, Object, Array, Value };
-
-  // if type != Root
-  QString name;
-
-  Type type;
-
-  // if type == Object || type == Root
-  QVector<std::shared_ptr<Node>> objects;
-  // if type == Array
-  QVector<QJsonValue> values;
-  // if type == Value
-  QJsonValue value;
-
-  std::shared_ptr<Node> create(QString key) {
-    auto node = std::make_shared<Node>();
-    objects.push_back(node);
-    node->name = key;
-    return node;
-  }
-};
-
-std::shared_ptr<Node> get_node(std::shared_ptr<Node> node, QString key) {
-  if (node->type == Node::Root || node->type == Node::Object) {
-    auto it =
-        std::find_if(node->objects.begin(), node->objects.end(),
-                     [&](const std::shared_ptr<Node>& n) { return n->name == key; });
-    if (it != node->objects.end())
-      return *it;
-  }
-
-  return nullptr;
-}
-
-void add_value(std::shared_ptr<Node> node, QString key, QJsonValue value) {
-  auto created_node   = node->create(key);
-  created_node->type  = Node::Value;
-  created_node->value = value;
-}
-
-void add_value(std::shared_ptr<Node> node, QStringList keys, QJsonValue value) {
-  // qDebug() << "add_value:" << keys << ":" << value;
-
-  if (keys.size() == 1) {
-    add_value(node, keys.last(), value);  // end of recursion
-    return;
-  }
-
-  auto next_key  = keys.takeFirst();
-  auto next_node = get_node(node, next_key);
-
-  if (!next_node) {
-    next_node       = node->create(next_key);
-    next_node->type = Node::Object;
-  }
-
-  add_value(next_node, keys, value);  // recurse
-}
-
-void traverse(std::shared_ptr<Node> node, int indent = 0) {
-  QString indentation;
-  for (int i = indent; i > 0; i--)
-    indentation += "    ";
-
-  if (node->type == Node::Root || node->type == Node::Object) {
-    qDebug() << indentation + node->name;
-    for (const auto& child : node->objects)
-      traverse(child, indent + 1);
-  } else if (node->type == Node::Array) {
-    qDebug() << indentation + node->name;
-    for (const auto& value : node->values) {
-      qDebug() << indentation + value.toString();
-    }
-  } else if (node->type == Node::Value) {
-    qDebug() << indentation + node->name + "=" + node->value.toString();
-  }
-}
-
-QJsonValue to_json(std::shared_ptr<Node> node) {
-  QJsonValue out;
-  if (node->type == Node::Root || node->type == Node::Object) {
-    QJsonObject obj;
-    for (const auto& child : node->objects)
-      obj.insert(child->name, to_json(child));
-    out = obj;
-  } else if (node->type == Node::Array) {
-    QJsonArray array;
-    for (const auto& value : node->values) {
-      array.append(value);
-    }
-    out = array;
-  } else if (node->type == Node::Value) {
-    out = node->value;  // end of recursion
-  }
-  return out;
-}
-
-bool readJsonFile(QIODevice& device, QSettings::SettingsMap& map) {
-  QJsonParseError error;
-  map = QJsonDocument::fromJson(device.readAll(), &error).toVariant().toMap();
-
-  qDebug() << "";
-  qDebug() << "";
-  Print<QSettings::SettingsMap>::print("", map);
-  qDebug() << "";
-  qDebug() << "";
-
-  return error.error == QJsonParseError::NoError;
-}
-
-bool writeJsonFile(QIODevice& device, const QSettings::SettingsMap& map) {
-  qDebug() << "";
-  qDebug() << "";
-  Print<QSettings::SettingsMap>::print("", map);
-  qDebug() << "";
-  qDebug() << "";
-
-  auto i = map.constBegin();
-
-  auto root  = std::make_shared<Node>();
-  root->type = Node::Root;
-
-  while (i != map.constEnd()) {
-    qDebug() << "value:" << i.value().toJsonValue();
-    add_value(root, i.key().split("/"), i.value().toJsonValue());
-    i++;
-  }
-
-  // traverse(root);
-  QJsonDocument json;
-  json.setObject(to_json(root).toObject());
-
-  qDebug() << json.toJson();
-
-  const auto out = json.toJson();
-  return device.write(out) == out.size();
-}
-*/
-
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::MainWindow) {
   // Logging
   spdlog::set_level(spdlog::level::trace);
@@ -227,9 +62,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
 MainWindow::~MainWindow() {
   unregisterHotkeys();
   saveSettings();
-
-  delete mLuaHighlighterFunctions;
-  delete mLuaHighlighterTransitionTable;
 
   delete ui;
 }
@@ -287,8 +119,6 @@ void MainWindow::setupUi() {
                                           dockWidgetEditorFunctions);
   ui->dockManagerAutoCraft->addDockWidget(ads::RightDockWidgetArea,
                                           dockWidgetEditorTransitionTable);
-  ui->dockManagerMain->setStyleSheet("");
-  ui->dockManagerAutoCraft->setStyleSheet("");
 
   // Searches table
   ui->tableSearches->setModel(&mSearchTableModel);
@@ -312,14 +142,13 @@ void MainWindow::loadSyntaxStyles() {
         return;
       }
 
-      auto style = new QSyntaxStyle(this);
-      if (!style->load(file.readAll())) {
-        spdlog::error("Failed to load style {}", filepath.toStdString());
-        delete style;
-        return;
-      }
+      QString contents = file.readAll();
 
-      mStyles.append({style->name(), style});
+      ui->eEditorFunctions->addSyntaxStyle(contents);
+      QString name = ui->eEditorTransitionTable->addSyntaxStyle(contents);
+
+      if (!name.isEmpty())
+        mSyntaxStyles.append(name);
     }
   }
 }
@@ -362,39 +191,35 @@ void MainWindow::unregisterHotkeys() {
 
 void MainWindow::setupCraftingEditor() {
   QString family = "Source Code Pro";
-  int id = QFontDatabase::addApplicationFont("resources/fonts/SourceCodePro-Regular.otf");
-  if (id == -1) {
+  int     fontId =
+      QFontDatabase::addApplicationFont("resources/fonts/SourceCodePro-Regular.otf");
+  if (fontId == -1) {
     ui->statusbar->showMessage("Unable to load font 'SourceCodePro-Regular.otf'");
     spdlog::warn("Unable to load font 'SourceCodePro-Regular.otf'");
   } else {
     spdlog::debug("Loaded font 'SourceCodePro-Regular.otf'");
-    family = QFontDatabase::applicationFontFamilies(id).at(0);
+    family = QFontDatabase::applicationFontFamilies(fontId).at(0);
   }
   QFont font(family, 10);
   font.setStyleHint(QFont::Monospace);
 
-  ui->editorFunctions->setFont(font);
-  ui->editorTransitionTable->setFont(font);
-
-  mLuaCompleter                  = new QLuaCompleter(this);
-  mLuaHighlighterFunctions       = new QLuaHighlighter;
-  mLuaHighlighterTransitionTable = new QLuaHighlighter;
-  ui->editorFunctions->setCompleter(mLuaCompleter);
-  ui->editorTransitionTable->setCompleter(mLuaCompleter);
-  ui->editorFunctions->setHighlighter(mLuaHighlighterFunctions);
-  ui->editorTransitionTable->setHighlighter(mLuaHighlighterTransitionTable);
+  ui->eEditorFunctions->setFont(font);
+  ui->eEditorTransitionTable->setFont(font);
 
   loadSyntaxStyles();
   // Set last loaded style
-  if (!mStyles.empty()) {
-    ui->editorFunctions->setSyntaxStyle(mStyles.last().second);
-    ui->editorTransitionTable->setSyntaxStyle(mStyles.last().second);
+  if (!mSyntaxStyles.empty()) {
+    ui->eEditorFunctions->setSyntaxStyle(mSyntaxStyles.last());
+    ui->eEditorTransitionTable->setSyntaxStyle(mSyntaxStyles.last());
   }
+
+  ui->eEditorFunctions->setDefaultPath("resources/functions");
+  ui->eEditorTransitionTable->setDefaultPath("resources/transition_tables");
 }
 
 void MainWindow::startCrafting() {
-  auto codeTransitionTable = ui->editorTransitionTable->toPlainText();
-  auto codeFunctions       = ui->editorFunctions->toPlainText();
+  auto codeTransitionTable = ui->eEditorTransitionTable->text();
+  auto codeFunctions       = ui->eEditorFunctions->text();
 
   mCrafter.start(codeTransitionTable.toStdString(), codeFunctions.toStdString());
 }
@@ -420,8 +245,8 @@ void MainWindow::saveSettings() {
   settings["searches"] = searchesArray;
   QJsonObject editors;
   QJsonObject plaintext;
-  plaintext["functions"]        = ui->editorFunctions->toPlainText();
-  plaintext["transition_table"] = ui->editorTransitionTable->toPlainText();
+  plaintext["functions"]        = ui->eEditorFunctions->text();
+  plaintext["transition_table"] = ui->eEditorTransitionTable->text();
   editors["plaintext"]          = plaintext;
   settings["editors"]           = editors;
 
@@ -432,8 +257,8 @@ void MainWindow::loadSettings() {
   QFile settingsFile("settings.json");
   if (!settingsFile.open(QIODevice::ReadOnly)) {
     // default settings
-    ui->editorFunctions->clear();
-    ui->editorTransitionTable->clear();
+    ui->eEditorFunctions->clear();
+    ui->eEditorTransitionTable->clear();
     return;
   }
 
@@ -443,8 +268,8 @@ void MainWindow::loadSettings() {
   const auto& plaintext = editors["plaintext"].toObject();
   const auto& searches  = settings["searches"].toArray();
 
-  ui->editorFunctions->setPlainText(plaintext["functions"].toString());
-  ui->editorTransitionTable->setPlainText(plaintext["transition_table"].toString());
+  ui->eEditorFunctions->setText(plaintext["functions"].toString());
+  ui->eEditorTransitionTable->setText(plaintext["transition_table"].toString());
 
   for (const auto& search : searches) {
     mSearchManager.addSearch(search["id"].toString(), search["league"].toString(),
@@ -467,68 +292,6 @@ void MainWindow::on_bAddSearch_clicked() {
 
 void MainWindow::on_ePOESESSID_editingFinished() {
   Network::AccessManager::setPOESESSID(ui->ePOESESSID->text());
-}
-
-void MainWindow::on_bLoadFunctions_clicked() {
-  QString fileName = QFileDialog::getOpenFileName(
-      this, tr("Open functions"), "resources/functions", tr("Lua script (*.lua)"));
-
-  if (fileName.isEmpty())
-    return;
-
-  QFile lua(fileName);
-  if (lua.open(QIODevice::ReadOnly)) {
-    ui->editorFunctions->setPlainText(lua.readAll());
-  } else {
-    ui->statusbar->showMessage("Could not open file:" + fileName);
-  }
-}
-
-void MainWindow::on_bSaveFunctions_clicked() {
-  QString fileName = QFileDialog::getSaveFileName(
-      this, tr("Save functions"), "resources/functions", tr("Lua script (*.lua)"));
-
-  if (fileName.isEmpty())
-    return;
-
-  QFile lua(fileName);
-  if (lua.open(QIODevice::WriteOnly)) {
-    lua.write(ui->editorFunctions->toPlainText().toUtf8());
-  } else {
-    ui->statusbar->showMessage("Could not write to file:" + fileName);
-  }
-}
-
-void MainWindow::on_bLoadTransitionTable_clicked() {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open transition table"),
-                                                  "resources/transition_tables",
-                                                  tr("Lua script (*.lua)"));
-
-  if (fileName.isEmpty())
-    return;
-
-  QFile lua(fileName);
-  if (lua.open(QIODevice::ReadOnly)) {
-    ui->editorTransitionTable->setPlainText(lua.readAll());
-  } else {
-    ui->statusbar->showMessage("Could not open file:" + fileName);
-  }
-}
-
-void MainWindow::on_bSaveTransitionTable_clicked() {
-  QString fileName = QFileDialog::getSaveFileName(this, tr("Save transition table"),
-                                                  "resources/transition_tables",
-                                                  tr("Lua script (*.lua)"));
-
-  if (fileName.isEmpty())
-    return;
-
-  QFile lua(fileName);
-  if (lua.open(QIODevice::WriteOnly)) {
-    lua.write(ui->editorTransitionTable->toPlainText().toUtf8());
-  } else {
-    ui->statusbar->showMessage("Could not write to file:" + fileName);
-  }
 }
 
 }  // namespace AutoTrade
