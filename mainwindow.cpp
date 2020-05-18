@@ -7,10 +7,10 @@
 #include <spdlog/spdlog.h>
 #include <QFile>
 #include <QFileDialog>
-#include <QLuaCompleter>
-#include <QLuaHighlighter>
-#include <QSyntaxStyle>
 #include <range/v3/view/reverse.hpp>
+#include "QCodeEditor/include/QLuaCompleter"
+#include "QCodeEditor/include/QLuaHighlighter"
+#include "QCodeEditor/include/QSyntaxStyle"
 
 #include <network/accessmanager.hh>
 #include <poe/api/trade.hh>

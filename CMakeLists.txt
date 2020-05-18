@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.17)
 
 project(StillSane LANGUAGES CXX)
 
+include(CMakeChecks.txt)
+
 message(STATUS "CMake ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" )
 
 set(CMAKE_AUTOUIC ON)
@@ -82,3 +84,7 @@ target_link_libraries(StillSane PRIVATE magic_enum::magic_enum)
 
 # QCodeEditor
 target_link_libraries(StillSane PRIVATE QCodeEditor)
+
+# Qt Advanced Docking System
+target_link_libraries(StillSane PRIVATE qtadvanceddocking)
+target_include_directories(StillSane PRIVATE "${PROJECT_SOURCE_DIR}/libs/QtAds/src")

@@ -44,7 +44,7 @@
   <customwidget>
    <class>QCodeEditor</class>
    <extends>QTextEdit</extends>
-   <header location="global">QCodeEditor</header>
+   <header location="global">QCodeEditor/include/QCodeEditor</header>
   </customwidget>
  </customwidgets>
  <resources/>
