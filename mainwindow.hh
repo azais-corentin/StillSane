@@ -2,7 +2,6 @@
 
 #include <QMainWindow>
 #include <QTimer>
-
 #include <sol/sol.hpp>
 
 #include <craft/crafter.hh>
@@ -17,6 +16,10 @@ namespace Ui {
 class MainWindow;
 }
 QT_END_NAMESPACE
+
+class QLuaCompleter;
+class QLuaHighlighter;
+class QSyntaxStyle;
 
 namespace AutoTrade {
 
@@ -48,6 +51,10 @@ class MainWindow : public QMainWindow {
   void onNewResult();
 
  private:
+  // Ui
+  void setupUi();
+  void loadSyntaxStyles();
+
   // Crafting
   bool nativeEvent(const QByteArray& eventType, void* message, long* result) final;
   void registerHotkeys();
@@ -61,9 +68,13 @@ class MainWindow : public QMainWindow {
   void loadSettings();
 
  private:
-  ::Ui::MainWindow*            ui;
-  Ui::LuaHighlighter*          mLuaHighlighterFunctions;
-  Ui::LuaHighlighter*          mLuaHighlighterTransitionTable;
+  ::Ui::MainWindow* ui;
+
+  QLuaCompleter*                         mLuaCompleter;
+  QLuaHighlighter*                       mLuaHighlighterFunctions;
+  QLuaHighlighter*                       mLuaHighlighterTransitionTable;
+  QVector<QPair<QString, QSyntaxStyle*>> mStyles;
+
   Ui::Models::SearchTable      mSearchTableModel;
   Ui::Models::SearchResultTree mSearchResultTreeModel;
 

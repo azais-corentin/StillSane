@@ -8,7 +8,6 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-#target_include_directories(AutoTrade PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(AutoTrade "")
 target_sources(AutoTrade PRIVATE
@@ -80,3 +79,6 @@ target_link_libraries(AutoTrade PRIVATE range-v3 range-v3-meta range-v3::meta ra
 # magic_enum
 find_package(magic_enum CONFIG REQUIRED)
 target_link_libraries(AutoTrade PRIVATE magic_enum::magic_enum)
+
+# QCodeEditor
+target_link_libraries(AutoTrade PRIVATE QCodeEditor)

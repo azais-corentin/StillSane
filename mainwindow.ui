@@ -20,6 +20,12 @@
       <property name="currentIndex">
        <number>5</number>
       </property>
+      <property name="movable">
+       <bool>true</bool>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>true</bool>
+      </property>
       <widget class="QWidget" name="tabOngoingTrades">
        <attribute name="title">
         <string>Ongoing trades</string>
@@ -181,61 +187,8 @@
         <string>Auto craft</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
-        <item row="2" column="0">
-         <widget class="QWidget" name="widgetFunctions" native="true">
-          <layout class="QGridLayout" name="gridLayout_8">
-           <item row="2" column="0">
-            <widget class="QPushButton" name="bLoadFunctions">
-             <property name="text">
-              <string>Load</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QPushButton" name="bSaveFunctions">
-             <property name="text">
-              <string>Save</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="2">
-            <widget class="QTextEdit" name="editorFunctions">
-             <property name="locale">
-              <locale language="English" country="World"/>
-             </property>
-             <property name="lineWrapMode">
-              <enum>QTextEdit::NoWrap</enum>
-             </property>
-             <property name="tabStopDistance">
-              <double>40.000000000000000</double>
-             </property>
-             <property name="acceptRichText">
-              <bool>false</bool>
-             </property>
-             <property name="placeholderText">
-              <string>Enter your lua script here</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0" colspan="2">
-            <widget class="QLabel" name="lFunctionsHelp">
-             <property name="text">
-              <string>Functions in this lua script will be available to the crafter.</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
         <item row="0" column="0">
-         <widget class="ads::CDockManager" name="dockWidget">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-         </widget>
+         <widget class="ads::CDockManager" name="dockManagerAutoCraft"/>
         </item>
         <item row="3" column="0">
          <widget class="QWidget" name="widgetTransitionTable" native="true">
@@ -248,7 +201,7 @@
             </widget>
            </item>
            <item row="1" column="0" colspan="2">
-            <widget class="QTextEdit" name="editorTransitionTable">
+            <widget class="QCodeEditor" name="editorTransitionTable">
              <property name="locale">
               <locale language="English" country="World"/>
              </property>
@@ -283,9 +236,61 @@
           </layout>
          </widget>
         </item>
+        <item row="2" column="0">
+         <widget class="QWidget" name="widgetFunctions" native="true">
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="2" column="0">
+            <widget class="QPushButton" name="bLoadFunctions">
+             <property name="text">
+              <string>Load</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="bSaveFunctions">
+             <property name="text">
+              <string>Save</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QCodeEditor" name="editorFunctions">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(40, 42, 54);</string>
+             </property>
+             <property name="locale">
+              <locale language="English" country="World"/>
+             </property>
+             <property name="lineWrapMode">
+              <enum>QTextEdit::NoWrap</enum>
+             </property>
+             <property name="tabStopDistance">
+              <double>40.000000000000000</double>
+             </property>
+             <property name="acceptRichText">
+              <bool>false</bool>
+             </property>
+             <property name="placeholderText">
+              <string>Enter your lua script here</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="2">
+            <widget class="QLabel" name="lFunctionsHelp">
+             <property name="text">
+              <string>Functions in this lua script will be available to the crafter.</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="ads::CDockManager" name="dockManagerMain"/>
     </item>
    </layout>
   </widget>
@@ -307,6 +312,11 @@
    <extends>QFrame</extends>
    <header location="global">DockManager.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QCodeEditor</class>
+   <extends>QTextEdit</extends>
+   <header location="global">QCodeEditor</header>
   </customwidget>
  </customwidgets>
  <resources/>
