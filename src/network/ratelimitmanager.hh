@@ -7,7 +7,7 @@
 #include <QQueue>
 #include <QTimer>
 
-#include <network/ratelimitrulemanager.hh>
+#include "ratelimitrulemanager.hh"
 
 namespace AutoTrade::Network {
 

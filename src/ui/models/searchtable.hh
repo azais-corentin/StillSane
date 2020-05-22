@@ -4,7 +4,7 @@
 
 #include <QAbstractTableModel>
 
-#include <poe/searchmanager.hh>
+#include "../../poe/searchmanager.hh"
 
 namespace AutoTrade::Poe::Api {
 class Trade;

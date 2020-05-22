@@ -1,9 +1,9 @@
 #include "searchtable.hh"
 
-#include <poe/api/trade.hh>
-#include <poe/searchmanager.hh>
-
 #include <QLabel>
+
+#include "../../poe/api/trade.hh"
+#include "../../poe/searchmanager.hh"
 
 namespace AutoTrade::Ui::Models {
 

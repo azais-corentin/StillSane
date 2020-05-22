@@ -6,8 +6,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-#include <network/accessmanager.hh>
-#include <poe/api/constants.hh>
+#include "../../network/accessmanager.hh"
+#include "constants.hh"
 
 namespace AutoTrade::Poe::Api {
 

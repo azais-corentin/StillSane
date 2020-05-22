@@ -5,8 +5,7 @@
 #include <QObject>
 #include <QVector>
 
-//#include <poe/api/trade.hh>
-#include <poe/api/types.hh>
+#include "api/types.hh"
 
 namespace AutoTrade::Poe {
 

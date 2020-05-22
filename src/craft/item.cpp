@@ -1,8 +1,7 @@
 #include "item.hh"
 
-#include <QRegularExpression>
-
 #include <spdlog/spdlog.h>
+#include <QRegularExpression>
 #include <magic_enum.hpp>
 
 namespace AutoTrade::Craft {

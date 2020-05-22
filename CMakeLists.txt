@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(StillSane LANGUAGES CXX)
+project(StillSane
+  VERSION 0.2.0
+  DESCRIPTION "Keep your sanity by automating some things in Path of Exile."
+  HOMEPAGE_URL "https://github.com/Haellsigh/StillSane"
+  LANGUAGES CXX)
 
 message(STATUS "CMake ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION}" )
 
-add_executable(StillSane "")
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
 
 add_subdirectory(src)
 add_subdirectory(docs)
-
-##### Pre build actions
-# Copy resources to build folder
-add_custom_command(TARGET StillSane PRE_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_directory
-                   ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:StillSane>/resources/)

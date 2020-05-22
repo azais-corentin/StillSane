@@ -1,7 +1,7 @@
 #include "searchmanager.hh"
 
-#include <poe/api/constants.hh>
-#include <poe/api/trade.hh>
+#include "api/constants.hh"
+#include "api/trade.hh"
 
 namespace AutoTrade::Poe {
 

@@ -1,9 +1,10 @@
 include(CMakeChecks.txt)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
+add_executable(StillSane "")
+
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+target_include_directories(StillSane PRIVATE CMAKE_SOURCE_DIR)
 
 target_sources(StillSane PRIVATE
   main.cpp
@@ -38,6 +39,12 @@ if(MSVC)
 else()
   target_compile_options(StillSane PRIVATE  -Wall -Wextra -Werror)
 endif()
+
+##### Pre build actions
+# Copy resources to build folder
+add_custom_command(TARGET StillSane PRE_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                   ${PROJECT_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:StillSane>/resources/)
 
 ##### Libraries
 # Qt

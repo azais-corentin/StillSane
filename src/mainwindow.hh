@@ -3,10 +3,10 @@
 #include <QMainWindow>
 #include <QMultiMap>
 
-#include <craft/crafter.hh>
-#include <poe/searchmanager.hh>
-#include <ui/models/searchresulttree.hh>
-#include <ui/models/searchtable.hh>
+#include "craft/crafter.hh"
+#include "poe/searchmanager.hh"
+#include "ui/models/searchresulttree.hh"
+#include "ui/models/searchtable.hh"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

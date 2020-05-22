@@ -3,7 +3,7 @@
 #include <QElapsedTimer>
 #include <QNetworkAccessManager>
 
-#include <network/ratelimitmanager.hh>
+#include "ratelimitmanager.hh"
 
 namespace AutoTrade::Network {
 

@@ -14,9 +14,9 @@
 #include "QCodeEditor/include/QLuaHighlighter"
 #include "QCodeEditor/include/QSyntaxStyle"
 
-#include <network/accessmanager.hh>
-#include <poe/api/trade.hh>
-#include <ui/delegates/checkbox.hh>
+#include "network/accessmanager.hh"
+#include "poe/api/trade.hh"
+#include "ui/delegates/checkbox.hh"
 
 namespace AutoTrade {
 

@@ -3,7 +3,7 @@
 #include <QNetworkRequest>
 #include <QObject>
 
-#include <poe/api/types.hh>
+#include "types.hh"
 
 namespace AutoTrade::Poe::Api {
 

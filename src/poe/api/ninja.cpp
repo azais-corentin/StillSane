@@ -5,8 +5,8 @@
 #include <QJsonObject>
 #include <QUrlQuery>
 
-#include <network/accessmanager.hh>
-#include <poe/api/constants.hh>
+#include "../../network/accessmanager.hh"
+#include "constants.hh"
 
 using namespace std::placeholders;
 

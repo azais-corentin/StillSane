@@ -4,12 +4,11 @@
 #include <thread>
 #include "windows.h"
 
+#include <fmt/format.h>
+#include <spdlog/spdlog.h>
 #include <QApplication>
 #include <QClipboard>
 #include <QRegularExpression>
-
-#include <fmt/format.h>
-#include <spdlog/spdlog.h>
 #include <magic_enum.hpp>
 #include <range/v3/view/filter.hpp>
 #include <sol/sol.hpp>

@@ -7,9 +7,9 @@
 #include <QObject>
 #include <QWebSocket>
 
-#include <network/accessmanager.hh>
-#include <network/ratelimitmanager.hh>
-#include <poe/api/types.hh>
+#include "../network/accessmanager.hh"
+#include "../network/ratelimitmanager.hh"
+#include "types.hh"
 
 namespace AutoTrade::Poe::Api {
 
