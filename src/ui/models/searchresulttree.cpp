@@ -1,6 +1,6 @@
 #include "searchresulttree.hh"
 
-namespace AutoTrade::Ui::Models {
+namespace StillSane::Ui::Models {
 
 SearchResultTree::SearchResultTree(QObject* parent) : QAbstractItemModel(parent) {}
 
@@ -47,4 +47,4 @@ QVariant SearchResultTree::data(const QModelIndex& index, int role) const {
   return QVariant();
 }
 
-}  // namespace AutoTrade::Ui::Models
+}  // namespace StillSane::Ui::Models

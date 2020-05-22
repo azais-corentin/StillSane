@@ -1,6 +1,6 @@
 #include "ratelimitrulemanager.hh"
 
-namespace AutoTrade::Network {
+namespace StillSane::Network {
 
 /*
 RateLimitRuleManager::RateLimitRuleManager(const QString& rule, QObject* parent)
@@ -97,4 +97,4 @@ std::tuple<bool, int, int, int> RateLimitRuleManager::extractSet(const QString& 
 }
 */
 
-}  // namespace AutoTrade::Network
+}  // namespace StillSane::Network

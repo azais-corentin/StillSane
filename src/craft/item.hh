@@ -7,7 +7,7 @@
 
 #include <QString>
 
-namespace AutoTrade::Craft {
+namespace StillSane::Craft {
 
 class Item {
  public:
@@ -73,4 +73,4 @@ class Item {
   int               mILvl;
 };
 
-}  // namespace AutoTrade::Craft
+}  // namespace StillSane::Craft

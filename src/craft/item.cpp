@@ -4,7 +4,7 @@
 #include <QRegularExpression>
 #include <magic_enum.hpp>
 
-namespace AutoTrade::Craft {
+namespace StillSane::Craft {
 
 Item::Item(const QString& fullText) : mFullText(fullText) {
   // Split by sections and lines
@@ -144,4 +144,4 @@ void Item::parse() {
   }
 }
 
-}  // namespace AutoTrade::Craft
+}  // namespace StillSane::Craft

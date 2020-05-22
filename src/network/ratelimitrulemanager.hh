@@ -4,7 +4,7 @@
 #include <QString>
 #include <QTimer>
 
-namespace AutoTrade::Network {
+namespace StillSane::Network {
 
 /*
 class RateLimitRuleManager : public QObject {
@@ -32,4 +32,4 @@ class RateLimitRuleManager : public QObject {
 };
 */
 
-}  // namespace AutoTrade::Network
+}  // namespace StillSane::Network

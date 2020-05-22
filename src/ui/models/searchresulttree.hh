@@ -2,7 +2,7 @@
 
 #include <QAbstractItemModel>
 
-namespace AutoTrade::Ui::Models {
+namespace StillSane::Ui::Models {
 
 class SearchResultTree : public QAbstractItemModel {
   Q_OBJECT
@@ -29,4 +29,4 @@ class SearchResultTree : public QAbstractItemModel {
  private:
 };
 
-}  // namespace AutoTrade::Ui::Models
+}  // namespace StillSane::Ui::Models

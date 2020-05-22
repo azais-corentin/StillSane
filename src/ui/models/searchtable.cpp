@@ -5,7 +5,7 @@
 #include "../../poe/api/trade.hh"
 #include "../../poe/searchmanager.hh"
 
-namespace AutoTrade::Ui::Models {
+namespace StillSane::Ui::Models {
 
 SearchTable::SearchTable(QObject* parent) : QAbstractTableModel(parent) {}
 
@@ -128,4 +128,4 @@ Qt::ItemFlags SearchTable::flags(const QModelIndex& index) const {
          (index.column() != 1 ? Qt::ItemIsEditable : Qt::NoItemFlags);
 }
 
-}  // namespace AutoTrade::Ui::Models
+}  // namespace StillSane::Ui::Models

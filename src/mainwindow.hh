@@ -14,7 +14,7 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-namespace AutoTrade {
+namespace StillSane {
 
 namespace Ui {
 class LuaEditor;
@@ -79,4 +79,4 @@ class MainWindow : public QMainWindow {
   Craft::Crafter mCrafter;
 };
 
-}  // namespace AutoTrade
+}  // namespace StillSane

@@ -2,7 +2,7 @@
 
 #include <QStyledItemDelegate>
 
-namespace AutoTrade::Ui::Delegates {
+namespace StillSane::Ui::Delegates {
 
 class CheckBox : public QStyledItemDelegate {
   Q_OBJECT
@@ -25,4 +25,4 @@ class CheckBox : public QStyledItemDelegate {
                             const QModelIndex&          index) const override;
 };
 
-}  // namespace AutoTrade::Ui::Delegates
+}  // namespace StillSane::Ui::Delegates

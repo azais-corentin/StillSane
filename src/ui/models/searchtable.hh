@@ -6,11 +6,11 @@
 
 #include "../../poe/searchmanager.hh"
 
-namespace AutoTrade::Poe::Api {
+namespace StillSane::Poe::Api {
 class Trade;
 }
 
-namespace AutoTrade::Ui::Models {
+namespace StillSane::Ui::Models {
 
 class SearchTable : public QAbstractTableModel {
   Q_OBJECT
@@ -45,4 +45,4 @@ class SearchTable : public QAbstractTableModel {
   QVector<Poe::Api::Trade*> mTradeApis;
 };
 
-}  // namespace AutoTrade::Ui::Models
+}  // namespace StillSane::Ui::Models

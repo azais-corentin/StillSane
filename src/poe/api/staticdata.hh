@@ -5,7 +5,7 @@
 
 #include "types.hh"
 
-namespace AutoTrade::Poe::Api {
+namespace StillSane::Poe::Api {
 
 class StaticData : public QObject {
   Q_OBJECT
@@ -32,4 +32,4 @@ class StaticData : public QObject {
   QVector<Item> mItems;
 };
 
-}  // namespace AutoTrade::Poe::Api
+}  // namespace StillSane::Poe::Api

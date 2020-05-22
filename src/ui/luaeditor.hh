@@ -11,7 +11,7 @@ class QLuaCompleter;
 class QLuaHighlighter;
 class QSyntaxStyle;
 
-namespace AutoTrade::Ui {
+namespace StillSane::Ui {
 
 class LuaEditor : public QWidget {
   Q_OBJECT
@@ -53,6 +53,6 @@ class LuaEditor : public QWidget {
   QString mName, mSyntaxStyle;
 };
 
-}  // namespace AutoTrade::Ui
+}  // namespace StillSane::Ui
 
 #endif  // LUAEDITOR_HH

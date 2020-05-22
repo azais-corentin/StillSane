@@ -4,7 +4,7 @@
 
 #include "../../poe/api/types.hh"
 
-namespace AutoTrade::ui::models {
+namespace StillSane::ui::models {
 
 class ItemList : public QAbstractListModel {
   Q_OBJECT
@@ -21,4 +21,4 @@ class ItemList : public QAbstractListModel {
   QVector<Poe::Api::Item> mItems;
 };
 
-}  // namespace AutoTrade::ui::models
+}  // namespace StillSane::ui::models

@@ -188,10 +188,10 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout_7">
         <item row="2" column="0">
-         <widget class="AutoTrade::Ui::LuaEditor" name="eACFEditor" native="true"/>
+         <widget class="StillSane::Ui::LuaEditor" name="eACFEditor" native="true"/>
         </item>
         <item row="3" column="0">
-         <widget class="AutoTrade::Ui::LuaEditor" name="eACTTEditor" native="true"/>
+         <widget class="StillSane::Ui::LuaEditor" name="eACTTEditor" native="true"/>
         </item>
         <item row="0" column="0">
          <widget class="ads::CDockManager" name="dockManagerAC"/>
@@ -207,10 +207,10 @@
          <widget class="ads::CDockManager" name="dockManagerAT"/>
         </item>
         <item row="3" column="0">
-         <widget class="AutoTrade::Ui::LuaEditor" name="eATTTEditor" native="true"/>
+         <widget class="StillSane::Ui::LuaEditor" name="eATTTEditor" native="true"/>
         </item>
         <item row="2" column="0">
-         <widget class="AutoTrade::Ui::LuaEditor" name="eATFEditor" native="true"/>
+         <widget class="StillSane::Ui::LuaEditor" name="eATFEditor" native="true"/>
         </item>
        </layout>
       </widget>
@@ -241,7 +241,7 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>AutoTrade::Ui::LuaEditor</class>
+   <class>StillSane::Ui::LuaEditor</class>
    <extends>QWidget</extends>
    <header>ui/luaeditor.hh</header>
    <container>1</container>

@@ -3,7 +3,7 @@
 #include "api/constants.hh"
 #include "api/trade.hh"
 
-namespace AutoTrade::Poe {
+namespace StillSane::Poe {
 
 SearchManager::SearchManager(QObject* parent) : QObject(parent) {}
 
@@ -77,4 +77,4 @@ void SearchManager::onItemReceived(size_t index, const Api::TradeItem& item) {
   qDebug() << "trade[" << index << "] result:" << item.text;
 }
 
-}  // namespace AutoTrade::Poe
+}  // namespace StillSane::Poe

@@ -18,7 +18,7 @@
 #include "poe/api/trade.hh"
 #include "ui/delegates/checkbox.hh"
 
-namespace AutoTrade {
+namespace StillSane {
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::MainWindow) {
   // Logging
@@ -366,4 +366,4 @@ void MainWindow::on_ePOESESSID_editingFinished() {
   Network::AccessManager::setPOESESSID(ui->ePOESESSID->text());
 }
 
-}  // namespace AutoTrade
+}  // namespace StillSane

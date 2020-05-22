@@ -7,7 +7,7 @@
 #include <QLuaHighlighter>
 #include <QSyntaxStyle>
 
-namespace AutoTrade::Ui {
+namespace StillSane::Ui {
 
 LuaEditor::LuaEditor(QWidget* parent) : QWidget(parent), ui(new ::Ui::LuaEditor) {
   ui->setupUi(this);
@@ -121,4 +121,4 @@ void LuaEditor::paintEvent(QPaintEvent* event) {
   QWidget::paintEvent(event);
 }
 
-}  // namespace AutoTrade::Ui
+}  // namespace StillSane::Ui

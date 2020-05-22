@@ -9,7 +9,7 @@
 
 #include "ratelimitrulemanager.hh"
 
-namespace AutoTrade::Network {
+namespace StillSane::Network {
 
 /**
  * @brief The RateLimitManager class
@@ -75,7 +75,7 @@ class RateLimitManager : public QObject {
   QQueue<std::function<void()>>                  mScheduledRequests;
 
   QTimer mTimerNextRequest;
-};  // namespace AutoTrade::Network
+};
 */
 
-}  // namespace AutoTrade::Network
+}  // namespace StillSane::Network

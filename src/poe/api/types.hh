@@ -3,7 +3,7 @@
 #include <QMap>
 #include <QString>
 
-namespace AutoTrade::Poe::Api {
+namespace StillSane::Poe::Api {
 
 enum Currency { Mirror, Exalted, Chaos };
 
@@ -26,4 +26,4 @@ struct TradeItem {
   QString currencyTradeId;
 };
 
-}  // namespace AutoTrade::Poe::Api
+}  // namespace StillSane::Poe::Api

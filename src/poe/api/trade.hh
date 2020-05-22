@@ -11,7 +11,7 @@
 #include "../network/ratelimitmanager.hh"
 #include "types.hh"
 
-namespace AutoTrade::Poe::Api {
+namespace StillSane::Poe::Api {
 
 /**
  * @brief The Trade class interfaces with the official trade API at
@@ -104,4 +104,4 @@ class Trade : public QObject {
   // RateLimitManager mRateLimiter;
 };
 
-}  // namespace AutoTrade::Poe::Api
+}  // namespace StillSane::Poe::Api

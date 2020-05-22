@@ -13,7 +13,7 @@
 #include <range/v3/view/filter.hpp>
 #include <sol/sol.hpp>
 
-namespace AutoTrade::Craft {
+namespace StillSane::Craft {
 
 namespace fs = std::filesystem;
 
@@ -349,4 +349,4 @@ void Crafter::resetLuaState() {
   );
 }
 
-}  // namespace AutoTrade::Craft
+}  // namespace StillSane::Craft

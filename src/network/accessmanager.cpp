@@ -5,7 +5,7 @@
 
 #include "ratelimitmanager.hh"
 
-namespace AutoTrade::Network {
+namespace StillSane::Network {
 
 AccessManager::AccessManager() {
   mNetworkAccessManager = new QNetworkAccessManager(this);
@@ -102,6 +102,6 @@ void AccessManager::post(QNetworkRequest   request,
   qDebug() << "NetworkAccess::post executing request";
   executeRequest();
   //}
-}  // namespace AutoTrade::Network
+}
 
-}  // namespace AutoTrade::Network
+}  // namespace StillSane::Network

@@ -2,7 +2,7 @@
 
 #include <QString>
 
-namespace AutoTrade::Poe::Api {
+namespace StillSane::Poe::Api {
 
 inline const QString currentLeague = QStringLiteral("Delirium");
 
@@ -21,4 +21,4 @@ inline const QString TradeFetchPath  = QStringLiteral("/fetch/");
 // poe.ninja API
 inline const QString baseHostNinja = QStringLiteral("poe.ninja");
 inline const QString basePathNinja = QStringLiteral("/api/data");
-}  // namespace AutoTrade::Poe::Api
+}  // namespace StillSane::Poe::Api

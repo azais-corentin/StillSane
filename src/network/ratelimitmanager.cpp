@@ -1,7 +1,7 @@
 #include "ratelimitmanager.hh"
 
 /*
-namespace AutoTrade::Network {
+namespace StillSane::Network {
 
 RateLimitManager::RateLimitManager(QObject* parent) : QObject(parent) {
   mTimerNextRequest.setSingleShot(true);
@@ -73,5 +73,5 @@ void RateLimitManager::scheduleNextRequest() {
   mTimerNextRequest.start(nextRequestTime());
 }
 
-}  // namespace AutoTrade::Network
+}  // namespace StillSane::Network
 */

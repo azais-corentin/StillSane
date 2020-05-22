@@ -13,7 +13,7 @@
 #include "fsm.hh"
 #include "item.hh"
 
-namespace AutoTrade::Craft {
+namespace StillSane::Craft {
 
 enum class MouseRegion {
   Item,
@@ -88,4 +88,4 @@ class Crafter : public QObject {
   // QStringList mExplicits;
 };
 
-}  // namespace AutoTrade::Craft
+}  // namespace StillSane::Craft

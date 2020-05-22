@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QPair>
 
-namespace AutoTrade::ui::models {
+namespace StillSane::ui::models {
 
 ItemList::ItemList(const QVector<Poe::Api::Item>& items, QObject* parent)
     : QAbstractListModel(parent), mItems(items) {
@@ -43,4 +43,4 @@ QVariant ItemList::headerData(int section, Qt::Orientation orientation, int role
     return QStringLiteral("Row %1").arg(section);
 }
 
-}  // namespace AutoTrade::ui::models
+}  // namespace StillSane::ui::models

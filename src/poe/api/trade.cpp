@@ -5,7 +5,7 @@
 
 #include "constants.hh"
 
-namespace AutoTrade::Poe::Api {
+namespace StillSane::Poe::Api {
 
 using namespace Network;
 
@@ -215,4 +215,4 @@ void Trade::parseFetchedItems(const QByteArray& data) {
   }
 }
 
-}  // namespace AutoTrade::Poe::Api
+}  // namespace StillSane::Poe::Api

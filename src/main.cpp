@@ -3,12 +3,12 @@
 #include <QApplication>
 
 int main(int argc, char* argv[]) {
-  QCoreApplication::setOrganizationName("AutoTrade");
-  QCoreApplication::setApplicationName("AutoTrade");
+  QCoreApplication::setOrganizationName("StillSane");
+  QCoreApplication::setApplicationName("StillSane");
 
   QApplication a(argc, argv);
 
-  AutoTrade::MainWindow w;
+  StillSane::MainWindow w;
   w.show();
   return a.exec();
 }

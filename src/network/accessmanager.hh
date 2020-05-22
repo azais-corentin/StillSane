@@ -8,7 +8,7 @@
 #include <QObject>
 #include <QQueue>
 
-namespace AutoTrade::Network {
+namespace StillSane::Network {
 
 // class RateLimitManager;
 
@@ -51,4 +51,4 @@ class AccessManager : public QObject {
   QString                 mPOESESSID;
 };
 
-}  // namespace AutoTrade::Network
+}  // namespace StillSane::Network

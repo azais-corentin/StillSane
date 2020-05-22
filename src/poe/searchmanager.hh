@@ -7,7 +7,7 @@
 
 #include "api/types.hh"
 
-namespace AutoTrade::Poe {
+namespace StillSane::Poe {
 
 struct Result {};
 
@@ -48,4 +48,4 @@ class SearchManager : public QObject {
   QString mPOESESSID;
 };
 
-}  // namespace AutoTrade::Poe
+}  // namespace StillSane::Poe

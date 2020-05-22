@@ -5,7 +5,7 @@
 
 #include "types.hh"
 
-namespace AutoTrade::Poe::Api {
+namespace StillSane::Poe::Api {
 
 struct CurrencyDetail {
   QString name, tradeId;
@@ -43,4 +43,4 @@ class Ninja : public QObject {
   bool mUpdatingCurrencyDetail = false;
 };
 
-}  // namespace AutoTrade::Poe::Api
+}  // namespace StillSane::Poe::Api

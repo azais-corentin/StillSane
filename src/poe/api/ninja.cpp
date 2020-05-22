@@ -10,7 +10,7 @@
 
 using namespace std::placeholders;
 
-namespace AutoTrade::Poe::Api {
+namespace StillSane::Poe::Api {
 
 using namespace Network;
 
@@ -115,4 +115,4 @@ QNetworkRequest Ninja::buildRequest(const QString& path) const {
   return request;
 }
 
-}  // namespace AutoTrade::Poe::Api
+}  // namespace StillSane::Poe::Api
