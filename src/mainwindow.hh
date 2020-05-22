@@ -1,9 +1,7 @@
 #pragma once
 
-#include <QCloseEvent>
 #include <QMainWindow>
 #include <QMultiMap>
-#include <sol/sol.hpp>
 
 #include <craft/crafter.hh>
 #include <poe/searchmanager.hh>

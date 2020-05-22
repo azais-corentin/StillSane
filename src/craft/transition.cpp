@@ -60,15 +60,20 @@ Transition::Transition(std::string transition) {
               error("okay this shouldn't be possible, just saying");
               success = false;
             } else {
-              has_src_state = true;
-              if (element.starts_with("*")) {
-                std::string initial_state = element.substr(1);
-                mInitial                  = true;
-                mSrcState                 = initial_state;
-                // debug("initial state: ", mSrcState);
+              if (element.empty()) {
+                error("source state is empty!");
+                success = false;
               } else {
-                mSrcState = element;
-                // debug("source state: ", mSrcState);
+                has_src_state = true;
+                if (element.starts_with("*")) {
+                  std::string initial_state = element.substr(1);
+                  mInitial                  = true;
+                  mSrcState                 = initial_state;
+                  // debug("initial state: ", mSrcState);
+                } else {
+                  mSrcState = element;
+                  // debug("source state: ", mSrcState);
+                }
               }
             }
             break;

@@ -1,4 +1,5 @@
 #include "mainwindow.hh"
+#include "spdlog/common.h"
 #include "ui_mainwindow.h"
 
 #include <windows.h>

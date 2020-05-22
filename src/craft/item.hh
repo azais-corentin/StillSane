@@ -66,8 +66,8 @@ class Item {
   std::vector<std::vector<QStringRef>> mSectionsLines;
 
   // Default values
-  Identification    mId{Unknown};
-  Rarity            mRarity{Unknown};
+  Identification    mId{static_cast<Identification>(Unknown)};
+  Rarity            mRarity{static_cast<Rarity>(Unknown)};
   int               mReqLevel = 0, mReqStr = 0, mReqDex = 0, mReqInt = 0;
   std::vector<char> mSockets;
   int               mILvl;
