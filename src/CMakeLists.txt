@@ -2,7 +2,6 @@ include(CMakeChecks.txt)
 
 add_executable(StillSane "")
 
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 target_include_directories(StillSane PRIVATE CMAKE_SOURCE_DIR)
 
