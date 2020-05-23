@@ -13,7 +13,6 @@ class ModulesTable : public QAbstractTableModel {
 
  public:
   explicit ModulesTable(MainWindow* mainWindow, QObject* parent = nullptr);
-  ~ModulesTable();
 
   // Header:
   QVariant headerData(int             section,

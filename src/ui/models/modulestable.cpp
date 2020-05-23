@@ -6,14 +6,14 @@
 
 namespace StillSane::Ui::Models {
 
+/*!
+ * \brief Constructs a ModulesTable model that lists the modules and their properties.
+ *
+ * \param mainWindow Pointer to the MainWindow.
+ * \param parent Pointer to the parent object.
+ */
 ModulesTable::ModulesTable(MainWindow* mainWindow, QObject* parent)
-    : QAbstractTableModel(parent), mMainWindow(mainWindow) {
-  spdlog::debug("ModulesTable::ModulesTable constructed");
-}
-
-ModulesTable::~ModulesTable() {
-  spdlog::debug("ModulesTable::ModulesTable destructed");
-}
+    : QAbstractTableModel(parent), mMainWindow(mainWindow) {}
 
 QVariant ModulesTable::headerData(int             section,
                                   Qt::Orientation orientation,
