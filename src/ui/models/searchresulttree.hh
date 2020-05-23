@@ -4,6 +4,9 @@
 
 namespace StillSane::Ui::Models {
 
+/*!
+ * \brief Tree model for trade search results
+ */
 class SearchResultTree : public QAbstractItemModel {
   Q_OBJECT
 
