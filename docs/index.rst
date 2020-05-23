@@ -19,7 +19,5 @@ Index and modules
 Docs
 ====
 
-
-
 .. doxygenclass:: StillSane::MainWindow
    :members:
