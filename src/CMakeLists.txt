@@ -1,9 +1,7 @@
-include(CMakeChecks.txt)
-
 add_executable(StillSane "")
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-target_include_directories(StillSane PRIVATE CMAKE_SOURCE_DIR)
+#set(CMAKE_INCLUDE_CURRENT_DIR ON)
+#target_include_directories(StillSane PRIVATE CMAKE_SOURCE_DIR)
 
 target_sources(StillSane PRIVATE
   main.cpp
@@ -12,8 +10,9 @@ target_sources(StillSane PRIVATE
   mainwindow.ui
 )
 
-add_subdirectory(libs)
 add_subdirectory(craft)
+add_subdirectory(libs)
+add_subdirectory(modules)
 add_subdirectory(network)
 add_subdirectory(poe)
 add_subdirectory(ui)
