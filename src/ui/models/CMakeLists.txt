@@ -3,4 +3,6 @@ target_sources(StillSane PRIVATE
   searchresulttree.cpp
   searchtable.hh
   searchtable.cpp
+  modulestable.hh
+  modulestable.cpp
 )

@@ -5,4 +5,5 @@ target_sources(StillSane PRIVATE
 )
 
 add_subdirectory(delegates)
+add_subdirectory(dialogs)
 add_subdirectory(models)

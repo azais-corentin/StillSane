@@ -34,7 +34,7 @@ if(result)
 endif()
 # Warnings
 if(MSVC)
-  target_compile_options(StillSane PRIVATE /W3 /WX)
+  target_compile_options(StillSane PRIVATE /W4 /WX /Wv:18 /wd4127)
 else()
   target_compile_options(StillSane PRIVATE  -Wall -Wextra -Werror)
 endif()
