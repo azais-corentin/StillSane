@@ -1,25 +1,19 @@
 #pragma once
 
-namespace StillSane::Modules::Write::Mouse {
+#include <cstdint>
 
-enum Button { Left, Right };
+#include "modules/interface/constants.hh"
 
-enum Region {
-  Item,
-  Transmutation,
-  Alteration,
-  Annulment,
-  Chance,
-  Exalted,
-  Regal,
-  Alchemy,
-  Chaos,
-  Blessed,
-  Scouring,
-  Augmentation
-};
+namespace StillSane::Modules::Mouse {
 
-void move(const Region& region);
-void move(const Region& region);
+enum class Button { Left, Right };
 
-}  // namespace StillSane::Modules::Write::Mouse
+bool initialize();
+void terminate();
+
+void move(const Interface::Position::Type& position);
+void press(const Button& b);
+void up(const Button& b);
+void down(const Button& b);
+
+}  // namespace StillSane::Modules::Mouse

@@ -18,8 +18,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
   spdlog::set_level(spdlog::level::trace);
 
   {
-    using namespace Modules::Write;
-    Mouse::move(Mouse::Item);
+    using namespace Modules;
+    Mouse::initialize();
+    Mouse::move(Interface::Position::Item);
   }
 
   setupUi();
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
 
 MainWindow::~MainWindow() {
   saveSettings();
+  Modules::Mouse::terminate();
 
   delete ui;
 }
