@@ -7,13 +7,20 @@
 #include <spdlog/spdlog.h>
 #include <QSettings>
 
+#include <modules/mouse/mouse.hh>
 #include "ui/dialogs/moduleconfiguration.hh"
+#include "version.hh"
 
 namespace StillSane {
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::MainWindow) {
   // Logging
   spdlog::set_level(spdlog::level::trace);
+
+  {
+    using namespace Modules::Write;
+    Mouse::move(Mouse::Item);
+  }
 
   setupUi();
   setupConnections();
@@ -29,6 +36,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::setupUi() {
   ui->setupUi(this);
+  setWindowTitle(QStringLiteral("StillSane v") + Version);
 
   ui->menubar->addAction(ui->actionModules);
 }

@@ -1,3 +1,0 @@
-add_subdirectory(Interface)
-add_subdirectory(ItemData)
-add_subdirectory(Keyboard)

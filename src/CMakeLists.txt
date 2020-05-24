@@ -1,10 +1,11 @@
 add_executable(StillSane "")
+add_executable(StillSane::Application ALIAS StillSane)
 
-#set(CMAKE_INCLUDE_CURRENT_DIR ON)
-#target_include_directories(StillSane PRIVATE CMAKE_SOURCE_DIR)
+configure_file(version.hh.in version.hh)
 
 target_sources(StillSane PRIVATE
   main.cpp
+  version.hh.in
   mainwindow.hh
   mainwindow.cpp
   mainwindow.ui
@@ -12,17 +13,16 @@ target_sources(StillSane PRIVATE
 
 add_subdirectory(craft)
 add_subdirectory(libs)
-add_subdirectory(modules)
 add_subdirectory(network)
 add_subdirectory(poe)
 add_subdirectory(ui)
 
 ##### Compilation options
 # C++20
-target_compile_features(StillSane PRIVATE cxx_std_20)
+target_compile_features(StillSane PUBLIC cxx_std_20)
 set_target_properties(StillSane PROPERTIES CXX_EXTENSIONS OFF)
 if (MSVC)
-    target_compile_options(StillSane PRIVATE /std:c++latest /Zc:__cplusplus)
+  target_compile_options(StillSane PUBLIC /std:c++latest /Zc:__cplusplus)
 endif()
 # Enable Link Time Optimization if available
 include(CheckIPOSupported)
@@ -33,9 +33,9 @@ if(result)
 endif()
 # Warnings
 if(MSVC)
-  target_compile_options(StillSane PRIVATE /W4 /WX /Wv:18 /wd4127)
+  target_compile_options(StillSane PUBLIC /W4 /WX /Wv:18 /wd4127)
 else()
-  target_compile_options(StillSane PRIVATE  -Wall -Wextra -Werror)
+  target_compile_options(StillSane PUBLIC  -Wall -Wextra -Werror)
 endif()
 
 ##### Pre build actions
@@ -86,3 +86,7 @@ target_link_libraries(StillSane PRIVATE QCodeEditor)
 # Qt Advanced Docking System
 target_link_libraries(StillSane PRIVATE qtadvanceddocking)
 target_include_directories(StillSane PRIVATE "${PROJECT_SOURCE_DIR}/libs/QtAds/src")
+
+# StillSane's modules
+target_link_libraries(StillSane PRIVATE StillSane::Module::Interface)
+target_link_libraries(StillSane PRIVATE StillSane::Module::Mouse)

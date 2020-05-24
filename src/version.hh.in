@@ -1,0 +1,15 @@
+#pragma once
+
+#include <cstdint>
+#include <string>
+
+namespace StillSane {
+
+// clang-format off
+inline constexpr uint64_t    VersionMajor = @PROJECT_VERSION_MAJOR@;
+inline constexpr uint64_t    VersionMinor = @PROJECT_VERSION_MINOR@;
+inline constexpr uint64_t    VersionPatch = @PROJECT_VERSION_PATCH@;
+inline constexpr const char* Version      = "@PROJECT_VERSION@";
+// clang-format on
+
+}  // namespace StillSane
