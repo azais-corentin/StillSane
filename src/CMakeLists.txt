@@ -33,9 +33,16 @@ if(result)
 endif()
 # Warnings
 if(MSVC)
-  target_compile_options(StillSane PUBLIC /W4 /WX /Wv:18 /wd4127)
+  target_compile_options(StillSane PRIVATE /W4)
 else()
-  target_compile_options(StillSane PUBLIC  -Wall -Wextra -Werror)
+  target_compile_options(StillSane PRIVATE -Wall -Wextra -Werror -Wno-deprecated-anon-enum-enum-conversion)
+endif()
+
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+  message(STATUS "Enabled CCache")
+  set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+  set(CMAKE_CUDA_COMPILER_LAUNCHER "${CCACHE_PROGRAM}") # CMake 3.9+
 endif()
 
 ##### Pre build actions
@@ -71,10 +78,6 @@ target_link_libraries(StillSane PRIVATE spdlog::spdlog spdlog::spdlog_header_onl
 # ranges-v3
 find_package(range-v3 CONFIG REQUIRED)
 target_link_libraries(StillSane PRIVATE range-v3 range-v3-meta range-v3::meta range-v3-concepts)
-if(MSVC)
-  # Define NOMINMAX on MSVC for ranges-v3
-  target_compile_definitions(StillSane PUBLIC NOMINMAX)
-endif()
 
 # magic_enum
 find_package(magic_enum CONFIG REQUIRED)

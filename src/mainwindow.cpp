@@ -21,7 +21,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new ::Ui::Main
   setupUi();
   initializeModules();
   setupConnections();
-  qOverload<>(&MainWindow::setupConnections);
 
   loadSettings();
 }

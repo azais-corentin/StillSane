@@ -37,3 +37,8 @@ target_link_libraries(StillSane_Tests PRIVATE Catch2::Catch2)
 
 find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(StillSane_Tests PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
+
+# Add tests to CTest
+include(CTest)
+include(Catch)
+catch_discover_tests(StillSane_Tests)

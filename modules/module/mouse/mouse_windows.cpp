@@ -9,7 +9,11 @@
  */
 namespace StillSane::Module::Mouse {
 
+inline bool buttonsSwapped;
+
 bool initialize() {
+  buttonsSwapped = GetSystemMetrics(SM_SWAPBUTTON) == TRUE;
+  spdlog::info("swapped: {}", buttonsSwapped);
   return true;
 }
 
@@ -85,14 +89,21 @@ void up(const Mouse::Button& b) {
   SendInput(1, &ip, sizeof(ip));
 }
 
+inline int get_key(const Button& b) {
+  if (buttonsSwapped)
+    return (b == Button::Left) ? VK_LBUTTON : VK_RBUTTON;
+  else
+    return (b == Button::Right) ? VK_LBUTTON : VK_RBUTTON;
+}
+
 bool is_down(const Button& b) {
-  int key = (b == Button::Left) ? VK_LBUTTON : VK_RBUTTON;
-  return GetKeyState(key) < 0;
+  int key = get_key(b);
+
+  return GetAsyncKeyState(key) < 0;
 }
 
 bool is_up(const Button& b) {
-  int key = (b == Button::Left) ? VK_LBUTTON : VK_RBUTTON;
-  return GetKeyState(key) >= 0;
+  return !is_down(b);
 }
 
 }  // namespace StillSane::Module::Mouse

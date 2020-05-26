@@ -26,15 +26,16 @@ TEST_CASE("mouse buttons", "[mouse]") {
   SECTION("right button") { b = Mouse::Button::Right; }
 
   Mouse::down(b);
-  REQUIRE(!Mouse::is_up(b));
   REQUIRE(Mouse::is_down(b));
+  REQUIRE(!Mouse::is_up(b));
 
   Mouse::up(b);
-  REQUIRE(Mouse::is_up(b));
   REQUIRE(!Mouse::is_down(b));
+  REQUIRE(Mouse::is_up(b));
 
   // Ensure button b is up before leaving
   Mouse::up(b);
+  Sleep(10);
 }
 
 TEST_CASE("mouse termination", "[mouse][termination]") {

@@ -2,10 +2,6 @@ find_package(spdlog CONFIG REQUIRED)
 
 include(add_stillsane_module)
 
-if(UNIX AND NOT APPLE)
-  set(LINUX TRUE)
-endif()
-
 find_package(spdlog CONFIG REQUIRED)
 
 ##### Configure modules
@@ -34,7 +30,6 @@ target_sources(Mouse PRIVATE
   module/mouse/mouse_$<IF:${WIN32},windows,linux>.cpp
 )
 target_link_libraries(Mouse PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
-
 
 # Trading
 

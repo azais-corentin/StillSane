@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.17)
 
 # Check Link Time Optimization support
 include(CheckIPOSupported)
-check_ipo_supported(RESULT ipo_supported)
+check_ipo_supported(RESULT ipo_supported LANGUAGES CXX)
 
 ##### Creates a library from a module target name
 function(add_stillsane_module target)
