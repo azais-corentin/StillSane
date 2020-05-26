@@ -49,15 +49,14 @@ void up(const Mouse::Button& /*b*/) {
   spdlog::error("Mouse::up: not implemented on linux");
 }
 
-bool is_up(const Button& b) {
-  spdlog::error("Mouse::up: not implemented on linux");
-  return false;
-}
-
 bool is_down(const Button& b) {
   spdlog::error("Mouse::up: not implemented on linux");
   return false;
 }
 
+bool is_up(const Button& b) {
+  spdlog::error("Mouse::up: not implemented on linux");
+  return false;
+}
 
 }  // namespace StillSane::Module

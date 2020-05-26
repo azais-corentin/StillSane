@@ -16,9 +16,9 @@ Position_t where();
 
 // Button
 void press(const Button& b);
-void up(const Button& b);
 void down(const Button& b);
-bool is_up(const Button& b);
+void up(const Button& b);
 bool is_down(const Button& b);
+bool is_up(const Button& b);
 
 }  // namespace StillSane::Module::Mouse

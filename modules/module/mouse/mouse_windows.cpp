@@ -85,14 +85,14 @@ void up(const Mouse::Button& b) {
   SendInput(1, &ip, sizeof(ip));
 }
 
-bool is_up(const Button& b) {
-  int key = (b == Button::Left) ? VK_LBUTTON : VK_RBUTTON;
-  return GetKeyState(key) >= 0;
-}
-
 bool is_down(const Button& b) {
   int key = (b == Button::Left) ? VK_LBUTTON : VK_RBUTTON;
   return GetKeyState(key) < 0;
+}
+
+bool is_up(const Button& b) {
+  int key = (b == Button::Left) ? VK_LBUTTON : VK_RBUTTON;
+  return GetKeyState(key) >= 0;
 }
 
 }  // namespace StillSane::Module::Mouse
