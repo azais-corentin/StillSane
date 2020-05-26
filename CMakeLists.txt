@@ -11,12 +11,15 @@ message(STATUS "CMake ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATC
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 include(init_submodules)
 
+# Documentation target
 add_subdirectory(docs)
+
+# Modules targets
 add_subdirectory(modules)
 
+# Main Application
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 add_subdirectory(src)

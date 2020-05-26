@@ -37,3 +37,6 @@ target_link_libraries(Mouse PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
 
 
 # Trading
+
+##### Configure tests
+add_subdirectory(tests)
