@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace StillSane::Modules::Interface {
+namespace StillSane::Module::Interface {
 
 /*!
  * Positions in the interface in pixels
@@ -26,4 +26,4 @@ constexpr Type Augmentation{233, 348};
 
 }  // namespace Position
 
-}  // namespace StillSane::Modules::Interface
+}  // namespace StillSane::Module::Interface

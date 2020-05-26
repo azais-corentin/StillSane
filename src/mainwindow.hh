@@ -21,11 +21,16 @@ class MainWindow : public QMainWindow {
   // Setup
   void setupUi();
   void setupConnections();
+  void initializeModules();
+
+  // Cleanup
+  void terminateModules();
+
+  void configureModules();
 
   // Settings
   void saveSettings();
   void loadSettings();
-  void configureModules();
 
   // Hotkeys
   bool nativeEvent(const QByteArray& eventType, void* message, long* result) final;

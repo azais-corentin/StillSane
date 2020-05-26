@@ -1,11 +1,11 @@
-#include "mouse.hh"
+#include "module/mouse/mouse.hh"
 
 #include <windows.h>
 
 /**
  * Windows implementation of the mouse module
  */
-namespace StillSane::Modules::Mouse {
+namespace StillSane::Module::Mouse {
 
 bool initialize() {
   return true;
@@ -77,4 +77,4 @@ void up(const Mouse::Button& b) {
   SendInput(1, &ip, sizeof(ip));
 }
 
-}  // namespace StillSane::Modules::Mouse
+}  // namespace StillSane::Module::Mouse

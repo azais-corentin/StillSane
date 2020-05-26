@@ -1,4 +1,4 @@
-#include "mouse.hh"
+#include "module/mouse/mouse.hh"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -8,7 +8,7 @@
 /**
  * Linux implementation of the mouse module
  */
-namespace StillSane::Modules::Mouse {
+namespace StillSane::Module::Mouse {
 
 inline Display* mainDisplay = nullptr;
 
@@ -44,4 +44,4 @@ void up(const Mouse::Button& /*b*/) {
 }
 
 
-}  // namespace StillSane::Modules
+}  // namespace StillSane::Module

@@ -1,12 +1,9 @@
 #pragma once
 
-#include <cstdint>
+#include "module/interface/constants.hh"
+#include "module/mouse/constants.hh"
 
-#include "modules/interface/constants.hh"
-
-namespace StillSane::Modules::Mouse {
-
-enum class Button { Left, Right };
+namespace StillSane::Module::Mouse {
 
 bool initialize();
 void terminate();
@@ -16,4 +13,4 @@ void press(const Button& b);
 void up(const Button& b);
 void down(const Button& b);
 
-}  // namespace StillSane::Modules::Mouse
+}  // namespace StillSane::Module::Mouse
