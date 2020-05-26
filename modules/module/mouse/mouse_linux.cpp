@@ -17,6 +17,7 @@ bool initialize() {
 
   if (!mainDisplay) {
     spdlog::error("Mouse::initialize error: unable to open open display");
+    return false;
   }
 
   return true;
@@ -27,8 +28,13 @@ void terminate() {
     XCloseDisplay(displayMain);
 }
 
-void move(const Interface::Position::Type& position) {
+void move(const Position_t& position) {
   XWarpPointer(mainDisplay, None, None, 0, 0, 0, 0, position.x, position.y);
+}
+
+Position_t where() {
+  spdlog::error("Mouse::where: not implemented on linux");
+  return {};
 }
 
 void press(const Mouse::Button& /*b*/) {
@@ -41,6 +47,16 @@ void down(const Mouse::Button& /*b*/) {
 
 void up(const Mouse::Button& /*b*/) {
   spdlog::error("Mouse::up: not implemented on linux");
+}
+
+bool is_up(const Button& b) {
+  spdlog::error("Mouse::up: not implemented on linux");
+  return false;
+}
+
+bool is_down(const Button& b) {
+  spdlog::error("Mouse::up: not implemented on linux");
+  return false;
 }
 
 

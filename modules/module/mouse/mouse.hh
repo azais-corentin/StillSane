@@ -5,12 +5,20 @@
 
 namespace StillSane::Module::Mouse {
 
+using Position_t = Interface::Position_t;
+
 bool initialize();
 void terminate();
 
-void move(const Interface::Position::Type& position);
+// Position
+void       move(const Position_t& position);
+Position_t where();
+
+// Button
 void press(const Button& b);
 void up(const Button& b);
 void down(const Button& b);
+bool is_up(const Button& b);
+bool is_down(const Button& b);
 
 }  // namespace StillSane::Module::Mouse
