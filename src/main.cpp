@@ -17,7 +17,7 @@ auto createDarkPalette() -> QPalette {
   palette.setColor(QPalette::ToolTipBase, Qt::white);
   palette.setColor(QPalette::ToolTipText, Qt::white);
   palette.setColor(QPalette::Text, Qt::white);
-  palette.setColor(QPalette::Dark, black);  // or darkGrey
+  palette.setColor(QPalette::Dark, darkGray);  // or darkGrey
   palette.setColor(QPalette::Shadow, black);
   palette.setColor(QPalette::Button, darkGray);
   palette.setColor(QPalette::ButtonText, Qt::white);
