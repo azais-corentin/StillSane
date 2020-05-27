@@ -7,10 +7,10 @@
 #include <spdlog/spdlog.h>
 #include <QSettings>
 
-#include "version.hh"
-
 #include <module/interface/interface.hh>
 #include <module/mouse/mouse.hh>
+#include <ui/dialogs/modulesconfiguration.hh>
+#include "version.hh"
 
 namespace StillSane {
 
@@ -35,6 +35,9 @@ void MainWindow::setupUi() {
   ui->setupUi(this);
   setWindowTitle(QString("StillSane v") + Version);
 
+  setCentralWidget(ui->mainDockManager);
+  ui->centralwidget->deleteLater();
+
   ui->menubar->addAction(ui->actionSettings);
 }
 
@@ -48,8 +51,6 @@ void MainWindow::initializeModules() {
 
   Mouse::initialize();
   Interface::initialize();
-
-  Mouse::move(Interface::Position::Item);
 }
 
 void MainWindow::terminateModules() {
@@ -79,9 +80,9 @@ void MainWindow::loadSettings() {
 }
 
 void MainWindow::settingsDialog() {
-  // Ui::Dialogs::ModuleConfiguration dialog(this);
+  Ui::Dialogs::ModulesConfiguration dialog(this);
 
-  // dialog.exec();
+  dialog.exec();
 }
 
 }  // namespace StillSane
