@@ -7,7 +7,6 @@
 #include <spdlog/spdlog.h>
 #include <QSettings>
 
-#include "ui/dialogs/moduleconfiguration.hh"
 #include "version.hh"
 
 #include <module/interface/interface.hh>
@@ -80,9 +79,9 @@ void MainWindow::loadSettings() {
 }
 
 void MainWindow::settingsDialog() {
-  Ui::Dialogs::ModuleConfiguration dialog(this);
+  // Ui::Dialogs::ModuleConfiguration dialog(this);
 
-  dialog.exec();
+  // dialog.exec();
 }
 
 }  // namespace StillSane
