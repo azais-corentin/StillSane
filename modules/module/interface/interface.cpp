@@ -2,7 +2,7 @@
 
 namespace StillSane::Module::Interface {
 
-bool initialize() {
+auto initialize() -> bool {
   return true;
 }
 

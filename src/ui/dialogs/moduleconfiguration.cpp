@@ -30,6 +30,6 @@ ModuleConfiguration::ModuleConfiguration(MainWindow* mainWindow)
   connect(mButtonBox, &QDialogButtonBox::accepted, this, &ModuleConfiguration::accept);
 }
 
-ModuleConfiguration::~ModuleConfiguration() {}
+ModuleConfiguration::~ModuleConfiguration() = default;
 
 }  // namespace StillSane::Ui::Dialogs

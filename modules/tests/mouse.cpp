@@ -14,9 +14,12 @@ TEST_CASE("mouse initialization", "[mouse][initialization]") {
 
 TEST_CASE("move and where", "[mouse]") {
   Mouse::Position_t pos{.x = 50, .y = 50};
+
   Mouse::move(pos);
-  REQUIRE(Mouse::where().x == pos.x);
-  REQUIRE(Mouse::where().y == pos.y);
+  auto realPos = Mouse::where();
+
+  REQUIRE(((pos.x <= realPos.x + 1) && (pos.x >= realPos.x - 1)));
+  REQUIRE(((pos.y <= realPos.y + 1) && (pos.y >= realPos.y - 1)));
 }
 
 TEST_CASE("mouse buttons", "[mouse]") {
@@ -30,12 +33,11 @@ TEST_CASE("mouse buttons", "[mouse]") {
   REQUIRE(!Mouse::is_up(b));
 
   Mouse::up(b);
-  REQUIRE(!Mouse::is_down(b));
   REQUIRE(Mouse::is_up(b));
+  REQUIRE(!Mouse::is_down(b));
 
   // Ensure button b is up before leaving
   Mouse::up(b);
-  Sleep(10);
 }
 
 TEST_CASE("mouse termination", "[mouse][termination]") {

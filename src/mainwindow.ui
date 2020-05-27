@@ -38,17 +38,26 @@
    </widget>
    <addaction name="menuFile"/>
   </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionSettings"/>
+  </widget>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionModules">
+  <action name="actionSettings">
    <property name="text">
-    <string>Modules</string>
-   </property>
-   <property name="toolTip">
-    <string>Configure modules</string>
+    <string>Settings</string>
    </property>
   </action>
  </widget>

@@ -4,44 +4,47 @@ namespace StillSane::Ui::Models {
 
 SearchResultTree::SearchResultTree(QObject* parent) : QAbstractItemModel(parent) {}
 
-QVariant SearchResultTree::headerData(int /*section*/,
-                                      Qt::Orientation /*orientation*/,
-                                      int /*role*/) const {
+auto SearchResultTree::headerData(int /*section*/,
+                                  Qt::Orientation /*orientation*/,
+                                  int /*role*/) const -> QVariant {
+  //  FIXME: Implement me!
+  return {};
+}
+
+auto SearchResultTree::index(int /*row*/,
+                             int /*column*/,
+                             const QModelIndex& /*parent*/) const -> QModelIndex {
   // FIXME: Implement me!
   return {};
 }
 
-QModelIndex SearchResultTree::index(int /*row*/,
-                                    int /*column*/,
-                                    const QModelIndex& /*parent*/) const {
+auto SearchResultTree::parent(const QModelIndex& /*index*/) const -> QModelIndex {
   // FIXME: Implement me!
   return {};
 }
 
-QModelIndex SearchResultTree::parent(const QModelIndex& /*index*/) const {
-  // FIXME: Implement me!
-  return {};
-}
-
-int SearchResultTree::rowCount(const QModelIndex& parent) const {
-  if (!parent.isValid())
+auto SearchResultTree::rowCount(const QModelIndex& parent) const -> int {
+  if (!parent.isValid()) {
     return 0;
+  }
 
   // FIXME: Implement me!
   return {};
 }
 
-int SearchResultTree::columnCount(const QModelIndex& parent) const {
-  if (!parent.isValid())
+auto SearchResultTree::columnCount(const QModelIndex& parent) const -> int {
+  if (!parent.isValid()) {
     return 0;
+  }
 
   // FIXME: Implement me!
   return 0;
 }
 
-QVariant SearchResultTree::data(const QModelIndex& index, int /*role*/) const {
-  if (!index.isValid())
-    return QVariant();
+auto SearchResultTree::data(const QModelIndex& index, int /*role*/) const -> QVariant {
+  if (!index.isValid()) {
+    return {};
+  }
 
   // FIXME: Implement me!
   return QVariant();

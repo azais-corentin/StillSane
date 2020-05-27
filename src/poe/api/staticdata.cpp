@@ -19,14 +19,14 @@ StaticData::StaticData(QObject* parent) : QObject(parent) {
   fetchStatic();
 }
 
-StaticData::~StaticData() {}
+StaticData::~StaticData() = default;
 
 void StaticData::fetchItems() {
   qDebug() << "Fetching static data for items";
   using namespace std::placeholders;
 
   AccessManager::get(buildRequest(StaticBasePath + StaticItemsPath),
-                     std::bind(&StaticData::parseFetchedItems, this, _1));
+                     [this](auto&& PH1) { parseFetchedItems(PH1); });
 }
 
 void StaticData::fetchStats() {
@@ -34,7 +34,7 @@ void StaticData::fetchStats() {
   using namespace std::placeholders;
 
   AccessManager::get(buildRequest(StaticBasePath + StaticStatsPath),
-                     std::bind(&StaticData::parseFetchedStats, this, _1));
+                     [this](auto&& data) { parseFetchedStats(data); });
 }
 
 void StaticData::fetchStatic() {
@@ -42,7 +42,7 @@ void StaticData::fetchStatic() {
   using namespace std::placeholders;
 
   AccessManager::get(buildRequest(StaticBasePath + StaticStaticPath),
-                     std::bind(&StaticData::parseFetchedStatic, this, _1));
+                     [this](auto&& data) { parseFetchedStatic(data); });
 }
 
 void StaticData::parseFetchedItems(const QByteArray& data) {
@@ -75,7 +75,7 @@ void StaticData::parseFetchedStatic(const QByteArray& data) {
   qDebug() << "Parsing static data for static:" << data.size() << "bytes";
 }
 
-QNetworkRequest StaticData::buildRequest(const QString& path) const {
+auto StaticData::buildRequest(const QString& path) -> QNetworkRequest {
   QUrl url;
   url.setScheme("https");
   url.setHost(baseHostOfficial);

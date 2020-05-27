@@ -15,9 +15,8 @@ namespace StillSane::Ui::Models {
 ModulesTable::ModulesTable(MainWindow* mainWindow, QObject* parent)
     : QAbstractTableModel(parent), mMainWindow(mainWindow) {}
 
-QVariant ModulesTable::headerData(int             section,
-                                  Qt::Orientation orientation,
-                                  int             role) const {
+auto ModulesTable::headerData(int section, Qt::Orientation orientation, int role) const
+    -> QVariant {
   if (role != Qt::DisplayRole)
     return {};
 
@@ -33,23 +32,25 @@ QVariant ModulesTable::headerData(int             section,
   return {};
 }
 
-int ModulesTable::rowCount(const QModelIndex& parent) const {
-  if (parent.isValid())
+auto ModulesTable::rowCount(const QModelIndex& parent) const -> int {
+  if (parent.isValid()) {
     return 0;
+  }
 
   return 0;
 }
 
-int ModulesTable::columnCount(const QModelIndex& parent) const {
-  if (parent.isValid())
+auto ModulesTable::columnCount(const QModelIndex& parent) const -> int {
+  if (parent.isValid()) {
     return 0;
-
+  }
   return 4;
 }
 
-QVariant ModulesTable::data(const QModelIndex& index, int /*role*/) const {
-  if (!index.isValid())
+auto ModulesTable::data(const QModelIndex& index, int /*role*/) const -> QVariant {
+  if (!index.isValid()) {
     return {};
+  }
 
   return {};
 }

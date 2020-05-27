@@ -35,7 +35,7 @@ void AccessManager::setPOESESSID(QNetworkRequest& request) {
   if (request.hasRawHeader("Cookie")) {
     cookies << request.rawHeader("Cookie");
   }
-  cookies << QStringLiteral("POESESSID=%1").arg(instance().mPOESESSID);
+  cookies << QString("POESESSID=%1").arg(instance().mPOESESSID);
   request.setRawHeader("Cookie", cookies.join("; ").toLatin1());
 }
 
@@ -51,7 +51,7 @@ void AccessManager::get(QNetworkRequest request,
     setHeaders(request);
     QElapsedTimer timer;
     timer.start();
-    auto reply = accessManager->get(request);
+    auto* reply = accessManager->get(request);
     qDebug() << "NetworkAccess::get executed, waiting for reply";
 
     connect(reply, &QNetworkReply::finished, [slot, reply, timer]() {
@@ -85,7 +85,7 @@ void AccessManager::post(QNetworkRequest   request,
     QNetworkAccessManager* accessManager = instance().mNetworkAccessManager;
 
     setHeaders(request);
-    auto reply = accessManager->post(request, data);
+    auto* reply = accessManager->post(request, data);
     qDebug() << "NetworkAccess::post executed, waiting for reply";
 
     connect(reply, &QNetworkReply::finished, [slot, reply]() {

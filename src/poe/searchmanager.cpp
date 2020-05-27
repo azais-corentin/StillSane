@@ -22,7 +22,7 @@ void SearchManager::addSearch(const QString& id,
                               const QString& name,
                               bool           enabled) {
   // Create a new live Trade
-  Api::Trade* trade = new Api::Trade{};
+  auto* trade = new Api::Trade{};
   trade->setId(id);
   trade->setName(name);
   trade->setLeague(league);
@@ -34,13 +34,14 @@ void SearchManager::addSearch(const QString& id,
   // Connect signals and start the live search
   connectToTradeApi(trade);
 
-  if (enabled)
+  if (enabled) {
     trade->openLiveSearch();
+  }
 
   emit searchAdded();
 }
 
-bool SearchManager::editSearch(const QString& id, const QString& name) {
+auto SearchManager::editSearch(const QString& id, const QString& name) -> bool {
   auto it = std::find_if(mTradeApis.begin(), mTradeApis.end(),
                          [&id](Api::Trade* trade) { return trade->getId() == id; });
 
@@ -52,7 +53,7 @@ bool SearchManager::editSearch(const QString& id, const QString& name) {
   return false;
 }
 
-bool SearchManager::editSearch(const QString& id, const bool& enabled) {
+auto SearchManager::editSearch(const QString& id, const bool& enabled) -> bool {
   auto it = std::find_if(mTradeApis.begin(), mTradeApis.end(),
                          [&id](Api::Trade* trade) { return trade->getId() == id; });
 
@@ -64,7 +65,7 @@ bool SearchManager::editSearch(const QString& id, const bool& enabled) {
   return false;
 }
 
-QVector<Api::Trade*>& SearchManager::getSearches() {
+auto SearchManager::getSearches() -> QVector<Api::Trade*>& {
   return mTradeApis;
 }
 

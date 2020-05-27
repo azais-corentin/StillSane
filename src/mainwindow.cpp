@@ -34,14 +34,14 @@ MainWindow::~MainWindow() {
 
 void MainWindow::setupUi() {
   ui->setupUi(this);
-  setWindowTitle(QStringLiteral("StillSane v") + Version);
+  setWindowTitle(QString("StillSane v") + Version);
 
-  ui->menubar->addAction(ui->actionModules);
+  ui->menubar->addAction(ui->actionSettings);
 }
 
 void MainWindow::setupConnections() {
   connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
-  connect(ui->actionModules, &QAction::triggered, this, &MainWindow::configureModules);
+  connect(ui->actionSettings, &QAction::triggered, this, &MainWindow::settingsDialog);
 }
 
 void MainWindow::initializeModules() {
@@ -60,7 +60,9 @@ void MainWindow::terminateModules() {
   Interface::terminate();
 }
 
-bool MainWindow::nativeEvent(const QByteArray&, void* message, long*) {
+auto MainWindow::nativeEvent(const QByteArray& /*eventType*/,
+                             void* message,
+                             long* /*result*/) -> bool {
   MSG* msg = static_cast<MSG*>(message);
   if (msg->message == WM_HOTKEY) {
     // Pass to proper module
@@ -77,7 +79,7 @@ void MainWindow::loadSettings() {
   QSettings settings;
 }
 
-void MainWindow::configureModules() {
+void MainWindow::settingsDialog() {
   Ui::Dialogs::ModuleConfiguration dialog(this);
 
   dialog.exec();

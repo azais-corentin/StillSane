@@ -17,7 +17,7 @@ class Item {
 
  public:
   Item() = default;
-  Item(const QString& fullText);
+  Item(QString  fullText);
   // Disable copy
   Item(const Item&) = delete;
   Item& operator=(const Item&) = delete;

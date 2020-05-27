@@ -2,7 +2,7 @@
 
 #include <QApplication>
 
-int main(int argc, char* argv[]) {
+auto main(int argc, char* argv[]) -> int {
   QCoreApplication::setOrganizationName("StillSane");
   QCoreApplication::setApplicationName("StillSane");
 
@@ -10,5 +10,5 @@ int main(int argc, char* argv[]) {
 
   StillSane::MainWindow w;
   w.show();
-  return a.exec();
+  return QApplication::exec();
 }

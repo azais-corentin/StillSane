@@ -88,7 +88,7 @@ class Trade : public QObject {
   void onError(QAbstractSocket::SocketError error);
   void onNewMessage(const QString& message);
 
-  QNetworkRequest buildRequest(const QString& path) const;
+  static QNetworkRequest buildRequest(const QString& path) ;
 
   /*QUuid get(const QString& path);
   QUuid post(const QString& path, const QByteArray& data);*/

@@ -26,9 +26,8 @@ class MainWindow : public QMainWindow {
   // Cleanup
   void terminateModules();
 
-  void configureModules();
-
   // Settings
+  void settingsDialog();
   void saveSettings();
   void loadSettings();
 

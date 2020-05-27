@@ -6,6 +6,7 @@
 #include <QLuaCompleter>
 #include <QLuaHighlighter>
 #include <QSyntaxStyle>
+#include <utility>
 
 namespace StillSane::Ui {
 
@@ -34,9 +35,9 @@ void LuaEditor::clear() {
   ui->eEditor->clear();
 }
 
-QString LuaEditor::addSyntaxStyle(QString contents) {
+auto LuaEditor::addSyntaxStyle(QString contents) -> QString {
   auto style = new QSyntaxStyle(this);
-  if (!style->load(contents)) {
+  if (!style->load(std::move(contents))) {
     spdlog::error("Failed to load style {}", style->name().toStdString());
     delete style;
     return {};
@@ -46,7 +47,7 @@ QString LuaEditor::addSyntaxStyle(QString contents) {
   return style->name();
 }
 
-bool LuaEditor::setSyntaxStyle(QString name) {
+auto LuaEditor::setSyntaxStyle(QString name) -> bool {
   auto it = std::find_if(mStyles.begin(), mStyles.end(),
                          [&name](const auto& p) { return p.first == name; });
 
@@ -74,15 +75,15 @@ void LuaEditor::setName(const QString& name) {
   mName = name;
 }
 
-QString LuaEditor::text() {
+auto LuaEditor::text() -> QString {
   return ui->eEditor->toPlainText();
 }
 
-QString LuaEditor::name() {
+auto LuaEditor::name() -> QString {
   return mName;
 }
 
-QString LuaEditor::syntaxStyle() {
+auto LuaEditor::syntaxStyle() -> QString {
   return mSyntaxStyle;
 }
 
@@ -90,8 +91,9 @@ void LuaEditor::on_bLoad_clicked() {
   QString fileName = QFileDialog::getOpenFileName(this, tr("Open lua code"), mDefaultPath,
                                                   tr("Lua files (*.lua)"));
 
-  if (fileName.isEmpty())
+  if (fileName.isEmpty()) {
     return;
+}
 
   QFile lua(fileName);
   if (lua.open(QIODevice::ReadOnly)) {
@@ -99,14 +101,15 @@ void LuaEditor::on_bLoad_clicked() {
   } else {
     emit error("Could not open file: " + fileName);
   }
-}
+  }
 
 void LuaEditor::on_bSave_clicked() {
   QString fileName = QFileDialog::getSaveFileName(this, tr("Save lua code"), mDefaultPath,
                                                   tr("Lua files (*.lua)"));
 
-  if (fileName.isEmpty())
+  if (fileName.isEmpty()) {
     return;
+}
 
   QFile lua(fileName);
   if (lua.open(QIODevice::WriteOnly)) {
@@ -114,7 +117,7 @@ void LuaEditor::on_bSave_clicked() {
   } else {
     error("Could not write to file: " + fileName);
   }
-}
+  }
 
 void LuaEditor::paintEvent(QPaintEvent* event) {
   ui->eEditor->updateStyle();

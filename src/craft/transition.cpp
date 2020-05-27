@@ -7,8 +7,9 @@
 void replace_all_inplace(std::string&       str,
                          const std::string& from,
                          const std::string& to) {
-  if (from.empty())
+  if (from.empty()) {
     return;
+  }
   size_t start_pos = 0;
   while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
     str.replace(start_pos, from.length(), to);
@@ -16,9 +17,9 @@ void replace_all_inplace(std::string&       str,
   }
 }
 
-bool for_each_token(std::string&                           string,
-                    const std::string&                     tokens,
-                    std::function<bool(std::string, char)> callback) {
+auto for_each_token(std::string&                                  string,
+                    const std::string&                            tokens,
+                    const std::function<bool(std::string, char)>& callback) -> bool {
   using size_t = std::string::size_type;
   size_t pos   = 0;
 
@@ -32,24 +33,27 @@ bool for_each_token(std::string&                           string,
   size_t offset       = 0;
   char   last_element = ' ';
   for (const auto& op_position : ops_positions) {
-    if (!callback(string.substr(offset, op_position - offset), last_element))
+    if (!callback(string.substr(offset, op_position - offset), last_element)) {
       return false;
+    }
+
     last_element = string.at(op_position);
     offset       = op_position + 1;
   }
-  if (!callback(string.substr(offset), last_element))
-    return false;
-
-  return true;
+  return callback(string.substr(offset), last_element);
 }
 
 Transition::Transition(std::string transition) {
   mValid = false;
+
   debug("Parsing transition: {}", transition);
   replace_all_inplace(transition, " ", "");
 
-  bool has_src_state = false, has_event = false, has_guard = false, has_action = false,
-       has_dst_state = false;
+  bool has_src_state = false;
+  bool has_event     = false;
+  bool has_guard     = false;
+  bool has_action    = false;
+  bool has_dst_state = false;
 
   bool line_parsed = for_each_token(
       transition, "+[/=", [&](const std::string& element, const char& token) {
@@ -148,7 +152,8 @@ Transition::Transition(std::string transition) {
   if (!has_src_state) {
     error("expected source state");
     return;
-  } else if (!has_dst_state) {
+  }
+  if (!has_dst_state) {
     error("expected destination state");
     return;
   }
@@ -162,31 +167,34 @@ Transition::Transition(std::string transition) {
   mValid = true;
 }
 
-bool Transition::valid() const {
+auto Transition::valid() const -> bool {
   return mValid;
 }
 
-bool Transition::initial() const {
+auto Transition::initial() const -> bool {
   return mInitial;
 }
 
-const std::string& Transition::guard_code() const {
+auto Transition::guard_code() const -> const std::string& {
   return mGuard;
 }
 
-const std::string& Transition::actions_code() const {
+auto Transition::actions_code() const -> const std::string& {
   return mAction;
 }
 
-bool Transition::process_event(FSM&               fsm,
+auto Transition::process_event(FSM&               fsm,
                                const std::string& event,
-                               const std::string& state) const {
-  if (!valid())
+                               const std::string& state) const -> bool {
+  if (!valid()) {
     return false;
-  if (state != mSrcState)
+  }
+  if (state != src_state()) {
     return false;
-  if (mHasEvent && mEvent != event)
+  }
+  if (mHasEvent && mEvent != event) {
     return false;
+  }
   if (!mHasGuard || fsm.execute_guard(mGuard)) {
     // If has no guard or guard passed
     if (mHasAction && !fsm.execute_action(mAction)) {
@@ -200,11 +208,11 @@ bool Transition::process_event(FSM&               fsm,
   return false;
 }
 
-std::string Transition::src_state() const {
+auto Transition::src_state() const -> std::string {
   return mSrcState;
 }
 
-std::string Transition::dst_state() const {
+auto Transition::dst_state() const -> std::string {
   return mDstState;
 }
 

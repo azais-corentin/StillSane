@@ -19,7 +19,7 @@ Ninja::Ninja(QObject* parent) : QObject(parent) {
   fetchCurrencyOverview(currentLeague, "Currency");
 }
 
-double Ninja::getChaosEquivalent(const QString& tradeId) {
+auto Ninja::getChaosEquivalent(const QString& tradeId) -> double {
   if (mUpToDateCurrencyDetail) {
     auto it = std::find_if(
         mCurrencyNames.begin(), mCurrencyNames.end(),
@@ -29,8 +29,9 @@ double Ninja::getChaosEquivalent(const QString& tradeId) {
       return it->chaosEquivalent;
     }
   } else {
-    if (!mUpdatingCurrencyDetail)
+    if (!mUpdatingCurrencyDetail) {
       fetchCurrencyOverview(currentLeague, "Currency");
+    }
   }
   return 0.0;
 }
@@ -45,18 +46,22 @@ void Ninja::fetchCurrencyOverview(const QString& league, const QString& currency
   url.setQuery(query);
   request.setUrl(url);
 
-  AccessManager::get(request, std::bind(&Ninja::parseCurrencyOverview, this, _1));
+  AccessManager::get(request, [this](auto&& PH1) { parseCurrencyOverview(PH1); });
 }
 
-void Ninja::fetchCurrencyHistory(const QString&, const QString&, unsigned int) {
+void Ninja::fetchCurrencyHistory(const QString&,
+                                 /*unused*/ /*unused*/ const QString&,
+                                 unsigned int /*unused*/) {
   /*!
    * \todo Implement this
    */
 }
 
-void Ninja::fetchItemOverview(const QString&, const QString&) {}
+void Ninja::fetchItemOverview(const QString& /*unused*/, const QString& /*unused*/) {}
 
-void Ninja::fetchItemHistory(const QString&, const QString&, unsigned int) {
+void Ninja::fetchItemHistory(const QString& /*unused*/,
+                             const QString& /*unused*/,
+                             unsigned int) {
   /*!
    * \todo Implement this
    */
@@ -95,13 +100,13 @@ void Ninja::parseCurrencyOverview(const QByteArray& data) {
   mUpdatingCurrencyDetail = false;
 }
 
-void Ninja::parseCurrencyHistory(const QByteArray&) {}
+void Ninja::parseCurrencyHistory(const QByteArray /*unused*/&) {}
 
-void Ninja::parseItemOverview(const QByteArray&) {}
+void Ninja::parseItemOverview(const QByteArray& /*unused*/) {}
 
-void Ninja::parseItemHistory(const QByteArray&) {}
+void Ninja::parseItemHistory(const QByteArray& /*unused*/) {}
 
-QNetworkRequest Ninja::buildRequest(const QString& path) const {
+auto Ninja::buildRequest(const QString& path) -> QNetworkRequest {
   QUrl url;
   url.setScheme("https");
   url.setHost(baseHostNinja);

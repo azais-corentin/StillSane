@@ -3,10 +3,11 @@
 #include <spdlog/spdlog.h>
 #include <QRegularExpression>
 #include <magic_enum.hpp>
+#include <utility>
 
 namespace StillSane::Craft {
 
-Item::Item(const QString& fullText) : mFullText(fullText) {
+Item::Item(QString fullText) : mFullText(std::move(fullText)) {
   // Split by sections and lines
   for (const auto& section : mFullText.splitRef("--------")) {
     const auto& lines = section.split("\r\n");
@@ -16,61 +17,61 @@ Item::Item(const QString& fullText) : mFullText(fullText) {
   parse();
 }
 
-bool Item::unidentified() const {
+auto Item::unidentified() const -> bool {
   return mId == Identification::Unidentified;
 }
 
-bool Item::identified() const {
+auto Item::identified() const -> bool {
   return mId == Identification::Identified;
 }
 
-Item::Rarity Item::rarity() const {
+auto Item::rarity() const -> Item::Rarity {
   return mRarity;
 }
 
-bool Item::normal() const {
+auto Item::normal() const -> bool {
   return mRarity == Rarity::Normal;
 }
 
-bool Item::magic() const {
+auto Item::magic() const -> bool {
   return mRarity == Rarity::Magic;
 }
 
-bool Item::rare() const {
+auto Item::rare() const -> bool {
   return mRarity == Rarity::Rare;
 }
 
-bool Item::find(const std::string& text) {
+auto Item::find(const std::string& text) -> bool {
   spdlog::debug("Finding: ", text, " = ",
                 mFullText.contains(QString::fromStdString(text)));
   return mFullText.contains(QString::fromStdString(text));
 }
 
-int Item::levelRequirement() const {
+auto Item::levelRequirement() const -> int {
   return mReqLevel;
 }
 
-int Item::strRequirement() const {
+auto Item::strRequirement() const -> int {
   return mReqStr;
 }
 
-int Item::dexRequirement() const {
+auto Item::dexRequirement() const -> int {
   return mReqDex;
 }
 
-int Item::intRequirement() const {
+auto Item::intRequirement() const -> int {
   return mReqInt;
 }
 
-const std::vector<char>& Item::sockets() const {
+auto Item::sockets() const -> const std::vector<char>& {
   return mSockets;
 }
 
-int Item::ilvl() const {
+auto Item::ilvl() const -> int {
   return mILvl;
 }
 
-Item::Identification Item::id() const {
+auto Item::id() const -> Item::Identification {
   return mId;
 }
 
@@ -82,19 +83,20 @@ void Item::operator=(const Item::Rarity& rarity) {
   mRarity = rarity;
 }
 
-bool Item::operator==(const Item::Identification& id) const {
+auto Item::operator==(const Item::Identification& id) const -> bool {
   return mId == id;
 }
 
-bool Item::operator==(const Item::Rarity& rarity) const {
+auto Item::operator==(const Item::Rarity& rarity) const -> bool {
   return mRarity == rarity;
 }
 
 template <typename T>
-constexpr T enumValue(const QString& name) {
+constexpr auto enumValue(const QString& name) -> T {
   const auto conversion = magic_enum::enum_cast<T>(name.toStdString());
-  if (conversion.has_value())
+  if (conversion.has_value()) {
     return conversion.value();
+  }
   return static_cast<T>(Item::Unknown);
 }
 
@@ -114,10 +116,11 @@ void Item::parse() {
 
   // Identification
   auto id = patternIdentification.match(mFullText);
-  if (id.hasMatch())
+  if (id.hasMatch()) {
     mId = Identified;
-  else
+  } else {
     mId = Unidentified;
+  }
 
   // Rarity
   auto rarity = patternRarity.match(mFullText);

@@ -2,6 +2,7 @@
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <utility>
 
 #include "constants.hh"
 
@@ -23,49 +24,51 @@ Trade::~Trade() {
   closeLiveSearch();
 }
 
-bool Trade::isEnabled() const {
+auto Trade::isEnabled() const -> bool {
   return mEnabled;
 }
 
-bool Trade::isConnected() const {
+auto Trade::isConnected() const -> bool {
   return mWebsocket.state() == QAbstractSocket::ConnectedState;
 }
 
-QString Trade::getId() const {
+auto Trade::getId() const -> QString {
   return mId;
 }
 
-QString Trade::getLeague() const {
+auto Trade::getLeague() const -> QString {
   return mLeague;
 }
 
-QString Trade::getName() const {
+auto Trade::getName() const -> QString {
   return mName;
 }
 
 void Trade::setEnabled(bool enabled) {
-  if (mEnabled == enabled)
+  if (mEnabled == enabled) {
     return;
+  }
 
   mEnabled = enabled;
   emit enabledChanged(mEnabled);
 
-  if (mEnabled)
+  if (mEnabled) {
     openLiveSearch();
-  else
+  } else {
     closeLiveSearch();
+  }
 }
 
 void Trade::setId(QString id) {
-  mId = id;
+  mId = std::move(id);
 }
 
 void Trade::setLeague(QString league) {
-  mLeague = league;
+  mLeague = std::move(league);
 }
 
 void Trade::setName(QString name) {
-  mName = name;
+  mName = std::move(name);
 }
 
 void Trade::openLiveSearch(const QString& league, const Query& parameters) {
@@ -158,7 +161,7 @@ void Trade::fetch(const QStringList& ids, Callback&& slot) {
                      std::forward<Callback>(slot)); /*, &mRateLimiter);*/
 }
 
-void Trade::onError(QAbstractSocket::SocketError) {
+void Trade::onError(QAbstractSocket::SocketError /*unused*/) {
   qDebug() << "TradeAPI::onError websockets:" << mWebsocket.errorString();
 }
 
@@ -166,8 +169,9 @@ void Trade::onNewMessage(const QString& message) {
   const auto& newItems =
       QJsonDocument::fromJson(message.toUtf8()).object().value("new").toArray();
 
-  if (newItems.isEmpty())
+  if (newItems.isEmpty()) {
     return;
+  }
 
   QStringList ids;
 
@@ -186,7 +190,7 @@ void Trade::onNewMessage(const QString& message) {
  * \param path The path of the request.
  * \return A network request for the path with the proper headers.
  */
-QNetworkRequest Trade::buildRequest(const QString& path) const {
+auto Trade::buildRequest(const QString& path) -> QNetworkRequest {
   QUrl url;
   url.setScheme("https");
   url.setHost(baseHostOfficial);

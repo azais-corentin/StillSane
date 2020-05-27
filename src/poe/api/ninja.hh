@@ -35,7 +35,7 @@ class Ninja : public QObject {
   void parseItemOverview(const QByteArray& data);
   void parseItemHistory(const QByteArray& data);
 
-  QNetworkRequest buildRequest(const QString& path) const;
+  static QNetworkRequest buildRequest(const QString& path) ;
 
   QVector<CurrencyDetail> mCurrencyNames;
 

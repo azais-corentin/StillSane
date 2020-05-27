@@ -27,7 +27,7 @@ class StaticData : public QObject {
   void parseFetchedStats(const QByteArray& data);
   void parseFetchedStatic(const QByteArray& data);
 
-  QNetworkRequest buildRequest(const QString& path) const;
+  static QNetworkRequest buildRequest(const QString& path) ;
 
   QVector<Item> mItems;
 };

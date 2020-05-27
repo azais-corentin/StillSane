@@ -15,9 +15,8 @@ void SearchTable::setSearches(const QVector<Poe::Api::Trade*>& tradeApis) {
   endResetModel();
 }
 
-QVariant SearchTable::headerData(int             section,
-                                 Qt::Orientation orientation,
-                                 int             role) const {
+auto SearchTable::headerData(int section, Qt::Orientation orientation, int role) const
+    -> QVariant {
   if (role != Qt::DisplayRole)
     return {};
 
@@ -37,32 +36,35 @@ QVariant SearchTable::headerData(int             section,
   return {};
 }
 
-int SearchTable::rowCount(const QModelIndex& parent) const {
-  if (parent.isValid())
+auto SearchTable::rowCount(const QModelIndex& parent) const -> int {
+  if (parent.isValid()) {
     return 0;
+  }
 
   return mTradeApis.size();
 }
 
-int SearchTable::columnCount(const QModelIndex& parent) const {
-  if (parent.isValid())
+auto SearchTable::columnCount(const QModelIndex& parent) const -> int {
+  if (parent.isValid()) {
     return 0;
-
+  }
   return 3;
 }
 
-bool SearchTable::setData(const QModelIndex& index, const QVariant& value, int role) {
-  if (role != Qt::EditRole)
+auto SearchTable::setData(const QModelIndex& index, const QVariant& value, int role)
+    -> bool {
+  if (role != Qt::EditRole) {
     return false;
-
+  }
   QString id = mTradeApis.at(index.row())->getId();
 
   switch (index.column()) {
     case 0: {
       QString name = value.toString();
-      if (!name.isEmpty())
+      if (!name.isEmpty()) {
         mTradeApis.at(index.row())->setName(name);
-      nameChanged(id, name);
+        nameChanged(id, name);
+      }
       break;
     }
     case 2:
@@ -78,13 +80,14 @@ bool SearchTable::setData(const QModelIndex& index, const QVariant& value, int r
   return true;
 }
 
-QVariant SearchTable::data(const QModelIndex& index, int role) const {
-  if (!index.isValid())
+auto SearchTable::data(const QModelIndex& index, int role) const -> QVariant {
+  if (!index.isValid()) {
     return {};
+  }
 
-  if (index.row() >= mTradeApis.size())
+  if (index.row() >= mTradeApis.size()) {
     return {};
-
+  }
   const auto& tradeApi = mTradeApis.at(index.row());
 
   if (role == Qt::DisplayRole) {
@@ -123,7 +126,7 @@ QVariant SearchTable::data(const QModelIndex& index, int role) const {
   return {};
 }
 
-Qt::ItemFlags SearchTable::flags(const QModelIndex& index) const {
+auto SearchTable::flags(const QModelIndex& index) const -> Qt::ItemFlags {
   return QAbstractTableModel::flags(index) |
          (index.column() != 1 ? Qt::ItemIsEditable : Qt::NoItemFlags);
 }
