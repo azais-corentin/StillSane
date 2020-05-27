@@ -79,3 +79,6 @@ compile_commands.json
 *creator.user*
 
 # End of https://www.gitignore.io/api/c++,qt
+
+# .cmake folder
+.cmake/
