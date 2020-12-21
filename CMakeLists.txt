@@ -14,12 +14,13 @@ include(init_submodules)
 # Documentation target
 add_subdirectory(docs)
 
-# Modules targets
-add_subdirectory(modules)
-
-# Main Application
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+# Modules targets
+add_subdirectory(modules)
+
+# Main Application
 add_subdirectory(src)

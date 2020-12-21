@@ -35,7 +35,7 @@ endif()
 if(MSVC)
   target_compile_options(StillSane PRIVATE /W4)
 else()
-  target_compile_options(StillSane PRIVATE -Wall -Wextra -Werror -Wno-deprecated-anon-enum-enum-conversion)
+  target_compile_options(StillSane PRIVATE -Wall -Wextra)
 endif()
 
 find_program(CCACHE_PROGRAM ccache)

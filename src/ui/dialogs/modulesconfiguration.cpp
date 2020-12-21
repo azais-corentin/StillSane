@@ -8,8 +8,8 @@
 #include <QListWidget>
 #include <QStackedWidget>
 
-#include <module/interface/settings.hh>
-#include <module/mouse/settings.hh>
+/*#include <module/interface/settings.hh>
+#include <module/mouse/settings.hh>*/
 
 namespace StillSane::Ui::Dialogs {
 

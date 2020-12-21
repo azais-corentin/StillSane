@@ -1,25 +1,16 @@
-#include "module/mouse/mouse.hh"
+#include "module/mouse/mouse_windows.hh"
 
 #include <windows.h>
 
-#include <spdlog/spdlog.h>
+namespace StillSane::Module {
 
-/**
- * Windows implementation of the mouse module
- */
-namespace StillSane::Module::Mouse {
-
-inline bool buttonsSwapped;
-
-auto initialize() -> bool {
-  buttonsSwapped = GetSystemMetrics(SM_SWAPBUTTON) == TRUE;
-  spdlog::info("swapped: {}", buttonsSwapped);
-  return true;
+Mouse::MouseImplementation::MouseImplementation() {
+  mButtonsSwapped = GetSystemMetrics(SM_SWAPBUTTON) == TRUE;
 }
 
-void terminate() {}
+Mouse::MouseImplementation::~MouseImplementation() {}
 
-void move(const Position_t& position) {
+void Mouse::MouseImplementation::move(const Position_t& position) {
   INPUT ip;
 
   ip.type         = INPUT_MOUSE;
@@ -32,13 +23,13 @@ void move(const Position_t& position) {
   SendInput(1, &ip, sizeof(ip));
 }
 
-auto where() -> Position_t {
+auto Mouse::MouseImplementation::where() -> Position_t {
   POINT p;
   GetCursorPos(&p);
   return {.x = static_cast<uint16_t>(p.x), .y = static_cast<uint16_t>(p.y)};
 }
 
-void press(const Mouse::Button& b) {
+void Mouse::MouseImplementation::press(const Button& b) {
   INPUT ip;
 
   ip.type           = INPUT_MOUSE;
@@ -56,7 +47,7 @@ void press(const Mouse::Button& b) {
   SendInput(1, &ip, sizeof(ip));
 }
 
-void down(const Mouse::Button& b) {
+void Mouse::MouseImplementation::down(const Button& b) {
   INPUT ip;
 
   ip.type           = INPUT_MOUSE;
@@ -74,7 +65,7 @@ void down(const Mouse::Button& b) {
   SendInput(1, &ip, sizeof(ip));
 }
 
-void up(const Mouse::Button& b) {
+void Mouse::MouseImplementation::up(const Button& b) {
   INPUT ip;
 
   ip.type           = INPUT_MOUSE;
@@ -92,22 +83,21 @@ void up(const Mouse::Button& b) {
   SendInput(1, &ip, sizeof(ip));
 }
 
-inline auto get_key(const Button& b) -> int {
-  if (buttonsSwapped) {
+auto Mouse::MouseImplementation::get_key(const Button& b) -> int {
+  if (mButtonsSwapped) {
     return (b == Button::Left) ? VK_LBUTTON : VK_RBUTTON;
   }
-
   return (b == Button::Right) ? VK_LBUTTON : VK_RBUTTON;
 }
 
-auto is_down(const Button& b) -> bool {
+auto Mouse::MouseImplementation::is_down(const Button& b) -> bool {
   int key = get_key(b);
 
   return GetAsyncKeyState(key) < 0;
 }
 
-auto is_up(const Button& b) -> bool {
+auto Mouse::MouseImplementation::is_up(const Button& b) -> bool {
   return !is_down(b);
 }
 
-}  // namespace StillSane::Module::Mouse
+}  // namespace StillSane::Module

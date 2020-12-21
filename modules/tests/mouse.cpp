@@ -1,7 +1,5 @@
 #include <catch2/catch.hpp>
 
-#include <windows.h>
-
 #include <spdlog/spdlog.h>
 
 #include <module/mouse/mouse.hh>

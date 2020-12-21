@@ -1,24 +1,34 @@
 #pragma once
 
-#include "module/interface/constants.hh"
-#include "module/mouse/constants.hh"
+#include <cstdint>
 
-namespace StillSane::Module::Mouse {
+#include <module/interface/constants.hh>
 
-using Position_t = Interface::Position_t;
+namespace StillSane::Module {
 
-bool initialize();
-void terminate();
+class Mouse {
+ public:
+  using Position_t = Interface::Position_t;
+  enum class Button : uint8_t { Left, Right };
 
-// Position
-void       move(const Position_t& position);
-Position_t where();
+ public:
+  Mouse();
+  ~Mouse();
 
-// Button
-void press(const Button& b);
-void down(const Button& b);
-void up(const Button& b);
-bool is_down(const Button& b);
-bool is_up(const Button& b);
+  // Position
+  void       move(const Position_t& position);
+  Position_t where();
 
-}  // namespace StillSane::Module::Mouse
+  // Button
+  void press(const Button& b);
+  void down(const Button& b);
+  void up(const Button& b);
+  bool is_down(const Button& b);
+  bool is_up(const Button& b);
+
+ private:
+  class MouseImplementation;
+  MouseImplementation* mImpl;
+};
+
+}  // namespace StillSane::Module
