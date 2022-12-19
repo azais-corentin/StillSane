@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
 
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
+  CACHE STRING "Vcpkg toolchain file")
+
 project(StillSane
   VERSION 0.2.0
   DESCRIPTION "Keep your sanity by automating some things in Path of Exile."
@@ -14,4 +17,4 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 add_subdirectory(src)
-add_subdirectory(docs)
+#add_subdirectory(docs)

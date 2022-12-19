@@ -21,62 +21,67 @@ class LuaEditor;
 namespace Delegates {
 class CheckBox;
 }
-}  // namespace Ui
+} // namespace Ui
 
 class MainWindow : public QMainWindow {
-  enum Hotkeys { F9 = 0x78, F10 = 0x79 };
-  enum class EditorType : int {
-    Functions,
-    F = Functions,
-    TransitionTable,
-    TT = TransitionTable
-  };
+    enum Hotkeys
+    {
+        F9  = 0x78,
+        F10 = 0x79
+    };
+    enum class EditorType : int
+    {
+        Functions,
+        F = Functions,
+        TransitionTable,
+        TT = TransitionTable
+    };
 
-  Q_OBJECT
+    Q_OBJECT
 
- public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
+  public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
 
- private slots:
-  // Ui slots
-  void on_bAddSearch_clicked();
-  void on_ePOESESSID_editingFinished();
+  private slots:
+    // Ui slots
+    void on_bAddSearch_clicked();
+    void on_ePOESESSID_editingFinished();
 
-  // App slots
-  void onSearchAdded();
-  void onNewResult();
+    // App slots
+    void onSearchAdded();
+    void onNewResult();
 
- private:
-  // Ui
-  void setupUi();
-  void loadSyntaxStyles();
+  private:
+    // Ui
+    void setupUi();
+    void loadSyntaxStyles();
 
-  // Crafting
-  bool nativeEvent(const QByteArray& eventType, void* message, long* result) final;
-  void registerHotkeys();
-  void unregisterHotkeys();
-  void setupCraftingEditor();
+    // Crafting
+    virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result) final;
+    void registerHotkeys();
+    void unregisterHotkeys();
+    void setupCraftingEditor();
 
-  void startCrafting();
-  void stopCrafting();
+    void startCrafting();
+    void stopCrafting();
 
-  void saveSettings();
-  void loadSettings();
+    void saveSettings();
+    void loadSettings();
 
- private:
-  ::Ui::MainWindow*                     ui;
-  QStringList                           mSyntaxStyles;
-  QMultiMap<EditorType, Ui::LuaEditor*> mLuaEditors;
-  // QVector<Ui::LuaEditor*> mLuaEditors;
+  private:
+    ::Ui::MainWindow *ui;
+    QStringList mSyntaxStyles;
+    QMultiMap<EditorType, Ui::LuaEditor *> mLuaEditors;
+    // QVector<Ui::LuaEditor*> mLuaEditors;
 
-  Ui::Models::SearchTable      mSearchTableModel;
-  Ui::Models::SearchResultTree mSearchResultTreeModel;
+    Ui::Models::SearchTable mSearchTableModel;
+    Ui::Models::SearchResultTree mSearchResultTreeModel;
 
-  Poe::SearchManager                       mSearchManager;
-  std::unique_ptr<Ui::Delegates::CheckBox> mCheckBoxDelegate;
+    Poe::SearchManager mSearchManager;
+    std::unique_ptr<Ui::Delegates::CheckBox> mCheckBoxDelegate;
 
-  Craft::Crafter mCrafter;
+    Craft::Crafter mCrafter;
 };
 
-}  // namespace StillSane
+} // namespace StillSane

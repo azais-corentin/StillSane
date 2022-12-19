@@ -4,3 +4,6 @@
 [submodule "src/libs/QCodeEditor"]
 	path = src/libs/QCodeEditor
 	url = ../../Megaxela/QCodeEditor
+[submodule "vcpkg"]
+	path = vcpkg
+	url = https://github.com/Microsoft/vcpkg.git

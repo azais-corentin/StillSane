@@ -13,78 +13,80 @@ namespace StillSane::Poe::Api {
 
 using namespace Network;
 
-StaticData::StaticData(QObject* parent) : QObject(parent) {
-  fetchItems();
-  fetchStats();
-  fetchStatic();
+StaticData::StaticData(QObject *parent) : QObject(parent) {
+    fetchItems();
+    fetchStats();
+    fetchStatic();
 }
 
 StaticData::~StaticData() {}
 
 void StaticData::fetchItems() {
-  qDebug() << "Fetching static data for items";
-  using namespace std::placeholders;
+    qDebug() << "Fetching static data for items";
+    using namespace std::placeholders;
 
-  AccessManager::get(buildRequest(StaticBasePath + StaticItemsPath),
-                     std::bind(&StaticData::parseFetchedItems, this, _1));
+    AccessManager::get(buildRequest(StaticBasePath + StaticItemsPath),
+                       std::bind(&StaticData::parseFetchedItems, this, _1));
 }
 
 void StaticData::fetchStats() {
-  qDebug() << "Fetching static data for stats";
-  using namespace std::placeholders;
+    qDebug() << "Fetching static data for stats";
+    using namespace std::placeholders;
 
-  AccessManager::get(buildRequest(StaticBasePath + StaticStatsPath),
-                     std::bind(&StaticData::parseFetchedStats, this, _1));
+    AccessManager::get(buildRequest(StaticBasePath + StaticStatsPath),
+                       std::bind(&StaticData::parseFetchedStats, this, _1));
 }
 
 void StaticData::fetchStatic() {
-  qDebug() << "Fetching static data for static";
-  using namespace std::placeholders;
+    qDebug() << "Fetching static data for static";
+    using namespace std::placeholders;
 
-  AccessManager::get(buildRequest(StaticBasePath + StaticStaticPath),
-                     std::bind(&StaticData::parseFetchedStatic, this, _1));
+    AccessManager::get(buildRequest(StaticBasePath + StaticStaticPath),
+                       std::bind(&StaticData::parseFetchedStatic, this, _1));
 }
 
-void StaticData::parseFetchedItems(const QByteArray& data) {
-  qDebug() << data;
-  qDebug() << "Parsing static data for items:" << data.size() << "bytes";
-  mItems.clear();
+void StaticData::parseFetchedItems(const QByteArray &data) {
+    qDebug() << data;
+    qDebug() << "Parsing static data for items:" << data.size() << "bytes";
+    mItems.clear();
 
-  const auto& categories = QJsonDocument::fromJson(data)["result"].toArray();
+    const auto &categories = QJsonDocument::fromJson(data)["result"].toArray();
 
-  for (const auto& category : categories) {
-    const auto& entries = category["entries"].toArray();
-    for (const auto& entry : entries) {
-      auto&& name = entry["name"].toString();
-      auto&& type = entry["type"].toString();
-      auto&& text = entry["text"].toString();
-      mItems.push_back({text, name, type});
+    for (const auto &raw_category : categories) {
+        const auto &&category = raw_category.toObject();
+        const auto &entries   = category["entries"].toArray();
+        for (const auto &raw_entry : entries) {
+            const auto &&entry = raw_entry.toObject();
+            auto &&name        = entry["name"].toString();
+            auto &&type        = entry["type"].toString();
+            auto &&text        = entry["text"].toString();
+            mItems.push_back({text, name, type});
+        }
     }
-  }
 
-  emit itemsFetched(mItems);
+    emit itemsFetched(mItems);
 
-  qDebug() << "Parsed" << mItems.size() << "items";
+    qDebug() << "Parsed" << mItems.size() << "items";
 }
 
-void StaticData::parseFetchedStats(const QByteArray& data) {
-  qDebug() << "Parsing static data for stats:" << data.size() << "bytes";
+void StaticData::parseFetchedStats(const QByteArray &data) {
+    qDebug() << "Parsing static data for stats:" << data.size() << "bytes";
 }
 
-void StaticData::parseFetchedStatic(const QByteArray& data) {
-  qDebug() << "Parsing static data for static:" << data.size() << "bytes";
+void StaticData::parseFetchedStatic(const QByteArray &data) {
+    qDebug() << "Parsing static data for static:" << data.size() << "bytes";
 }
 
-QNetworkRequest StaticData::buildRequest(const QString& path) const {
-  QUrl url;
-  url.setScheme("https");
-  url.setHost(baseHostOfficial);
-  url.setPath(basePathOfficial + path);
+QNetworkRequest StaticData::buildRequest(const QString &path) const {
+    QUrl url;
+    url.setScheme("https");
+    url.setHost(baseHostOfficial);
+    url.setPath(basePathOfficial + path);
 
-  QNetworkRequest request;
-  request.setUrl(url);
+    QNetworkRequest request;
+    request.setUrl(url);
 
-  return request;
+    return request;
 }
 
-}  // namespace StillSane::Poe::Api
+} // namespace StillSane::Poe::Api

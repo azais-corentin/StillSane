@@ -22,9 +22,6 @@ add_subdirectory(ui)
 # C++20
 target_compile_features(StillSane PRIVATE cxx_std_20)
 set_target_properties(StillSane PROPERTIES CXX_EXTENSIONS OFF)
-if (MSVC)
-    target_compile_options(StillSane PRIVATE /std:c++latest /Zc:__cplusplus)
-endif()
 # Enable Link Time Optimization if available
 include(CheckIPOSupported)
 check_ipo_supported(RESULT result)
@@ -47,12 +44,12 @@ add_custom_command(TARGET StillSane PRE_BUILD
 
 ##### Libraries
 # Qt
-find_package(Qt5 COMPONENTS Core Widgets Network WebSockets REQUIRED)
-target_link_libraries(StillSane PRIVATE Qt5::Widgets Qt5::Network Qt5::WebSockets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Widgets Network WebSockets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets Network WebSockets)
+target_link_libraries(StillSane PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::WebSockets)
 
 # lua
-include(FindLua)
-find_package(Lua REQUIRED)
+find_package(Lua51 REQUIRED)
 target_link_libraries(StillSane PRIVATE ${LUA_LIBRARIES})
 target_include_directories(StillSane PRIVATE ${LUA_INCLUDE_DIR})
 
@@ -61,13 +58,13 @@ find_package(sol2 CONFIG REQUIRED)
 target_link_libraries(StillSane PRIVATE sol2::sol2)
 
 # fmt
-#find_package(fmt CONFIG REQUIRED)
-#target_link_libraries(StillSane PRIVATE fmt::fmt fmt::fmt-header-only)
+find_package(fmt CONFIG REQUIRED)
+target_link_libraries(StillSane PRIVATE fmt::fmt)
 
 # spdlog with external fmt
 #target_compile_definitions(StillSane PUBLIC SPDLOG_FMT_EXTERNAL)
 find_package(spdlog CONFIG REQUIRED)
-target_link_libraries(StillSane PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
+target_link_libraries(StillSane PRIVATE spdlog::spdlog)
 
 # ranges-v3
 find_package(range-v3 CONFIG REQUIRED)
